@@ -1,13 +1,24 @@
+-- love entry point file
 
-game = {time=0}
+lovebird = require("libs/lovebird")
+gs = require("libs/states")
+
+-- load stuff
+function love.load()
+   gs.switch("states/test")
+end
 
 -- update a frame
 function love.update(dt)
-   game.time = game.time + dt
+   if love.keyboard.isDown("escape") then
+      love.event.quit()
+   end
+   lovebird.update()
+   gs.update(dt)
 end
 
 -- draw a frame
 function love.draw()
-   love.graphics.print("Hello les gens...le temps passe...",100,100)
-   love.graphics.print(game.time,100,115)
+   gs.draw()
 end
+

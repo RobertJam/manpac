@@ -1,17 +1,9 @@
--- test game state
+-- game state dispatch menu
 
 local state = {}
 
-local gamestates = {a = "states/test",
-                    b = "states/splash"}
-
-function state.enter()
-   print("Entering test state")
-end
-
-function state.leave()
-   print("Leaving test state")
-end
+local gamestates = {a = "states/example",
+                    b = "states/test_sti"}
 
 function state.update(dt)
    for key,state_name in pairs(gamestates) do

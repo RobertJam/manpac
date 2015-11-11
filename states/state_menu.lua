@@ -2,6 +2,8 @@
 
 local state = {}
 
+-- all available game states
+-- add your own test here
 local gamestates = {a = "states/example",
                     b = "states/test_sti"}
 
@@ -14,9 +16,9 @@ function state.update(dt)
 end
 
 function state.draw()
-   love.graphics.print("Hello les gens... (ESC to quit)",100,100)
-   love.graphics.print("Select game state:",100,130)
-   text_y = 145
+   text_y = 100
+   love.graphics.print("Select game state:",100,text_y)
+   text_y = text_y + 15
    for key,state_name in pairs(gamestates) do
       love.graphics.print(key .. "/ " .. state_name,100,text_y)
       text_y = text_y + 15

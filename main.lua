@@ -22,6 +22,9 @@ end
 
 -- draw a frame
 function love.draw()
+   love.graphics.setBackgroundColor(76,76,128)
+   love.graphics.print("F1 for state menu",10,10)
+   love.graphics.print("ESC to quit",10,25)
    gs.draw()
 end
 

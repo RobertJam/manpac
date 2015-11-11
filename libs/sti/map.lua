@@ -50,6 +50,10 @@ local function compensate(tile, x, y, tw, th)
 	return tx, ty
 end
 
+local function hex2rgb(hex)
+    hex = hex:gsub("#","")
+    return tonumber("0x"..hex:sub(1,2)), tonumber("0x"..hex:sub(3,4)), tonumber("0x"..hex:sub(5,6))
+end
 --- Instance a new map
 -- @param path Path to the map file
 -- @param plugins A list of plugins to load
@@ -76,7 +80,17 @@ function Map:init(path, plugins)
 		assert(tileset.image, "STI does not support Tile Collections.\nYou need to create a Texture Atlas.")
 
 		local image   = formatPath(path .. tileset.image)
-		tileset.image = love.graphics.newImage(image)
+                local imageData = love.image.newImageData(image)
+                if tileset.transparentcolor then
+                   trans_r,trans_g,trans_b = hex2rgb(tileset.transparentcolor)
+                   imageData:mapPixel(function (x,y,r,g,b,a)
+                         if r == trans_r and g == trans_g and b == trans_b then
+                            a = 0
+                         end
+                         return r,g,b,a
+                   end)
+                end
+		tileset.image = love.graphics.newImage(imageData)
 		tileset.image:setFilter("nearest", "nearest")
 
 		gid = self:setTiles(i, tileset, gid)

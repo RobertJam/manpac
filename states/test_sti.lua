@@ -2,6 +2,9 @@
 
 local state = {}
 local sti = require("libs/sti")
+local translateX = 0
+local translateY = 0
+local zoom = 1.0
 
 function state.enter()
    -- Grab window size
@@ -9,16 +12,16 @@ function state.enter()
    windowHeight = love.graphics.getHeight()
 
    -- Set world meter size (in pixels)
-   -- love.physics.setMeter(32)
+   love.physics.setMeter(32)
 
    -- Load a map exported to Lua from Tiled
-   map = sti.new("assets/sewers.lua", {})
+   map = sti.new("assets/sewers.lua", {"box2d"})
 
    -- Prepare physics world with horizontal and vertical gravity
-   -- world = love.physics.newWorld(0, 0)
+   world = love.physics.newWorld(0, 0)
 
    -- Prepare collision objects
-   -- map:box2d_init(world)
+   map:box2d_init(world)
 
    -- Create a Custom Layer
    -- map:addCustomLayer("Sprite Layer", 3)
@@ -56,23 +59,28 @@ function state.leave()
 end
 
 function state.update(dt)
+   if love.keyboard.isDown("d") then translateX = translateX - 10 end
+   if love.keyboard.isDown("q") then translateX = translateX + 10 end
+   if love.keyboard.isDown("s") then translateY = translateY - 10 end
+   if love.keyboard.isDown("z") then translateY = translateY + 10 end
+   if love.keyboard.isDown("a") then zoom = zoom + 0.1 end
+   if love.keyboard.isDown("e") then zoom = zoom - 0.1 end
    map:update(dt)
 end
 
 function state.draw()
-      -- Translation would normally be based on a player's x/y
-      local translateX = 0
-      local translateY = 0
-
-      -- Draw Range culls unnecessary tiles
-      map:setDrawRange(-translateX, -translateY, windowWidth, windowHeight)
+   love.graphics.push()
+   love.graphics.translate(translateX,translateY)
+   map:setDrawRange(-translateX, -translateY, windowWidth, windowHeight)
 
       -- Draw the map and all objects within
-      map:draw()
+      map:draw(zoom,zoom)
 
       -- Draw Collision Map (useful for debugging)
       love.graphics.setColor(255, 0, 0, 255)
-      -- map:box2d_draw()
+      map:box2d_draw()
+
+      love.graphics.pop()
 
       -- Reset color
       love.graphics.setColor(255, 255, 255, 255)

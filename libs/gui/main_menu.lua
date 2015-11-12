@@ -4,6 +4,7 @@ main_menu.panel = nil
 function main_menu.Load()
 	loveframes = require("libs.loveframes")
 	require("libs.gui.join_menu")
+	require("libs.gui.game_lobby")
 	
 	local width = love.graphics.getWidth()
 	local height = love.graphics.getHeight()
@@ -28,7 +29,8 @@ function main_menu.Load()
 end
 
 function main_menu.HostGame()
-	main_menu.panel.visible = false
+	main_menu.panel:Remove()
+	game_lobby.Load()
 end
 
 function main_menu.JoinGame()

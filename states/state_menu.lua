@@ -5,7 +5,8 @@ local state = {}
 -- all available game states
 -- add your own test here
 local gamestates = {a = "states/example",
-                    b = "states/test_sti"}
+                    b = "states/test_sti",
+					c = "states/loveframes"}
 
 function state.update(dt)
    for key,state_name in pairs(gamestates) do

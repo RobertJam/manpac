@@ -29,4 +29,34 @@ function states.draw()
    end
 end
 
+function states.mousepressed(x, y, button)
+	if states.current and states.current.mousepressed then
+      states.current.mousepressed(x, y, button)
+   end
+end
+
+function states.mousereleased(x, y, button)
+	if states.current and states.current.mousereleased then
+      states.current.mousereleased(x, y, button)
+   end
+end
+
+function states.keypressed(key, isrepeat)
+	if states.current and states.current.keypressed then
+      states.current.keypressed(key, isrepeat)
+   end
+end
+
+function states.keyreleased(key)
+	if states.current and states.current.keyreleased then
+      states.current.keyreleased(key)
+   end
+end
+
+function states.textinput(text)
+	if states.current and states.current.textinput then
+      states.current.textinput(text)
+   end
+end
+
 return states

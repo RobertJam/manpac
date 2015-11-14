@@ -289,7 +289,7 @@ function skin.DrawButton(object)
 	local bodydowncolor = skin.controls.button_body_down_color
 	local bodyhovercolor = skin.controls.button_body_hover_color
 	local bodynohovercolor = skin.controls.button_body_nohover_color
-	local bodynonclickablecolor = skin.controls.button_body_nonclickable
+	local bodynonclickablecolor = skin.controls.button_body_nonclickable_color
 	local accentcolor = skin.controls.button_accent_color
 	local accenthovercolor = skin.controls.button_accent_down_color
 	local image = skin.images["button-nohover.png"]

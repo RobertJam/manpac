@@ -8,6 +8,9 @@ gui.main_menu = {
 
 function gui.main_menu.Load()
 	loveframes = require("libs.loveframes")
+	
+	loveframes.util.SetActiveSkin("Dark")
+	
 	require("libs.gui.join_menu")
 	require("libs.gui.game_lobby")
 	

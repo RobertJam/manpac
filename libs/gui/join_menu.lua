@@ -1,9 +1,10 @@
-join_menu = {}
+local gui = require("libs.gui.main_menu")
 
-join_menu.panel = nil
-join_menu.cancel_button = nil
+gui.join_menu = {
+	panel = nil
+}
 
-function join_menu.Load()
+function gui.join_menu.Load()
 	loveframes = require("libs.loveframes")
 	
 	local width = love.graphics.getWidth()
@@ -11,40 +12,42 @@ function join_menu.Load()
 	
 	local object_spaing = 20
 	
-	join_menu.panel = loveframes.Create("panel")
-	join_menu.panel = join_menu.panel:SetSize(width, height)
-	join_menu.panel = join_menu.panel:SetPos(0, 0)
+	gui.join_menu.panel = loveframes.Create("panel")
+	gui.join_menu.panel = gui.join_menu.panel:SetSize(width, height)
+	gui.join_menu.panel = gui.join_menu.panel:SetPos(0, 0)
 	
-	local text = loveframes.Create("text", join_menu.panel)
+	local text = loveframes.Create("text", gui.join_menu.panel)
 	text:SetText("Adresse IP")
 	text:SetPos(width / 2 - 100, height / 2 - 30 - 60)
 	text:SetSize(200, 30)
 	
-	local textinput = loveframes.Create("textinput", join_menu.panel)
+	local textinput = loveframes.Create("textinput", gui.join_menu.panel)
 	textinput:SetPos(width / 2 - 100, height / 2 - 15 - object_spaing - 30)
 	textinput:SetSize(200, 30)
 	textinput:SetText("127.0.0.1")
 	textinput.OnEnter = Connect
 	textinput:SetFont(love.graphics.newFont(12))
 
-	local connect_button = loveframes.Create("button", join_menu.panel)
+	local connect_button = loveframes.Create("button", gui.join_menu.panel)
 	connect_button:SetSize(200, 30)
 	connect_button:SetPos(width / 2 - 100, height / 2 - 15)
 	connect_button:SetText("Connect")
-	connect_button.OnClick = join_menu.Connect
+	connect_button.OnClick =gui. join_menu.Connect
 
-	local cancel_button = loveframes.Create("button", join_menu.panel)
+	local cancel_button = loveframes.Create("button", gui.join_menu.panel)
 	cancel_button:SetSize(200, 30)
 	cancel_button:SetPos(width / 2 - 100, height / 2 - 15 + object_spaing + 30)
 	cancel_button:SetText("Cancel")
-	cancel_button.OnClick = join_menu.Cancel
+	cancel_button.OnClick = gui.join_menu.Cancel
 end
 
-function join_menu.Cancel()
-	join_menu.panel:Remove()
-	main_menu.Load()
+function gui.join_menu.Cancel()
+	gui.join_menu.panel:Remove()
+	gui.main_menu.Load()
 end
 
-function join_menu.Connect(connect_button)
+function gui.join_menu.Connect(connect_button)
 	connect_button:SetEnabled(false)
 end
+
+return gui

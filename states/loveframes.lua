@@ -1,8 +1,8 @@
 local state = {}
 
 function state.enter()
-	loveframes = require("libs.loveframes")
-	require("libs.gui.main_menu")
+	local gui = require("libs.gui.main_menu")
+	gui.main_menu.Load()
 end
 
 function state.update(dt)

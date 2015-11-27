@@ -8,7 +8,8 @@ local gamestates = {a = "states/example",
                     b = "states/test_sti",
                     c = "states/loveframes",
                     d = "states/anim8",
-                    e = "states/slam"}
+                    e = "states/slam",
+					f = "states/reseau"}
 
 function state.update(dt)
    for key,state_name in pairs(gamestates) do

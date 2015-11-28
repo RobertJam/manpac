@@ -55,10 +55,8 @@ function animation.update(dt)
   seaplaneAngle = seaplaneAngle + dt
 end
 
-return animation
-
-function state.keypressed(key)
-  if key == 'escape' then state.event.quit() end
+function animation.keypressed(key)
+  if key == 'escape' then animation.event.quit() end
 
   for i=1, #spinning do
     spinning[i]:flipH()
@@ -69,4 +67,4 @@ function state.keypressed(key)
   submarine:flipV(dt)
 end
 
-return state
+return animation

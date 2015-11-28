@@ -5,7 +5,7 @@ gs = require("libs/states")
 
 -- load stuff
 function love.load()
-   gs.switch("jeu/start")
+   gs.switch("jeu/game")
 end
 
 -- update a frame
@@ -16,25 +16,28 @@ end
 
 -- draw a frame
 function love.draw()
+   -- don't default to black background (at least for debugging)
+   love.graphics.setBackgroundColor(76,76,128)
+   -- call current state draw function
    gs.draw()
 end
 
 function love.mousepressed(x, y, button)
-	gs.mousepressed(x, y, button)
+   gs.mousepressed(x, y, button)
 end
 
 function love.mousereleased(x, y, button)
-	gs.mousereleased(x, y, button)
+   gs.mousereleased(x, y, button)
 end
 
 function love.keypressed(key, isrepeat)
-	gs.keypressed(key, isrepeat)
+   gs.keypressed(key, isrepeat)
 end
 
 function love.keyreleased(key)
-	gs.keyreleased(key)
+   gs.keyreleased(key)
 end
 
 function love.textinput(text)
-	gs.textinput(text)
+   gs.textinput(text)
 end

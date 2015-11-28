@@ -3,30 +3,31 @@ local sti = require("libs/sti")
 local translateX = 0
 local translateY = 0
 local zoom = 1.0
+local entity_count = 1
+
+-- FIXME: brutal include modifying global namespace
+-- FIXME: make a proper package out of this
+require("jeu/player")
 
 -- our global game object, should contain all top level data
 -- to prevent global scope garbage
 -- FIXME: this should probably go in some other file at some point
-game = { map = nil,   -- sti map object
-         world = nil -- Box2D physics world
+game = { map = nil,    -- sti map object
+         world = nil,   -- Box2D physics world
+         entities = {}, -- all existing game object
 }
 
-local function create_player()
-   local player = {
-         image = love.graphics.newImage("assets/sprites/player.tga"),
-         x = 64,
-         y = 64,
-         r = 0,
-   }
-   player.body = love.physics.newBody(game.world, player.x/2,
-                                           player.y/2, "dynamic")
-   player.body:setLinearDamping(10)
-   player.body:setFixedRotation(true)
+function game.create_entity(name)
+   local entity = {name = name,
+                   id = entity_count}
+   game.entities[entity_count] = entity
+   entity_count = entity_count + 1
+   print("Created entity "..entity_count)
+   return entity
+end
 
-   player.shape   = love.physics.newRectangleShape(27, 32)
-   player.fixture = love.physics.newFixture(player.body, player.shape)
-
-   return player
+function game.kill_entity(entity)
+   game.entities[entity.id] = nil
 end
 
 function state.enter()
@@ -34,13 +35,9 @@ function state.enter()
    game.map = sti.new("assets/maps/sewers.lua",{"box2d"})
    game.world = love.physics.newWorld(0,0)
    game.map:box2d_init(game.world)
-   -- add a custom sprite layer
-   game.map:addCustomLayer("Sprite Layer", 3)
-   local spriteLayer = game.map.layers["Sprite Layer"]
-   game.player = create_player()
-   spriteLayer.sprites = {
-      player = game.player
-   }
+   -- add a custom sprite layer (see sprite.lua)
+   game.map:addCustomLayer("SpriteLayer", 3)
+   local spriteLayer = game.map.layers["SpriteLayer"]
 
    -- Update callback for Custom Layer
    function spriteLayer:update(dt)
@@ -49,13 +46,22 @@ function state.enter()
 
    -- Draw callback for Custom Layer
    function spriteLayer:draw()
-      for _, sprite in pairs(self.sprites) do
-         local x = math.floor(sprite.x)
-         local y = math.floor(sprite.y)
-         local r = sprite.r
-         love.graphics.draw(sprite.image, x, y, r)
+      for _, entity in pairs(game.entities) do
+         local sprite = entity
+         if sprite.animation then
+            sprite.animation:draw(sprite.image,math.floor(sprite.x),
+                               math.floor(sprite.y), sprite.angle)
+         elseif sprite.image then
+            -- draw entity as a static sprite
+            love.graphics.draw(sprite.image, math.floor(sprite.x),
+                               math.floor(sprite.y), sprite.angle)
+         end
       end
    end
+
+   -- create player
+   game.player = game.create_entity()
+   init_player(game.player)
 end
 
 function state.update(dt)

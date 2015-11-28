@@ -18,11 +18,11 @@ game = { map = nil,    -- sti map object
 }
 
 function game.create_entity(name)
-   local entity = {name = name,
+   local entity = {name = name or string.format("entity-%d",entity_count),
                    id = entity_count}
    game.entities[entity_count] = entity
+   print("Created entity "..entity.name)
    entity_count = entity_count + 1
-   print("Created entity "..entity_count)
    return entity
 end
 
@@ -33,10 +33,11 @@ end
 function state.enter()
    -- load our test map and init box2d physics world
    game.map = sti.new("assets/maps/sewers.lua",{"box2d"})
+   love.physics.setMeter(32) -- box2D meter in pixels
    game.world = love.physics.newWorld(0,0)
    game.map:box2d_init(game.world)
    -- add a custom sprite layer (see sprite.lua)
-   game.map:addCustomLayer("SpriteLayer", 3)
+   game.map:addCustomLayer("SpriteLayer", #game.map.layers+1)
    local spriteLayer = game.map.layers["SpriteLayer"]
 
    -- Update callback for Custom Layer

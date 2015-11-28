@@ -1,7 +1,7 @@
 local anim8 = require '../libs/anim8'
 local animation = {}
 
-function animation.load()
+function animation.enter()
   image = animation.graphics.newImage('../assets/1945.png')
 
                          -- frame, image,    offsets, border

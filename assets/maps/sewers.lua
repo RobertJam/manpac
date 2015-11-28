@@ -8,7 +8,7 @@ return {
   height = 50,
   tilewidth = 24,
   tileheight = 24,
-  nextobjectid = 3,
+  nextobjectid = 4,
   properties = {},
   tilesets = {
     {
@@ -83,6 +83,19 @@ return {
           y = 54,
           width = 74,
           height = 307,
+          rotation = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          id = 3,
+          name = "",
+          type = "",
+          shape = "ellipse",
+          x = 144,
+          y = 474,
+          width = 166,
+          height = 68,
           rotation = 0,
           visible = true,
           properties = {}

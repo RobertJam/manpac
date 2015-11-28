@@ -24,7 +24,16 @@ function state.enter()
          x = 64,
          y = 64,
          r = 0,
-      }
+   }
+   game.player.body = love.physics.newBody(game.world, game.player.x/2,
+                                           game.player.y/2, "dynamic")
+   game.player.body:setLinearDamping(10)
+   game.player.body:setFixedRotation(true)
+
+   game.player.shape   = love.physics.newRectangleShape(27, 32)
+   game.player.fixture = love.physics.newFixture(game.player.body, game.player.shape)
+
+
    spriteLayer.sprites = {
       player = game.player
    }
@@ -46,6 +55,8 @@ function state.enter()
 end
 
 function state.update(dt)
+   -- update physics world
+   game.world:update(dt)
    -- map test keys
    if love.keyboard.isDown("d") then translateX = translateX - 10 end
    if love.keyboard.isDown("q") then translateX = translateX + 10 end
@@ -54,10 +65,15 @@ function state.update(dt)
    if love.keyboard.isDown("a") then zoom = zoom + 0.1 end
    if love.keyboard.isDown("e") then zoom = zoom - 0.1 end
    -- player test keys
-   if love.keyboard.isDown("right") then  game.player.x = game.player.x + 100*dt end
-   if love.keyboard.isDown("left") then  game.player.x = game.player.x - 100*dt end
-   if love.keyboard.isDown("down") then  game.player.y = game.player.y + 100*dt end
-   if love.keyboard.isDown("up") then  game.player.y = game.player.y - 100*dt end
+   local x, y = 0, 0
+   if love.keyboard.isDown("up") then y = y - 4000 end
+   if love.keyboard.isDown("down") then y = y + 4000 end
+   if love.keyboard.isDown("left") then x = x - 4000 end
+   if love.keyboard.isDown("right") then x = x + 4000 end
+   -- update player physics
+   local player = game.player
+   player.body:applyForce(x,y)
+   player.x,player.y = player.body:getWorldCenter()
    game.map:update(dt)
 end
 
@@ -74,6 +90,9 @@ function state.draw()
    -- Draw Collision Map (useful for debugging)
    love.graphics.setColor(255, 0, 0, 255)
    game.map:box2d_draw()
+   -- draw our player collision shape (custom layer so SIT doesn't handle it)
+   love.graphics.setColor(255, 0, 0, 255)
+   love.graphics.polygon("line", game.player.body:getWorldPoints(game.player.shape:getPoints()))
 
    love.graphics.pop()
 

@@ -58,6 +58,9 @@ end
 
 function animation.keypressed(key)
   if key == 'escape' then animation.event.quit() end
+  if key == 'q' then 
+	plane.x = plane.x - (100*dt) 
+  end
 
   for i=1, #spinning do
     spinning[i]:flipH()

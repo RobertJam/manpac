@@ -55,6 +55,7 @@ function state.draw()
 	love.graphics.rectangle( "fill", mur.x, mur.y,mur. width, mur.height )
 end
 
+<<<<<<< HEAD
 function state.mousepressed(x, y, button)
 end
 
@@ -71,3 +72,6 @@ function state.textinput(text)
 end
 
 return state
+=======
+return state
+>>>>>>> 3a1b1d65900b3159812a9f22860fa9f9e9d11fdb

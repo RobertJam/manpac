@@ -24,9 +24,9 @@ function animation.enter()
                          -- frame, image,    offsets, border
   local g64 = anim8.newGrid(64,64, 1024,768,  299,101,   2)
 
-  plane    = anim8.newAnimation(g64(1,'1-3'), 0.1)
-  seaplane = anim8.newAnimation(g64('2-4',3), 0.1)
-  seaplaneAngle = 0
+  local plane    = anim8.newAnimation(g64(1,'1-3'), 0.1)
+  local seaplane = anim8.newAnimation(g64('2-4',3), 0.1)
+  local seaplaneAngle = 0
 
                          -- frame, image,    offsets, border
   local gs = anim8.newGrid(32,98, 1024,768,  366,102,   1)

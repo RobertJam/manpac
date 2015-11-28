@@ -8,8 +8,26 @@ local zoom = 1.0
 -- to prevent global scope garbage
 -- FIXME: this should probably go in some other file at some point
 game = { map = nil,   -- sti map object
-         world = nil -- love2D physics world
+         world = nil -- Box2D physics world
 }
+
+local function create_player()
+   local player = {
+         image = love.graphics.newImage("assets/sprites/player.tga"),
+         x = 64,
+         y = 64,
+         r = 0,
+   }
+   player.body = love.physics.newBody(game.world, player.x/2,
+                                           player.y/2, "dynamic")
+   player.body:setLinearDamping(10)
+   player.body:setFixedRotation(true)
+
+   player.shape   = love.physics.newRectangleShape(27, 32)
+   player.fixture = love.physics.newFixture(player.body, player.shape)
+
+   return player
+end
 
 function state.enter()
    -- load our test map and init box2d physics world
@@ -19,21 +37,7 @@ function state.enter()
    -- add a custom sprite layer
    game.map:addCustomLayer("Sprite Layer", 3)
    local spriteLayer = game.map.layers["Sprite Layer"]
-   game.player = {
-         image = love.graphics.newImage("assets/sprites/player.tga"),
-         x = 64,
-         y = 64,
-         r = 0,
-   }
-   game.player.body = love.physics.newBody(game.world, game.player.x/2,
-                                           game.player.y/2, "dynamic")
-   game.player.body:setLinearDamping(10)
-   game.player.body:setFixedRotation(true)
-
-   game.player.shape   = love.physics.newRectangleShape(27, 32)
-   game.player.fixture = love.physics.newFixture(game.player.body, game.player.shape)
-
-
+   game.player = create_player()
    spriteLayer.sprites = {
       player = game.player
    }

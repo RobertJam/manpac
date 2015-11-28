@@ -31,6 +31,12 @@ function love.mousereleased(x, y, button)
 end
 
 function love.keypressed(key, isrepeat)
+   if key == "escape" then
+      love.event.quit()
+   end
+   if key == "f5" then
+      gs.reload()
+   end
    gs.keypressed(key, isrepeat)
 end
 

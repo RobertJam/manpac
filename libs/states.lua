@@ -1,19 +1,26 @@
 -- gamestate management
 
-states = {current = nil}
+states = {current = nil,
+          current_name = nil}
 
 function states.switch(name,...)
    if states.current and states.current.leave then
       states.current.leave()
    end
    -- -- invalidate already loaded package
-   -- package.loaded[name] = false
+   package.loaded[name] = false
    print("Loading state "..name)
    state = require(name)
-   print(state)
    states.current = state
+   states.current_name = name
    if state.enter then
       state.enter(...)
+   end
+end
+
+function states.reload()
+   if states.current then
+      states.switch(states.current_name)
    end
 end
 

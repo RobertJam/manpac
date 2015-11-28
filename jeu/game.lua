@@ -16,15 +16,48 @@ function state.enter()
    game.map = sti.new("assets/maps/sewers.lua",{"box2d"})
    game.world = love.physics.newWorld(0,0)
    game.map:box2d_init(game.world)
+   -- add a custom sprite layer
+   game.map:addCustomLayer("Sprite Layer", 3)
+   local spriteLayer = game.map.layers["Sprite Layer"]
+   game.player = {
+         image = love.graphics.newImage("assets/sprites/player.tga"),
+         x = 64,
+         y = 64,
+         r = 0,
+      }
+   spriteLayer.sprites = {
+      player = game.player
+   }
+
+   -- Update callback for Custom Layer
+   function spriteLayer:update(dt)
+      -- do animation stuff etc here
+   end
+
+   -- Draw callback for Custom Layer
+   function spriteLayer:draw()
+      for _, sprite in pairs(self.sprites) do
+         local x = math.floor(sprite.x)
+         local y = math.floor(sprite.y)
+         local r = sprite.r
+         love.graphics.draw(sprite.image, x, y, r)
+      end
+   end
 end
 
 function state.update(dt)
+   -- map test keys
    if love.keyboard.isDown("d") then translateX = translateX - 10 end
    if love.keyboard.isDown("q") then translateX = translateX + 10 end
    if love.keyboard.isDown("s") then translateY = translateY - 10 end
    if love.keyboard.isDown("z") then translateY = translateY + 10 end
    if love.keyboard.isDown("a") then zoom = zoom + 0.1 end
    if love.keyboard.isDown("e") then zoom = zoom - 0.1 end
+   -- player test keys
+   if love.keyboard.isDown("right") then  game.player.x = game.player.x + 100*dt end
+   if love.keyboard.isDown("left") then  game.player.x = game.player.x - 100*dt end
+   if love.keyboard.isDown("down") then  game.player.y = game.player.y + 100*dt end
+   if love.keyboard.isDown("up") then  game.player.y = game.player.y - 100*dt end
    game.map:update(dt)
 end
 

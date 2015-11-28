@@ -49,9 +49,9 @@ function animation.update(dt)
   for i=1,#spinning do
     spinning[i]:update(dt)
   end
-  local plane:update(dt)
-  local seaplane:update(dt)
-  local submarine:update(dt)
+  plane:update(dt)
+  seaplane:update(dt)
+  submarine:update(dt)
 
   seaplaneAngle = seaplaneAngle + dt
 end

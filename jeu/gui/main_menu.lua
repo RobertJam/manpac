@@ -42,6 +42,12 @@ function gui.main_menu.Load()
 	join_button:SetPos(width / 2 - 100, height / 2 + button_spaing / 2)
 	join_button:SetText("Join a game")
 	join_button.OnClick = gui.main_menu.JoinGame
+	
+	local quick_button = loveframes.Create("button", gui.main_menu.panel)
+	quick_button:SetSize(200, 30)
+	quick_button:SetPos(width / 2 - 100, height / 2 + 60)
+	quick_button:SetText("Quick Start")
+	quick_button.OnClick = gui.main_menu.QuickStart
 end
 
 function gui.main_menu.HostGame()
@@ -53,6 +59,11 @@ end
 function gui.main_menu.JoinGame()
 	gui.main_menu.panel:Remove()
 	gui.join_menu.Load()
+end
+
+function gui.main_menu.QuickStart()
+	gui.main_menu.panel:Remove()
+	gs.switch("jeu/game")
 end
 
 return gui

@@ -3,7 +3,7 @@ local animation = {}
 local spinning = {}
 
 function animation.enter()
-  image = love.graphics.newImage('../assets/1945.png')
+  image = love.graphics.newImage('assets/1945.png')
 
                          -- frame, image,    offsets, border
   local g32 = anim8.newGrid(32,32, 1024,768,   3,3,     1)

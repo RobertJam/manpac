@@ -1,5 +1,6 @@
 local anim8 = require '../libs/anim8'
 local animation = {}
+local spinning = {}
 
 function animation.enter()
   image = animation.graphics.newImage('../assets/1945.png')

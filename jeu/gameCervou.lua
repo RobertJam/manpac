@@ -48,33 +48,11 @@ function state.update(dt)
     if CheckCollision(perso.x, perso.y, perso.radius, perso.radius, mur.x, mur.y, mur.width, mur.height) then
 		vt = 0
 	end
-	loveframes.update(dt)
 end
 
 function state.draw()
 	love.graphics.circle("fill", perso.x, perso.y, perso.speed, perso.segments) -- Draw white circle with 100 segments.
 	love.graphics.rectangle( "fill", mur.x, mur.y,mur. width, mur.height )
-	loveframes.draw()
-end
-
-function state.mousepressed(x, y, button)
-	loveframes.mousepressed(x, y, button)
-end
-
-function state.mousereleased(x, y, button)
-	loveframes.mousereleased(x, y, button)
-end
-
-function state.keypressed(key, isrepeat)
-	loveframes.keypressed(key, isrepeat)
-end
-
-function state.keyreleased(key)
-	loveframes.keyreleased(key)
-end
-
-function state.textinput(text)
-	loveframes.textinput(text)
 end
 
 return state

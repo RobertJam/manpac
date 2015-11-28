@@ -1,7 +1,9 @@
 local anim8 = require '../libs/anim8'
+local animation = {}
+local spinning = {}
 
-function love.load()
-  image = love.graphics.newImage('../assets/1945.png')
+function animation.enter()
+  image = animation.graphics.newImage('../assets/1945.png')
 
                          -- frame, image,    offsets, border
   local g32 = anim8.newGrid(32,32, 1024,768,   3,3,     1)
@@ -34,7 +36,7 @@ function love.load()
 
 end
 
-function love.draw()
+function animation.draw()
   for i=1,#spinning do
     spinning[i]:draw(image, i*75, i*50)
   end
@@ -43,7 +45,7 @@ function love.draw()
   submarine:draw(image, 600, 100)
 end
 
-function love.update(dt)
+function animation.update(dt)
   for i=1,#spinning do
     spinning[i]:update(dt)
   end
@@ -54,8 +56,8 @@ function love.update(dt)
   seaplaneAngle = seaplaneAngle + dt
 end
 
-function love.keypressed(key)
-  if key == 'escape' then love.event.quit() end
+function animation.keypressed(key)
+  if key == 'escape' then animation.event.quit() end
 
   for i=1, #spinning do
     spinning[i]:flipH()
@@ -65,3 +67,5 @@ function love.keypressed(key)
   seaplane:flipV(dt)
   submarine:flipV(dt)
 end
+
+return animation

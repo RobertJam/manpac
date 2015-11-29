@@ -17,6 +17,10 @@ game = { map = nil,    -- sti map object
          entities = {}, -- all existing game object
 }
 
+function game.network_event(event, data)
+
+end
+
 function game.create_entity(name)
    local entity = {name = name or string.format("entity-%d",entity_count),
                    id = entity_count}

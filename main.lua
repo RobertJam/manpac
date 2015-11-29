@@ -2,16 +2,18 @@
 
 lovebird = require("libs/lovebird")
 gs = require("libs/states")
+reseau = require("jeu/reseau")
 
 -- load stuff
 function love.load()
-   gs.switch("jeu/game")
+   gs.switch("jeu/start")
 end
 
 -- update a frame
 function love.update(dt)
    lovebird.update()
    gs.update(dt)
+   reseau.update()
 end
 
 -- draw a frame

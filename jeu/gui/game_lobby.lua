@@ -1,10 +1,7 @@
 local gui = require("jeu.gui.main_menu")
+require('enet')
 
-gui.game_lobby = {
-	panel = nil,
-	list = nil,
-	tchat = nil
-}
+gui.game_lobby = {}
 
 function gui.game_lobby.Load()
 	loveframes = require("libs.loveframes")
@@ -79,6 +76,14 @@ function gui.game_lobby.Load()
 	leave_button.OnClick = gui.game_lobby.LeaveLobby
 	
 	gui.game_lobby.RefreshList()
+	
+	reseau.addHostListener(gui.game_lobby.hostListener)
+	reseau.start_server(950)
+	gui.game_lobby.AddText("Server started on port 950")
+end
+
+function gui.game_lobby.hostListener(event)
+	gui.game_lobby.AddText("Event: " .. event)
 end
 
 function gui.game_lobby.GetReady()
@@ -87,6 +92,9 @@ function gui.game_lobby.GetReady()
 end
 
 function gui.game_lobby.LeaveLobby()
+	gui.game_lobby.host:flush()
+	gui.game_lobby.host:destroy()
+	gui.game_lobby.host = nil
 	gui.game_lobby.panel:Remove()
 	gui.main_menu.Load()
 end
@@ -101,9 +109,12 @@ function gui.game_lobby.ChangeName(textinput)
 end
 
 function gui.game_lobby.SendMessage(textinput, message)
+	
+end
+
+function gui.game_lobby.AddText(text)
 	local current_text = gui.game_lobby.tchat:GetText()
-	gui.game_lobby.tchat:SetText(current_text .. "\n" .. gui.players[1].name .. ": " .. message)
-	textinput:SetText("")
+	gui.game_lobby.tchat:SetText(current_text .. text .. "\n")
 end
 
 function gui.game_lobby.RefreshList()

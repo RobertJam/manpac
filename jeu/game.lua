@@ -130,6 +130,11 @@ function state.enter(map_name,player,opponents)
    -- create bot
    game.bot = game.create_entity()
    game.bot:addSystems({"gfx","physics"})
+   game.bot.behavior = "stupid"
+   -- create stalker bot
+   game.stalker = game.create_entity()
+   game.bot:addSystems({"gfx","physics"})
+   game.bot.target = game.player
 end
 
 function state.update(dt)

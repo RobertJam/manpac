@@ -13,7 +13,7 @@ function gfx.init_system()
 end
 
 function gfx.draw(entities)
-   for _, entity in pairs(game.entities) do
+   for _, entity in pairs(entities) do
       -- draw entity as an animated sprite
       if entity.animation then
          entity.animation:draw(entity.image,math.floor(entity.x),

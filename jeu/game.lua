@@ -61,6 +61,11 @@ function state.enter()
    game.player = game.create_entity()
    gfx.init_entity(game.player)
    physics.init_entity(game.player)
+   
+   -- create bot
+   game.bot = game.create_entity()
+   gfx.init_entity(game.bot)
+   physics.init_entity(game.bot)
 end
 
 function state.update(dt)
@@ -78,6 +83,14 @@ function state.update(dt)
    if love.keyboard.isDown("left") then x = x - 4000 end
    if love.keyboard.isDown("right") then x = x + 4000 end
    game.player:setForces(x,y)
+   
+   -- bot
+   local x_bot, y_bot = 0, 0
+   local deplacement_bot = 1000
+   x_bot = love.math.random(-deplacement_bot, deplacement_bot)
+   y_bot = love.math.random(-deplacement_bot, deplacement_bot)
+   game.bot:setForces(x_bot,y_bot)
+   
    -- update physics
    physics.update(game.entities,dt)
 end

@@ -20,8 +20,8 @@ function gfx.draw(entities)
                                math.floor(entity.y), entity.angle)
       elseif entity.image then
          -- draw entity as a static entity
-         love.graphics.draw(entity.image, math.floor(entity.x),
-                            math.floor(entity.y), entity.angle)
+         love.graphics.draw(entity.image, math.floor(entity.x - 10),
+                            math.floor(entity.y - 18), entity.angle)
       end
    end
 end

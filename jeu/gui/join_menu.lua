@@ -32,7 +32,7 @@ function gui.join_menu.Load()
 	connect_button:SetSize(200, 30)
 	connect_button:SetPos(width / 2 - 100, height / 2 - 15)
 	connect_button:SetText("Connect")
-	connect_button.OnClick =gui. join_menu.Connect
+	connect_button.OnClick = gui.join_menu.Connect
 
 	local cancel_button = loveframes.Create("button", gui.join_menu.panel)
 	cancel_button:SetSize(200, 30)
@@ -47,6 +47,8 @@ function gui.join_menu.Cancel()
 end
 
 function gui.join_menu.Connect(connect_button)
+	local remote_host = connect_button:GetText()
+	reseau.connect(remote_host, 950)
 	connect_button:SetEnabled(false)
 end
 

@@ -83,7 +83,7 @@ function gui.game_lobby.Load()
 end
 
 function gui.game_lobby.hostListener(event)
-	gui.game_lobby.AddText("Event: " .. event)
+	gui.game_lobby.AddText("Event: " .. event.type)
 end
 
 function gui.game_lobby.GetReady()

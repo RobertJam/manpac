@@ -43,6 +43,7 @@ function game.create_entity(name)
    entity.addSystem = function(self,sys_name,cfg)
       print("Adding system "..sys_name.." to entity "..self._id)
       cfg = cfg or {}
+      print(cfg)
       local sys = systems[sys_name]
       if sys.init_entity then
          sys.init_entity(self,cfg)
@@ -73,7 +74,7 @@ function game.create_entity(name)
             sys_name = sys_desc
             sys_cfg = {}
          end
-         self:addSystem(sys_name,sys_desc)
+         self:addSystem(sys_name,sys_cfg)
       end
    end
    game.entities[entity_count] = entity
@@ -177,13 +178,16 @@ function state.enter(map_name,player,opponents)
       opponentTeam = "team1"
    end
    game.player = game.create_entity(player.name)
-   game.player:addSystems({"gfx","physics","input_controller","character"})
+   game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
+                           "physics","input_controller","character"})
    game.player:addSystem(player.role)
    playerSpawn:placeEntity(game.player)
    -- create opponents entities
    for name,data in pairs(opponents) do
       entity = game.create_entity(name)
-      entity:addSystems({"gfx","physics"})
+      entity:addSystems({{"gfx",{image = "assets/sprites/crabe.png",
+                                 scale = 0.1}},
+            "physics"})
       if data.controller == "ai" then
          entity:addSystem("ai_controller")
       else
@@ -241,9 +245,11 @@ function state.draw()
    -- Draw Collision Map (useful for debugging)
    love.graphics.setColor(255, 0, 0, 255)
    game.map:box2d_draw()
-   -- draw our player collision shape (custom layer so SIT doesn't handle it)
-   love.graphics.setColor(255, 0, 0, 255)
-   love.graphics.polygon("line", game.player.body:getWorldPoints(game.player.shape:getPoints()))
+   -- draw our physical entities
+   for _,entity in pairs(game.filter_entities({"physics"})) do
+      love.graphics.setColor(255, 0, 0, 255)
+      love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+   end
 
    love.graphics.pop()
 

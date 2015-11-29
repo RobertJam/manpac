@@ -20,10 +20,11 @@ function physics.init_entity(self)
    self.shape = nil
    self.fixture = nil
    self.body = love.physics.newBody(physics.world, self.x/2,self.y/2, "dynamic")
-   self.body:setLinearDamping(10)
+   self.body:setLinearDamping(30)
    self.body:setFixedRotation(true)
    self.shape = love.physics.newRectangleShape(27, 32)
    self.fixture = love.physics.newFixture(self.body, self.shape)
+   self.fixture:setRestitution(3)
    self.forceX = 0
    self.forceY = 0
    -- add setForces() method

@@ -21,18 +21,18 @@ function gui.join_menu.Load()
 	text:SetPos(width / 2 - 100, height / 2 - 30 - 60)
 	text:SetSize(200, 30)
 	
-	local textinput = loveframes.Create("textinput", gui.join_menu.panel)
-	textinput:SetPos(width / 2 - 100, height / 2 - 15 - object_spaing - 30)
-	textinput:SetSize(200, 30)
-	textinput:SetText("127.0.0.1")
-	textinput.OnEnter = Connect
-	textinput:SetFont(love.graphics.newFont(12))
+	gui.join_menu.hostinput = loveframes.Create("textinput", gui.join_menu.panel)
+	gui.join_menu.hostinput:SetPos(width / 2 - 100, height / 2 - 15 - object_spaing - 30)
+	gui.join_menu.hostinput:SetSize(200, 30)
+	gui.join_menu.hostinput:SetText("127.0.0.1")
+	gui.join_menu.hostinput.OnEnter = Connect
+	gui.join_menu.hostinput:SetFont(love.graphics.newFont(12))
 
 	local connect_button = loveframes.Create("button", gui.join_menu.panel)
 	connect_button:SetSize(200, 30)
 	connect_button:SetPos(width / 2 - 100, height / 2 - 15)
 	connect_button:SetText("Connect")
-	connect_button.OnClick =gui. join_menu.Connect
+	connect_button.OnClick = gui.join_menu.Connect
 
 	local cancel_button = loveframes.Create("button", gui.join_menu.panel)
 	cancel_button:SetSize(200, 30)
@@ -42,12 +42,24 @@ function gui.join_menu.Load()
 end
 
 function gui.join_menu.Cancel()
+	reseau.close()
 	gui.join_menu.panel:Remove()
 	gui.main_menu.Load()
 end
 
 function gui.join_menu.Connect(connect_button)
+	local remote_host = gui.join_menu.hostinput:GetText()
+	gui.join_menu.listenerid = reseau.addClientListener(gui.join_menu.clientListener)
+	reseau.connect(remote_host, 950)
 	connect_button:SetEnabled(false)
+end
+
+function gui.join_menu.clientListener(event)
+	if event.type == "connect" then
+		gui.join_menu.panel:Remove()
+		gui.game_lobby.Load()
+		reseau.removeClientListener(gui.join_menu.listenerid)
+	end
 end
 
 return gui

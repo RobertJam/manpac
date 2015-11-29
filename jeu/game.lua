@@ -127,6 +127,9 @@ function state.enter(map_name,player,opponents)
    --    end
    --    entity:addSystem(data.role)
    -- end
+   -- create bot
+   game.bot = game.create_entity()
+   game.bot:addSystems({"gfx","physics"})
 end
 
 function state.update(dt)

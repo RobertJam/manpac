@@ -1,10 +1,7 @@
 local gui = require("jeu.gui.main_menu")
+require('enet')
 
-gui.game_lobby = {
-	panel = nil,
-	list = nil,
-	tchat = nil
-}
+gui.game_lobby = {}
 
 function gui.game_lobby.Load()
 	loveframes = require("libs.loveframes")
@@ -78,7 +75,30 @@ function gui.game_lobby.Load()
 	leave_button:SetText("Leave")
 	leave_button.OnClick = gui.game_lobby.LeaveLobby
 	
+	if gui.players[1].host then
+		reseau.addHostListener(gui.game_lobby.hostListener)
+		reseau.start_server(950)
+		gui.game_lobby.AddText("Server started on port 950")
+	else
+		reseau.addClientListener(gui.game_lobby.clientListener)
+		gui.game_lobby.AddText("Connected to " .. reseau.hostname)
+	end
 	gui.game_lobby.RefreshList()
+end
+
+function gui.game_lobby.hostListener(event)
+	if event.type == "connect" then
+		gui.game_lobby.AddText(tostring(event.peer) .. " has entered the game")
+	elseif event.type == "receive" then
+		reseau.dispatch(event)
+		gui.game_lobby.AddText(tostring(event.data))
+	end
+end
+
+function gui.game_lobby.clientListener(event)
+	if event.type == "receive" then
+		gui.game_lobby.AddText(tostring(event.data))
+	end
 end
 
 function gui.game_lobby.GetReady()
@@ -87,23 +107,33 @@ function gui.game_lobby.GetReady()
 end
 
 function gui.game_lobby.LeaveLobby()
+	reseau.close()
 	gui.game_lobby.panel:Remove()
 	gui.main_menu.Load()
 end
 
 function gui.game_lobby.ChangeName(textinput)
 	if gui.players[1].name ~= textinput:GetText() then
-		local current_tchat = gui.game_lobby.tchat:GetText()
-		gui.game_lobby.tchat:SetText(current_tchat .. "\n" .. gui.players[1].name .. " changed name to " .. textinput:GetText())
+		gui.game_lobby.SendMessage(textinput, gui.players[1].name .. " Nouveau nom => " .. textinput:GetText())
 		gui.players[1].name = textinput:GetText()
 		gui.game_lobby.RefreshList()
 	end
 end
 
 function gui.game_lobby.SendMessage(textinput, message)
+	message = gui.players[1].name .. ": " .. message
+	if gui.players[1].host then
+		reseau.host:broadcast(message)
+	else
+		local peer = reseau.client:get_peer(1)
+		peer:send(message)
+	end
+	gui.game_lobby.AddText(message)
+end
+
+function gui.game_lobby.AddText(text)
 	local current_text = gui.game_lobby.tchat:GetText()
-	gui.game_lobby.tchat:SetText(current_text .. "\n" .. gui.players[1].name .. ": " .. message)
-	textinput:SetText("")
+	gui.game_lobby.tchat:SetText(current_text .. "\n" .. text)
 end
 
 function gui.game_lobby.RefreshList()

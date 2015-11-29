@@ -66,6 +66,11 @@ function state.enter()
    game.bot = game.create_entity()
    gfx.init_entity(game.bot)
    physics.init_entity(game.bot)
+   
+   -- create stalker bot
+   game.stalker = game.create_entity()
+   gfx.init_entity(game.stalker)
+   physics.init_entity(game.stalker)
 end
 
 function state.update(dt)
@@ -90,6 +95,9 @@ function state.update(dt)
    x_bot = love.math.random(-deplacement_bot, deplacement_bot)
    y_bot = love.math.random(-deplacement_bot, deplacement_bot)
    game.bot:setForces(x_bot,y_bot)
+   
+   -- stalker bot
+   game.stalker:setForces(x,y)
    
    -- update physics
    physics.update(game.entities,dt)

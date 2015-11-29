@@ -5,25 +5,25 @@ local translateY = 0
 local zoom = 1.0
 local entity_count = 1
 
--- FIXME: brutal include modifying global namespace
--- FIXME: make a proper package out of this
-require("jeu/player")
+-- subsystems
+-- XXX: should not be required elsewhere
+-- FIXME: probably store some reference in the game table to prevent this
+local physics = require("jeu/subsystems/physics")
+local gfx = require("jeu/subsystems/gfx")
 
 -- our global game object, should contain all top level data
 -- to prevent global scope garbage
 -- FIXME: this should probably go in some other file at some point
-game = { map = nil,    -- sti map object
-         world = nil,   -- Box2D physics world
+game = { map = nil,     -- sti map object
          entities = {}, -- all existing game object
 }
 
-function game.network_event(event, data)
-
-end
-
+-- FIXME: move entity system to its own file
 function game.create_entity(name)
    local entity = {name = name or string.format("entity-%d",entity_count),
-                   id = entity_count}
+                   id = entity_count,
+                   -- commonly used data
+                   x = 0, y = 0}
    game.entities[entity_count] = entity
    print("Created entity "..entity.name)
    entity_count = entity_count + 1
@@ -34,12 +34,15 @@ function game.kill_entity(entity)
    game.entities[entity.id] = nil
 end
 
+-- in-game state callbacks
+
 function state.enter()
-   -- load our test map and init box2d physics world
+   -- init subsystems
+   gfx.init_system()
+   physics.init_system()
+   -- load our test map and link it to our physical world
    game.map = sti.new("assets/maps/sewers.lua",{"box2d"})
-   love.physics.setMeter(32) -- box2D meter in pixels
-   game.world = love.physics.newWorld(0,0)
-   game.map:box2d_init(game.world)
+   game.map:box2d_init(physics.world)
    -- add a custom sprite layer (see sprite.lua)
    game.map:addCustomLayer("SpriteLayer", #game.map.layers+1)
    local spriteLayer = game.map.layers["SpriteLayer"]
@@ -51,27 +54,16 @@ function state.enter()
 
    -- Draw callback for Custom Layer
    function spriteLayer:draw()
-      for _, entity in pairs(game.entities) do
-         local sprite = entity
-         if sprite.animation then
-            sprite.animation:draw(sprite.image,math.floor(sprite.x),
-                               math.floor(sprite.y), sprite.angle)
-         elseif sprite.image then
-            -- draw entity as a static sprite
-            love.graphics.draw(sprite.image, math.floor(sprite.x),
-                               math.floor(sprite.y), sprite.angle)
-         end
-      end
+      gfx.draw(game.entities)
    end
 
    -- create player
    game.player = game.create_entity()
-   init_player(game.player)
+   gfx.init_entity(game.player)
+   physics.init_entity(game.player)
 end
 
 function state.update(dt)
-   -- update physics world
-   game.world:update(dt)
    -- map test keys
    if love.keyboard.isDown("d") then translateX = translateX - 10 end
    if love.keyboard.isDown("q") then translateX = translateX + 10 end
@@ -85,11 +77,9 @@ function state.update(dt)
    if love.keyboard.isDown("down") then y = y + 4000 end
    if love.keyboard.isDown("left") then x = x - 4000 end
    if love.keyboard.isDown("right") then x = x + 4000 end
-   -- update player physics
-   local player = game.player
-   player.body:applyForce(x,y)
-   player.x,player.y = player.body:getWorldCenter()
-   game.map:update(dt)
+   game.player:setForces(x,y)
+   -- update physics
+   physics.update(game.entities,dt)
 end
 
 function state.draw()

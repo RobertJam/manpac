@@ -2,8 +2,6 @@
 -- is complete.
 -- this is the place for global configuration parameters
 
-
-
 -- love setup
 function love.conf(t)
    t.title = "ManPac"
@@ -12,3 +10,4 @@ function love.conf(t)
    -- force debug console display
    t.console = true
 end
+

@@ -20,6 +20,7 @@ function gui.main_menu.Load()
 	gui.players[1] = {
 		name = "Unknown",
 		role = "Ghost",
+		userid = 0,
 		ready = false,
 		ping = 0,
 		host = false

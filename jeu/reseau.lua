@@ -3,10 +3,16 @@ local reseau = {
 	clientListeners = {}
 }
 
+reseau.json = require('libs/json')
+
 function reseau.update(dt)
 	if reseau.host then
 		local host_event = reseau.host:service()
 		if host_event then
+			if host_event.type == "receive" then
+				local enc_data = tostring(host_event.data)
+				host_event.dec_data = reseau.json.decode(enc_data)
+			end
 			for i,callback in ipairs(reseau.hostListeners) do
 				callback(host_event)
 			end
@@ -16,11 +22,25 @@ function reseau.update(dt)
 	if reseau.client then
 		local client_event = reseau.client:service()
 		if client_event then
+			if client_event.type == "receive" then
+				local enc_data = tostring(client_event.data)
+				client_event.dec_data = reseau.json.decode(enc_data)
+			end
 			for i,callback in ipairs(reseau.clientListeners) do
 				callback(client_event)
 			end
 		end
 	end
+end
+
+function reseau.send(peer, data)
+	local enc_data = reseau.json.encode(data)
+	peer:send(enc_data)
+end
+
+function reseau.broadcast(data)
+	local enc_data = reseau.json.encode(data)
+	reseau.host:broadcast(enc_data)
 end
 
 function reseau.start_server(port)

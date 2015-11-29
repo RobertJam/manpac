@@ -6,6 +6,7 @@ local zoom = 1.0
 local entity_count = 1
 
 -- subsystems
+-- Add your system name here (filename in jeu/subsystems/ without extension)
 local system_names = {"physics",
                       "gfx",
                       "character",
@@ -100,6 +101,15 @@ function game.filter_entities(sys_name_list)
    return match_list
 end
 
+function game.find_spawn(team_name)
+   local teamSpawns = {}
+   for i=1,#game.spawns do
+      if game.spawns[i].team == team_name then
+         table.insert(teamSpawns,game.spawns[i])
+      end
+   end
+   return teamSpawns[math.random(1,#teamSpawns)]
+end
 
 -- in-game state callbacks
 
@@ -126,22 +136,68 @@ function state.enter(map_name,player,opponents)
    -- load our test map and link it to our physical world²
    game.map = sti.new(map_name,{"box2d"})
    game.map:box2d_init(systems.physics.world)
+   -- find special areas in the map
+   game.exits = {}
+   local exitLayer = game.map.layers["sorties"]
+   -- exitLayer.visible = false
+   -- exitLayer.properties.sensor = true
+   for i=1,#exitLayer.objects do
+      local mapExit = exitLayer.objects[i]
+      local exit = game.create_entity()
+      table.insert(game.exits,exit)
+   end
+   game.spawns = {}
+   local spawnLayer = game.map.layers["spawns"]
+   -- spawnLayer.visible = false
+   -- spawnLayer.collidable = true
+   for i=1,#spawnLayer.objects do
+      local mapSpawn = spawnLayer.objects[i]
+      -- mapSpawn.properties.sensor = true
+      local spawn = game.create_entity()
+      spawn.x,spawn.y = mapSpawn.x,mapSpawn.y
+      spawn.placeEntity = function (self,entity)
+         print("Spawn placing entity at "..self.x..";"..self.y)
+         entity:setPosition(self.x,self.y)
+      end
+      if mapSpawn.properties.spawn_team1 then
+         spawn.team = "team1"
+      else
+         spawn.team = "team2"
+      end
+      table.insert(game.spawns,spawn)
+   end
 
    -- create player controlled entity
+   local playerSpawn = game.spawns[math.random(1,#game.spawns)]
+   local playerTeam = playerSpawn.team
+   local opponentTeam = nil
+   if playerTeam == "team1" then
+      opponentTeam = "team2"
+   else
+      opponentTeam = "team1"
+   end
    game.player = game.create_entity(player.name)
    game.player:addSystems({"gfx","physics","input_controller","character"})
    game.player:addSystem(player.role)
-   -- -- create opponents entities
-   -- for name,data in pairs(opponents) do
-   --    entity = game.create_entity(name)
-   --    entity:addSystems({"gfx","physics"})
-   --    if data.controller == "ai" then
-   --       entity:addSystem("ai_controller")
-   --    else
-   --       entity:addSystem("network_controller")
-   --    end
-   --    entity:addSystem(data.role)
-   -- end
+   playerSpawn:placeEntity(game.player)
+   -- create opponents entities
+   for name,data in pairs(opponents) do
+      entity = game.create_entity(name)
+      entity:addSystems({"gfx","physics"})
+      if data.controller == "ai" then
+         entity:addSystem("ai_controller")
+      else
+         entity:addSystem("network_controller")
+      end
+      entity:addSystem(data.role)
+      local entitySpawn = nil
+      if data.role == player.role then -- same team as player
+         entitySpawn = game.find_spawn(playerTeam)
+      else
+         entitySpawn = game.find_spawn(opponentTeam)
+      end
+      entitySpawn:placeEntity(entity)
+   end
    -- create bot
    bot = game.create_entity()
    bot:addSystems({"gfx","physics",

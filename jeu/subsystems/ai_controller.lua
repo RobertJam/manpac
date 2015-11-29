@@ -14,9 +14,9 @@ function ai.update(entities,dt)
          local deplacement_bot = 1000
          x_bot = love.math.random(-deplacement_bot, deplacement_bot)
          y_bot = love.math.random(-deplacement_bot, deplacement_bot)
-         game.bot:setForces(x_bot,y_bot)
+         entity:setForces(x_bot,y_bot)
       elseif entity.behavior == "stalker" then
-         game.stalker:setForces(entity.target.x,entity.target.y)
+         entity:setForces(entity.target.x,entity.target.y)
       end
    end
 end

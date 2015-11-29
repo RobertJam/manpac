@@ -7,6 +7,9 @@ function gfx.init_entity(self)
    self.image = love.graphics.newImage("assets/sprites/player.tga")
    self.angle = 0
    self.animation = nil
+   self.setImage = function(self,filename)
+      self.image = love.graphics.newImage(filename)
+   end
 end
 
 function gfx.init_system()

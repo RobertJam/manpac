@@ -24,8 +24,9 @@ for i=1,#system_names do
 end
 
 -- game state data
-local game = { map = nil,     -- sti map object
-               entities = {}, -- all existing game object
+game = { map = nil,     -- sti map object
+         player = nil,  -- player controlled entity
+         entities = {}, -- all existing game object
 }
 
 -- FIXME: move entity system to its own file
@@ -38,11 +39,12 @@ function game.create_entity(name)
       name = name or string.format("entity-%d",entity_count),
       x = 0, y = 0
    }
-   entity.addSystem = function(self,sys_name)
+   entity.addSystem = function(self,sys_name,cfg)
       print("Adding system "..sys_name.." to entity "..self._id)
+      cfg = cfg or {}
       local sys = systems[sys_name]
       if sys.init_entity then
-         sys.init_entity(self)
+         sys.init_entity(self,cfg)
       end
       self._systems[sys_name] = true
    end
@@ -60,7 +62,17 @@ function game.create_entity(name)
    end
    entity.addSystems = function(self,sys_name_list)
       for i=1,#sys_name_list do
-         self:addSystem(sys_name_list[i])
+         local sys_desc = sys_name_list[i]
+         local sys_name = nil
+         local sys_cfg = nil
+         if type(sys_desc) == "table" then
+            sys_name = sys_desc[1]
+            sys_cfg = sys_desc[2]
+         else
+            sys_name = sys_desc
+            sys_cfg = {}
+         end
+         self:addSystem(sys_name,sys_desc)
       end
    end
    game.entities[entity_count] = entity
@@ -94,14 +106,17 @@ end
 function state.enter(map_name,player,opponents)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
-   player = player or {name = "Jean-Jacques",
+   player = player or {name = "player",
                        role = "hunter"}
    opponents = {
       {name = nil,
+       controller = "network",
        role = "ghost"},
-      {name = nil,
+      {name = "stupid_bot",
+       controller = "ai",
        role = "hunter"},
-      {name = nil,
+      {name = "stalker_bot",
+       controller = "ai",
        role = "hunter"},
    }
    -- init subsystems
@@ -129,11 +144,13 @@ function state.enter(map_name,player,opponents)
    -- end
    -- create bot
    bot = game.create_entity()
-   bot:addSystems({"gfx","physics","ai_controller"})
-   bot.behavior = "stupid"
+   bot:addSystems({"gfx","physics",
+                   {"ai_controller",{behavior = "stupid"}}})
    -- create stalker bot
    bot = game.create_entity()
-   bot:addSystems({"gfx","physics","ai_controller"})
+   bot:addSystems({"gfx","physics",
+                   {"ai_controller",{behavior = "stalker",
+                                     target = game.player}}})
    bot.target = game.player
 end
 

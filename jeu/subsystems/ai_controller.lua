@@ -2,9 +2,9 @@
 
 local ai = {}
 
-function ai.init_entity(self)
-   self.behavior = "stalker"
-   self.target = nil
+function ai.init_entity(self,cfg)
+   self.behavior = cfg.behavior or "stalker"
+   self.target = cfg.target or game.player
 end
 
 function ai.update(entities,dt)

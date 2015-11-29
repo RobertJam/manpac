@@ -3,11 +3,11 @@
 
 local input = {}
 
-function input.init_entity(self,keymap)
-   self.keymap = keymap or {move_left = "left",
-                            move_right = "right",
-                            move_up = "up",
-                            move_down = "down"}
+function input.init_entity(self,cfg)
+   self.keymap = cfg.keymap or {move_left = "left",
+                                move_right = "right",
+                                move_up = "up",
+                                move_down = "down"}
 end
 
 function input.update(entities)

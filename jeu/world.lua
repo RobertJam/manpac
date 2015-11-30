@@ -50,17 +50,17 @@ function world.create(map_name)
    -- find special areas in the map
    world.exits = {}
    local exitLayer = world.map.layers["sorties"]
-   -- exitLayer.visible = false
-   -- exitLayer.properties.sensor = true
-   for i=1,#exitLayer.objects do
-      local mapExit = exitLayer.objects[i]
-      local exit = game.create_entity()
-      table.insert(world.exits,exit)
-   end
+   exitLayer.visible = false
+   local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
+   local exit = game.create_entity()
+   exit:addSystem("gfx",{image = "assets/maps/sortie.png",
+                         offsetX = 0,
+                         offsetY = 0})
+   exit.x,exit.y = mapExit.x,mapExit.y
+   table.insert(world.exits,exit)
    world.spawns = {}
    local spawnLayer = world.map.layers["spawns"]
-   -- spawnLayer.visible = false
-   -- spawnLayer.collidable = true
+   spawnLayer.visible = false
    for i=1,#spawnLayer.objects do
       local mapSpawn = spawnLayer.objects[i]
       -- mapSpawn.properties.sensor = true

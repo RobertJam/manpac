@@ -24,7 +24,7 @@ end
 
 -- entity initialisation
 function physics.init_entity(self, cfg)
-   self.body = love.physics.newBody(physics.world, self.x/2,self.y/2, cfg.body_type or "dynamic")
+   self.body = love.physics.newBody(physics.world, self.x,self.y, cfg.body_type or "dynamic")
    self.body:setLinearDamping(30)
    self.body:setFixedRotation(true)
    self.shape = nil

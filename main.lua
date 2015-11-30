@@ -6,6 +6,7 @@ reseau = require("jeu/reseau")
 
 -- load stuff
 function love.load()
+   math.randomseed(os.time())
    gs.switch("jeu/start")
 end
 

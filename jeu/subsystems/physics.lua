@@ -24,20 +24,20 @@ end
 
 -- entity initialisation
 function physics.init_entity(self, cfg)
-
-   -- self.chain = cfg.chain or love.physics.newRectangleShape(600, 64,100, 100)
-   -- self.sensor = cfg.chain or self.shape:setSensor( false )
-
-   -- physics related data
-   -- this may depend on other subsystems (requires (x;y) coordinates from base entity
-   self.body = love.physics.newBody(physics.world, self.x/2,self.y/2, "dynamic")
+   self.body = love.physics.newBody(physics.world, self.x/2,self.y/2, cfg.body_type or "dynamic")
    self.body:setLinearDamping(30)
    self.body:setFixedRotation(true)
-   self.shape = love.physics.newRectangleShape(47, 32,27, 32)
+   self.shape = nil
+   if cfg.vertices then
+      self.shape = love.physics.newChainShape(cfg.vertices,true)
+   else
+      self.shape = love.physics.newRectangleShape(47, 32,27, 32)
+   end
    self.fixture = love.physics.newFixture(self.body, self.shape)
    self.fixture:setRestitution(3)
    self.fixture:setUserData(self)
    self.fixture:getMask( )
+   self.fixture:setSensor(cfg.sensor or false)
    self.forceX = 0
    self.forceY = 0
    -- add setForces() method

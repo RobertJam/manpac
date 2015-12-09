@@ -33,6 +33,11 @@ function reseau.update(dt)
 	end
 end
 
+function reseau.disconnect_peer(peer_index)
+	local peer = reseau.host:get_peer(peer_index)
+	peer:disconnect()
+end
+
 function reseau.send(peer, data)
 	local enc_data = reseau.json.encode(data)
 	peer:send(enc_data)
@@ -75,9 +80,12 @@ function reseau.close()
 end
 
 function reseau.dispatch(event)
+	print("Dispatch from: " .. tostring(event.peer:index()))
+	print("Data: " .. tostring(event.data))
 	for i=1, reseau.host:peer_count() do
 		local peer = reseau.host:get_peer(i)
-		if peer:index() ~= event.peer:index() then
+		if peer:state() == "connected" and peer:index() ~= event.peer:index() then
+			print("SendTo: " .. tostring(peer:index()))
 			peer:send(event.data)
 		end
 	end
@@ -93,12 +101,22 @@ function reseau.addClientListener(listener)
 	return table.getn(reseau.clientListeners)
 end
 
-function reseau.removeHostListener(id)
-	table.remove(reseau.hostListeners, id)
+function reseau.removeHostListener(listener)
+	for i,callback in ipairs(reseau.hostListeners) do
+		if callback == listener then
+			table.remove(reseau.hostListeners, i)
+			return
+		end
+	end
 end
 
-function reseau.removeClientListener(id)
-	table.remove(reseau.clientListeners, id)
+function reseau.removeClientListener(listener)
+	for i,callback in ipairs(reseau.clientListeners) do
+		if callback == listener then
+			table.remove(reseau.clientListeners, i)
+			return
+		end
+	end
 end
 
 return reseau

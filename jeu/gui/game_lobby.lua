@@ -87,16 +87,43 @@ function gui.game_lobby.Load()
 	gui.game_lobby.RefreshList()
 end
 
+function gui.game_lobby.getPlayerIndex(peer_index)
+	for i,player in ipairs(gui.players) do
+		if gui.players[i].userid == peer_index then
+			return i
+		end
+	end
+	return -1
+end
+
 function gui.game_lobby.hostListener(event)
 	if event.type == "connect" then
 		gui.game_lobby.newPlayer(event.peer)
+	elseif event.type == "disconnect" then
+		gui.game_lobby.disconnectedPlayer(event.peer:index())
 	elseif event.type == "receive" then
-		print(tostring(event.data))
 		if event.dec_data and event.dec_data.action ~= "synchronize" then
 			reseau.dispatch(event)
 		end
 		gui.game_lobby.receiveData(event.dec_data)
 	end
+end
+
+function gui.game_lobby.disconnectedPlayer(peer_index)
+	local player_index = gui.game_lobby.getPlayerIndex(peer_index)
+	gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
+	reseau.disconnect_peer(peer_index)
+
+	local data_object = {
+		action = "disconnect_player",
+		player_id = peer_index
+	}
+	gui.game_lobby.SendData(data_object)gui.game_lobby.removePlayer(player_index)
+end
+
+function gui.game_lobby.removePlayer(player_index)
+	table.remove(gui.players, player_index)
+	gui.game_lobby.RefreshList()
 end
 
 function gui.game_lobby.newPlayer(peer)
@@ -147,7 +174,10 @@ function gui.game_lobby.receiveData(data_object)
 			gui.game_lobby.AddText(data_object.oldname .. " has changed name to " .. data_object.newname)
 		elseif data_object.action == "init_id" then
 			gui.players[1].userid = data_object.value
-			print("newid: " .. gui.players[1].userid)
+		elseif data_object.action == "disconnect_player" then
+			local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
+			gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
+			gui.game_lobby.removePlayer(player_index)
 		elseif data_object.action == "synchronize" then
 			if gui.players[1].host then
 				for i,player in ipairs(gui.players) do
@@ -157,12 +187,9 @@ function gui.game_lobby.receiveData(data_object)
 				end
 				gui.game_lobby.synchronize()
 			else
-				local me = gui.players[1]
-				print("MyID: " .. me.userid)
-				while table.getn(gui.players) > 0 do
+				while table.getn(gui.players) > 1 do
 					table.remove(gui.players)
 				end
-				gui.players[1] = me
 				for i,player in ipairs(data_object.players) do
 					if data_object.players[i].userid ~= gui.players[1].userid then
 						table.insert(gui.players, data_object.players[i])
@@ -181,6 +208,8 @@ function gui.game_lobby.GetReady()
 end
 
 function gui.game_lobby.LeaveLobby()
+	reseau.removeClientListener(gui.game_lobby.clientListener)
+	reseau.removeHostListener(gui.game_lobby.hostListener)
 	reseau.close()
 	gui.game_lobby.panel:Remove()
 	gui.main_menu.Load()

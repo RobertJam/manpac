@@ -25,6 +25,11 @@ function love.draw()
    gs.draw()
 end
 
+-- fermeture de la fenetre
+function love.quit()
+	reseau.close()
+end
+
 function love.mousepressed(x, y, button)
    gs.mousepressed(x, y, button)
 end

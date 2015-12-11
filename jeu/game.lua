@@ -107,7 +107,7 @@ function state.enter(map_name,player,opponents)
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
                        role = "hunter"}
-   opponents = {
+   opponents = opponents or {
       {name = nil,
        controller = "network",
        role = "ghost"},
@@ -139,8 +139,8 @@ function state.enter(map_name,player,opponents)
    game.player:addSystem(player.role)
    player_spawn:placeEntity(game.player)
    -- create opponents entities
-   for name,data in pairs(opponents) do
-      entity = game.create_entity(name)
+   for i,data in ipairs(opponents) do
+      entity = game.create_entity(data.name)
       entity:addSystems({{"gfx",{image = "assets/sprites/crabe.png",
                                  scale = 0.1}},
             "physics"})

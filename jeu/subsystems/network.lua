@@ -2,7 +2,6 @@
 
 local network = {
    entities = {},    -- network_id -> entity table for all network controlled entities
-   network_id = -1,  -- game instance network id
 }
 
 function network.init_system()
@@ -20,6 +19,7 @@ end
 
 function network.init_entity(self,cfg)
    self.network_id = cfg.network_id
+   self.network_update = cfg.update or true
    network.entities[self.network_id] = self
 end
 
@@ -60,8 +60,12 @@ function network.SendData(data_object, peer)
 end
 
 function network.receiveData(msg)
-   if msg.action == "entity_update" then
+   if msg.action == "entity_position" then
       local ent = network.entities[msg.network_id]
+      if not ent then
+         print("Unable to find network entity",msg.network_id)
+         return
+      end
       ent:setPosition(msg.x,msg.y)
    else
       print("Unhandled network message received:",msg.action)
@@ -72,8 +76,8 @@ function network.send_state(entities)
    if network.network_id == -1 then return end
    for ent,_ in pairs(entities) do
       -- send entity state update to others
-      local entData = {action = "entity_update",
-                       network_id = network.network_id,
+      local entData = {action = "entity_position",
+                       network_id = self.network_id,
                        x = ent.x,
                        y = ent.y,}
       network.sendData(entData)

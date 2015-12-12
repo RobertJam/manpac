@@ -274,15 +274,21 @@ function gui.game_lobby.Launch()
 
    map_name = "assets/maps/sewers.lua"
 
+   -- FIXME: this is for test, all opponents are ai on the server
+   -- FIXME: at the end we should add AI for real ai players on server
+   -- FIXME: and they"ll be seen as network controlled entities on the clients
+   -- FIXME: also we need to make sure to generate a unique userid even for AI
+   -- FIXME: this means host actually have multiple user ids
+   -- FIXME: actually we probably need just a game instance id (peer id)
+   -- FIXME: and another entity id to keep the whole world in sync
+   -- FIXME: we need to consider barriers and maybe destructible objects etc
+   -- FIXME: this probably means entities need to be created by the network
    local player_cfg = {
       role = string.lower(gui.players[1].role),
       network_id = gui.players[1].userid,
       name = gui.players[1].name,
    }
 
-   -- FIXME: this is for test, all opponents are ai on the server
-   -- FIXME: at the end we should add AI for real ai players on server
-   -- FIXME: and they"ll be seen as network controlled entities on the clients
    opponents = {}
    for i=2,#gui.players do
       local opp = {role = string.lower(gui.players[i].role),

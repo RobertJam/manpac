@@ -85,17 +85,25 @@ function game.kill_entity(entity)
    game.entities[entity._id] = nil
 end
 
-function game.filter_entities(sys_name_list)
+function game.filter_entities(filter)
+   if type(filter) == "table" then
+      filter_func = function(ent)
+         for i=1,#filter do
+            if not entity:hasSystem(filter[i]) then
+               return false
+            end
+         end
+         return true
+      end
+   elseif type(filter) == "function" then
+      filter_func = filter
+   else
+      print("Invalid entity filter",filter)
+      return {}
+   end
    local match_list = {}
    for _,entity in pairs(game.entities) do
-      local isMatch = true
-      for i=1,#sys_name_list do
-         if not entity:hasSystem(sys_name_list[i]) then
-            isMatch = false
-            break
-         end
-      end
-      if isMatch then table.insert(match_list,entity) end
+      if filter_func(entity) then table.insert(match_list,entity) end
    end
    return match_list
 end
@@ -126,7 +134,6 @@ function state.enter(map_name,player,opponents)
    for _,sys in pairs(systems) do
       if sys.init_system then sys.init_system() end
    end
-   systems.network.network_id = player.network_id
    -- initialize game world
    game.world = game_world.create(map_name)
    -- create player controlled entity
@@ -142,6 +149,7 @@ function state.enter(map_name,player,opponents)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
                            "physics","input_controller","character"})
    game.player:addSystem(player.role)
+   game.player:addSystem("network",player)
    player_spawn:placeEntity(game.player)
    -- create opponents entities
    for i,data in ipairs(opponents) do
@@ -151,7 +159,7 @@ function state.enter(map_name,player,opponents)
             "physics"})
       if data.controller == "ai" then
          entity:addSystem("ai_controller",data.ai)
-      else
+      end
          entity:addSystem("network",data.network)
       end
       entity:addSystem(data.role)

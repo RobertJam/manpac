@@ -13,7 +13,7 @@ end
 
 -- update a frame
 function love.update(dt)
-   lovebird.update()
+   --lovebird.update()
    gs.update(dt)
    reseau.update()
    timer.update()
@@ -29,7 +29,7 @@ end
 
 -- fermeture de la fenetre
 function love.quit()
-	reseau.close()
+   reseau.close()
 end
 
 function love.mousepressed(x, y, button)

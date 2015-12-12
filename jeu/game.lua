@@ -8,10 +8,10 @@ local system_names = {"physics",
                       "gfx",
                       "character",
                       "input_controller",
-                      "network_controller",
                       "ai_controller",
                       "ghost",
-                      "hunter"}
+                      "hunter",
+                      "network",}
 systems = {} -- loaded systems references
 
 for i=1,#system_names do
@@ -106,15 +106,19 @@ function state.enter(map_name,player,opponents)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
-                       role = "hunter"}
+                       role = "hunter",
+                       network_id = -1}
    opponents = opponents or {
       {name = nil,
-       controller = "network",
+       controller = "ai",
+       ai = {behavior = "stupid"},
        role = "ghost"},
       {name = "stupid_bot",
+       ai = {behavior = "stupid"},
        controller = "ai",
        role = "ghost"},
       {name = "stalker_bot",
+       ai = {behavior = "stalker"},
        controller = "ai",
        role = "ghost"},
    }
@@ -122,6 +126,7 @@ function state.enter(map_name,player,opponents)
    for _,sys in pairs(systems) do
       if sys.init_system then sys.init_system() end
    end
+   systems.network.network_id = player.network_id
    -- initialize game world
    game.world = game_world.create(map_name)
    -- create player controlled entity
@@ -145,9 +150,9 @@ function state.enter(map_name,player,opponents)
                                  scale = 0.1}},
             "physics"})
       if data.controller == "ai" then
-         entity:addSystem("ai_controller")
+         entity:addSystem("ai_controller",data.ai)
       else
-         entity:addSystem("network_controller")
+         entity:addSystem("network",data.network)
       end
       entity:addSystem(data.role)
       local entitySpawn = nil
@@ -158,16 +163,6 @@ function state.enter(map_name,player,opponents)
       end
       entitySpawn:placeEntity(entity)
    end
-   -- create bot
-   bot = game.create_entity()
-   bot:addSystems({"gfx","physics",
-                   {"ai_controller",{behavior = "stupid"}}})
-   -- create stalker bot
-   bot = game.create_entity()
-   bot:addSystems({"gfx","physics",
-                   {"ai_controller",{behavior = "stalker",
-                                     target = game.player}}})
-   bot.target = game.player
 end
 
 function state.update(dt)
@@ -187,8 +182,10 @@ function state.update(dt)
    -- update character controllers
    systems.ai_controller.update(game.filter_entities({"ai_controller"}),dt)
    systems.input_controller.update(game.filter_entities({"input_controller"}))
-   systems.network_controller.update(game.filter_entities({"network_controller"}))
    systems.character.update(game.filter_entities({"character"}))
+   -- send locally controlled entities state to server
+   systems.network.send_state(game.filter_entities({"input_controller",
+                                                    "ai_controller"}))
 end
 
 function state.draw()
@@ -209,7 +206,7 @@ function state.draw()
 end
 
 function state.leave()
-	-- exit subsystems
+   -- exit subsystems
    for _,sys in pairs(systems) do
       if sys.exit_system then sys.exit_system() end
    end

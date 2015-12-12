@@ -1,7 +1,7 @@
 -- gamestate management
 
-states = {current = nil,
-          current_name = nil}
+local states = {current = nil,
+                current_name = nil}
 
 function states.switch(name,...)
    if states.current and states.current.leave then

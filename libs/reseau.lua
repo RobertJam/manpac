@@ -3,6 +3,7 @@ local reseau = {
 	clientListeners = {}
 }
 
+require('enet')
 reseau.json = require('libs/json')
 
 function reseau.update(dt)
@@ -22,6 +23,7 @@ function reseau.update(dt)
 	if reseau.client then
 		local client_event = reseau.client:service()
 		if client_event then
+			local notify_client = true
 			if client_event.type == "receive" then
 				local enc_data = tostring(client_event.data)
 				client_event.dec_data = reseau.json.decode(enc_data)
@@ -31,6 +33,11 @@ function reseau.update(dt)
 			end
 		end
 	end
+end
+
+function reseau.disconnect_peer(peer_index)
+	local peer = reseau.host:get_peer(peer_index)
+	peer:disconnect()
 end
 
 function reseau.send(peer, data)
@@ -44,7 +51,8 @@ function reseau.broadcast(data)
 end
 
 function reseau.start_server(port)
-	reseau.host = enet.host_create("*:950")
+	reseau.host = enet.host_create("*:" .. port)
+	reseau.timer = love.timer.getTime()
 end
 
 function reseau.connect(host, port)
@@ -77,7 +85,7 @@ end
 function reseau.dispatch(event)
 	for i=1, reseau.host:peer_count() do
 		local peer = reseau.host:get_peer(i)
-		if peer:index() ~= event.peer:index() then
+		if peer:state() == "connected" and peer:index() ~= event.peer:index() then
 			peer:send(event.data)
 		end
 	end
@@ -93,12 +101,22 @@ function reseau.addClientListener(listener)
 	return table.getn(reseau.clientListeners)
 end
 
-function reseau.removeHostListener(id)
-	table.remove(reseau.hostListeners, id)
+function reseau.removeHostListener(listener)
+	for i,callback in ipairs(reseau.hostListeners) do
+		if callback == listener then
+			table.remove(reseau.hostListeners, i)
+			return
+		end
+	end
 end
 
-function reseau.removeClientListener(id)
-	table.remove(reseau.clientListeners, id)
+function reseau.removeClientListener(listener)
+	for i,callback in ipairs(reseau.clientListeners) do
+		if callback == listener then
+			table.remove(reseau.clientListeners, i)
+			return
+		end
+	end
 end
 
 return reseau

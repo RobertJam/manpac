@@ -19,8 +19,9 @@ function gui.main_menu.Load()
 	
 	gui.players[1] = {
 		name = "Unknown",
-		role = "Ghost",
+		role = "Hunter",
 		userid = 0,
+		controller = "network",
 		ready = false,
 		ping = 0,
 		host = false

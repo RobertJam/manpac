@@ -1,7 +1,7 @@
 local state = {}
 
 function state.enter()
-	local gui = require("jeu.gui.main_menu")
+	gui = require("jeu.gui.main_menu")
 	gui.main_menu.Load()
 end
 

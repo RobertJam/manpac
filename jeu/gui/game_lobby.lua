@@ -1,5 +1,4 @@
 local gui = require("jeu.gui.main_menu")
-require('enet')
 
 gui.game_lobby = {}
 
@@ -64,11 +63,16 @@ function gui.game_lobby.Load()
 	textinput:SetSize(380, 30)
 	textinput.OnEnter = gui.game_lobby.SendMessage
 
-	local ready_button = loveframes.Create("button", gui.game_lobby.panel)
-	ready_button:SetSize(150, 30)
-	ready_button:SetPos(645, 505)
-	ready_button:SetText("Ready")
-	ready_button.OnClick = gui.game_lobby.GetReady
+	gui.game_lobby.ready_button = loveframes.Create("button", gui.game_lobby.panel)
+	gui.game_lobby.ready_button:SetSize(150, 30)
+	gui.game_lobby.ready_button:SetPos(645, 505)
+	gui.game_lobby.ready_button.OnClick = gui.game_lobby.GetReady
+	if gui.players[1].host then
+		gui.game_lobby.ready_button:SetEnabled(false)
+		gui.game_lobby.ready_button:SetText("Launch Game")
+	else
+		gui.game_lobby.ready_button:SetText("Ready")
+	end
 
 	local leave_button = loveframes.Create("button", gui.game_lobby.panel)
 	leave_button:SetSize(150, 30)
@@ -77,9 +81,13 @@ function gui.game_lobby.Load()
 	leave_button.OnClick = gui.game_lobby.LeaveLobby
 
 	if gui.players[1].host then
+		gui.players[1].ready = true
 		reseau.addHostListener(gui.game_lobby.hostListener)
 		reseau.start_server(950)
 		gui.game_lobby.AddText("Server started on port 950")
+		timer.addListener(gui.game_lobby.SendPings, 2000)
+		timer.addListener(gui.game_lobby.RefreshPings, 2000)
+		timer.wait(gui.game_lobby.RefreshPings, 1000)
 	else
 		reseau.addClientListener(gui.game_lobby.clientListener)
 		gui.game_lobby.AddText("Connected to " .. reseau.hostname)
@@ -87,15 +95,56 @@ function gui.game_lobby.Load()
 	gui.game_lobby.RefreshList()
 end
 
+function gui.game_lobby.SendPings()
+	gui.game_lobby.pingTime = love.timer.getTime()
+	gui.game_lobby.SendData({action = "ping"})
+end
+
+function gui.game_lobby.RefreshPings()
+	gui.game_lobby.RefreshList()
+	gui.game_lobby.synchronize()
+end
+
+function gui.game_lobby.getPlayerIndex(peer_index)
+	for i,player in ipairs(gui.players) do
+		if gui.players[i].userid == peer_index then
+			return i
+		end
+	end
+	return -1
+end
+
 function gui.game_lobby.hostListener(event)
 	if event.type == "connect" then
 		gui.game_lobby.newPlayer(event.peer)
+	elseif event.type == "disconnect" then
+		gui.game_lobby.disconnectedPlayer(event.peer:index())
 	elseif event.type == "receive" then
-		print(tostring(event.data))
-		if event.dec_data and event.dec_data.action ~= "synchronize" then
+		if event.dec_data and event.dec_data.action ~= "synchronize" and event.dec_data.action ~= "pong" then
 			reseau.dispatch(event)
 		end
 		gui.game_lobby.receiveData(event.dec_data)
+	end
+end
+
+function gui.game_lobby.disconnectedPlayer(peer_index)
+	local player_index = gui.game_lobby.getPlayerIndex(peer_index)
+	gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
+	reseau.disconnect_peer(peer_index)
+
+	local data_object = {
+		action = "disconnect_player",
+		player_id = peer_index
+	}
+	gui.game_lobby.SendData(data_object)gui.game_lobby.removePlayer(player_index)
+end
+
+function gui.game_lobby.removePlayer(player_index)
+	table.remove(gui.players, player_index)
+	gui.game_lobby.RefreshList()
+	
+	if table.getn(gui.players) <= 1 then
+		gui.game_lobby.ready_button:SetEnabled(false)
 	end
 end
 
@@ -118,6 +167,8 @@ function gui.game_lobby.newPlayer(peer)
 	}
 	table.insert(gui.players, new_player)
 	
+	gui.game_lobby.ready_button:SetEnabled(true)
+	
 	gui.game_lobby.synchronize()
 	gui.game_lobby.RefreshList()
 end
@@ -134,7 +185,6 @@ end
 
 function gui.game_lobby.clientListener(event)
 	if event.type == "receive" then
-		print(tostring(event.data))
 		gui.game_lobby.receiveData(event.dec_data)
 	end
 end
@@ -147,7 +197,10 @@ function gui.game_lobby.receiveData(data_object)
 			gui.game_lobby.AddText(data_object.oldname .. " has changed name to " .. data_object.newname)
 		elseif data_object.action == "init_id" then
 			gui.players[1].userid = data_object.value
-			print("newid: " .. gui.players[1].userid)
+		elseif data_object.action == "disconnect_player" then
+			local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
+			gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
+			gui.game_lobby.removePlayer(player_index)
 		elseif data_object.action == "synchronize" then
 			if gui.players[1].host then
 				for i,player in ipairs(gui.players) do
@@ -157,30 +210,91 @@ function gui.game_lobby.receiveData(data_object)
 				end
 				gui.game_lobby.synchronize()
 			else
-				local me = gui.players[1]
-				print("MyID: " .. me.userid)
-				while table.getn(gui.players) > 0 do
+				while table.getn(gui.players) > 1 do
 					table.remove(gui.players)
 				end
-				gui.players[1] = me
 				for i,player in ipairs(data_object.players) do
 					if data_object.players[i].userid ~= gui.players[1].userid then
 						table.insert(gui.players, data_object.players[i])
+					else
+						gui.players[1].ping = data_object.players[i].ping
 					end
 				end
 			end
 			gui.game_lobby.RefreshList()
+		elseif data_object.action == "ping" then
+			local data_object = { action = "pong",
+								  player_id = gui.players[1].userid
+			}
+			gui.game_lobby.SendData(data_object)
+		elseif data_object.action == "pong" then
+			local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
+			gui.players[player_index].ping = math.floor((love.timer.getTime() - gui.game_lobby.pingTime) * 1000)
+		elseif data_object.action == "launch" then
+			gui.game_lobby.Launch()
 		end
 	end
 end
 
-function gui.game_lobby.GetReady()
-	gui.players[1].ready = not gui.players[1].ready
-	gui.game_lobby.RefreshList()
-	gui.game_lobby.synchronize()
+function gui.game_lobby.GetReady(ready_button)
+	if gui.players[1].host then
+		gui.game_lobby.Launch()
+	else
+		gui.players[1].ready = not gui.players[1].ready
+		gui.game_lobby.RefreshList()
+		gui.game_lobby.synchronize()
+		if gui.players[1].ready then
+			ready_button:SetText("Not Ready")
+		else
+			ready_button:SetText("Ready")
+		end
+	end
+end
+
+function gui.game_lobby.Launch()
+	if gui.players[1].host then
+		for i,player in ipairs(gui.players) do
+			if not player.ready then
+				gui.game_lobby.AddText("All players are not ready...")
+				return
+			end
+		end
+	end
+
+	if gui.players[1].host then
+		local data_object = {action = "launch"}
+		gui.game_lobby.SendData(data_object)
+	end
+
+	timer.removeListener(gui.game_lobby.SendPings)
+	timer.removeListener(gui.game_lobby.RefreshPings)
+	reseau.removeClientListener(gui.game_lobby.clientListener)
+	reseau.removeHostListener(gui.game_lobby.hostListener)
+
+	map_name = "assets/maps/sewers.lua"
+
+	gui.players[1].ready = nil
+	gui.players[1].role = string.lower(gui.players[1].role)
+	player = gui.players[1]
+
+	opponents = {}
+	for i,player in ipairs(gui.players) do
+		if i > 1 then
+			gui.players[i].ready = nil
+			gui.players[i].role = string.lower(gui.players[i].role)
+			table.insert(opponents, gui.players[i])
+		end
+	end
+
+	gui.game_lobby.panel:Remove()
+	gs.switch("jeu/game", map_name, player, opponents)
 end
 
 function gui.game_lobby.LeaveLobby()
+	timer.removeListener(gui.game_lobby.SendPings)
+	timer.removeListener(gui.game_lobby.RefreshPings)
+	reseau.removeClientListener(gui.game_lobby.clientListener)
+	reseau.removeHostListener(gui.game_lobby.hostListener)
 	reseau.close()
 	gui.game_lobby.panel:Remove()
 	gui.main_menu.Load()
@@ -227,7 +341,7 @@ end
 
 function gui.game_lobby.RefreshList()
 	gui.game_lobby.list:Clear()
-	
+
 	for i, player in ipairs(gui.players) do
 		gui.game_lobby.list:AddRow(player.name, player.role, player.ready, player.ping)
 	end

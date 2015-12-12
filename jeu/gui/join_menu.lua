@@ -49,7 +49,7 @@ end
 
 function gui.join_menu.Connect(connect_button)
 	local remote_host = gui.join_menu.hostinput:GetText()
-	gui.join_menu.listenerid = reseau.addClientListener(gui.join_menu.clientListener)
+	reseau.addClientListener(gui.join_menu.clientListener)
 	reseau.connect(remote_host, 950)
 	connect_button:SetEnabled(false)
 end
@@ -58,7 +58,7 @@ function gui.join_menu.clientListener(event)
 	if event.type == "connect" then
 		gui.join_menu.panel:Remove()
 		gui.game_lobby.Load()
-		reseau.removeClientListener(gui.join_menu.listenerid)
+		reseau.removeClientListener(gui.join_menu.clientListener)
 	end
 end
 

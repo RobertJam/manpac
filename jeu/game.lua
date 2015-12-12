@@ -208,6 +208,13 @@ function state.draw()
    love.graphics.pop()
 end
 
+function state.leave()
+	-- exit subsystems
+   for _,sys in pairs(systems) do
+      if sys.exit_system then sys.exit_system() end
+   end
+end
+
 function state.mousepressed(x, y, button)
 end
 

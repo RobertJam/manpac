@@ -60,6 +60,12 @@ function game.create_entity(name)
    entity.hasSystem = function(self,sys_name)
       return self._systems[sys_name]
    end
+   entity.hasSystems = function(self,sys_name_list)
+      for i=1,#sys_name_list do
+         if not self:hasSystem(sys_name_list[i]) then return false end
+      end
+      return true
+   end
    entity.addSystems = function(self,sys_name_list)
       for i=1,#sys_name_list do
          local sys_desc = sys_name_list[i]
@@ -86,14 +92,10 @@ function game.kill_entity(entity)
 end
 
 function game.filter_entities(filter)
+   local filter_func
    if type(filter) == "table" then
       filter_func = function(ent)
-         for i=1,#filter do
-            if not entity:hasSystem(filter[i]) then
-               return false
-            end
-         end
-         return true
+         return ent:hasSystems(filter)
       end
    elseif type(filter) == "function" then
       filter_func = filter
@@ -103,7 +105,9 @@ function game.filter_entities(filter)
    end
    local match_list = {}
    for _,entity in pairs(game.entities) do
-      if filter_func(entity) then table.insert(match_list,entity) end
+      if filter_func(entity) then
+         table.insert(match_list,entity)
+      end
    end
    return match_list
 end
@@ -159,7 +163,7 @@ function state.enter(map_name,player,opponents)
             "physics"})
       if data.controller == "ai" then
          entity:addSystem("ai_controller",data.ai)
-      end
+      else
          entity:addSystem("network",data.network)
       end
       entity:addSystem(data.role)

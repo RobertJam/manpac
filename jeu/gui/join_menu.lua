@@ -50,7 +50,7 @@ end
 function gui.join_menu.Connect(connect_button)
 	local remote_host = gui.join_menu.hostinput:GetText()
 	reseau.addClientListener(gui.join_menu.clientListener)
-	reseau.connect(remote_host, 950)
+	reseau.connect(remote_host, manpac.port)
 	connect_button:SetEnabled(false)
 end
 

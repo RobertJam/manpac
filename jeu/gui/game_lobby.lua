@@ -83,8 +83,8 @@ function gui.game_lobby.Load()
         if gui.players[1].host then
                 gui.players[1].ready = true
                 reseau.addHostListener(gui.game_lobby.hostListener)
-                reseau.start_server(950)
-                gui.game_lobby.AddText("Server started on port 950")
+                reseau.start_server(manpac.port)
+                gui.game_lobby.AddText("Server started on port 9500")
                 timer.addListener(gui.game_lobby.SendPings, 2000)
                 timer.addListener(gui.game_lobby.RefreshPings, 2000)
                 timer.wait(gui.game_lobby.RefreshPings, 1000)

@@ -11,3 +11,4 @@ function love.conf(t)
    t.console = true
 end
 
+manpac = {port = 9500}

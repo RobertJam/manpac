@@ -31,7 +31,7 @@ function physics.init_entity(self, cfg)
    if cfg.vertices then
       self.shape = love.physics.newChainShape(cfg.vertices,true)
    else
-      self.shape = love.physics.newRectangleShape(47, 32,27, 32)
+      self.shape = love.physics.newRectangleShape(27, 32)
    end
    self.fixture = love.physics.newFixture(self.body, self.shape)
    self.fixture:setRestitution(3)
@@ -56,7 +56,9 @@ function physics.update(entities,dt)
    -- update all entities, assumes they're all physic entities
    for _,entity in pairs(entities) do
       entity.body:applyForce(entity.forceX,entity.forceY)
-      entity.x,entity.y = entity.body:getWorldCenter()
+      -- print("Entity",entity.name,"position before physics is",entity.x,entity.y)
+      entity.x,entity.y = entity.body:getPosition()
+      -- print("Entity",entity.name,"position after physics is",entity.x,entity.y)
    end
 end
 

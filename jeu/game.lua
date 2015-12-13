@@ -152,7 +152,8 @@ function state.enter(map_name,player,opponents)
    end
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
-                           "physics","input_controller","character"})
+         "physics",
+         "input_controller","character"})
    game.player:addSystem(player.role)
    -- FIXME: need two components ?
    game.player.network_id = player.network_id

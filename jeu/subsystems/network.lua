@@ -21,7 +21,7 @@ function network.init_entity(self,cfg)
    for k,v in pairs(cfg) do
       print(k,v)
    end
-   print("Initializing network entity",self._id,cfg.network_id)
+   print("Initializing network entity",self.name,cfg.network_id)
    self.network_id = cfg.network_id
    self.network_update = cfg.update or true
    network.entities[self.network_id] = self
@@ -67,9 +67,10 @@ function network.receiveData(msg)
    if msg.action == "entity_position" then
       local ent = network.entities[msg.network_id]
       if not ent then
-         print("Unable to find network entity",msg.network_id)
+         -- print("Unable to find network entity",msg.network_id)
          return
       end
+      -- print("Received position of",ent.name,ent.network_id,msg.x,msg.y)
       ent:setPosition(msg.x,msg.y)
    else
       print("Unhandled network message received:",msg.action)
@@ -83,6 +84,7 @@ function network.send_state(entities)
                        network_id = ent.network_id,
                        x = ent.x,
                        y = ent.y,}
+      -- print("Sending position of",ent.name,ent.x,ent.y)
       network.sendData(entData)
    end
 end

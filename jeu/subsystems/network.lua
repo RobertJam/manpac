@@ -18,6 +18,10 @@ function network.exit_system()
 end
 
 function network.init_entity(self,cfg)
+   for k,v in pairs(cfg) do
+      print(k,v)
+   end
+   print("Initializing network entity",self._id,cfg.network_id)
    self.network_id = cfg.network_id
    self.network_update = cfg.update or true
    network.entities[self.network_id] = self
@@ -46,7 +50,7 @@ function network.clientListener(event)
    end
 end
 
-function network.SendData(data_object, peer)
+function network.sendData(data_object, peer)
    if peer then
       reseau.send(peer, data_object)
    else
@@ -73,11 +77,10 @@ function network.receiveData(msg)
 end
 
 function network.send_state(entities)
-   if network.network_id == -1 then return end
-   for ent,_ in pairs(entities) do
+   for _,ent in pairs(entities) do
       -- send entity state update to others
       local entData = {action = "entity_position",
-                       network_id = self.network_id,
+                       network_id = ent.network_id,
                        x = ent.x,
                        y = ent.y,}
       network.sendData(entData)

@@ -274,12 +274,7 @@ function gui.game_lobby.Launch()
 
    map_name = "assets/maps/sewers.lua"
 
-   -- FIXME: this is for test, all opponents are ai on the server
-   -- FIXME: at the end we should add AI for real ai players on server
-   -- FIXME: and they"ll be seen as network controlled entities on the clients
-   -- FIXME: also we need to make sure to generate a unique userid even for AI
-   -- FIXME: this means host actually have multiple user ids
-   -- FIXME: actually we probably need just a game instance id (peer id)
+   -- FIXME: we probably need just a game instance id (peer id)
    -- FIXME: and another entity id to keep the whole world in sync
    -- FIXME: we need to consider barriers and maybe destructible objects etc
    -- FIXME: this probably means entities need to be created by the network
@@ -288,23 +283,25 @@ function gui.game_lobby.Launch()
       network_id = gui.players[1].userid,
       name = gui.players[1].name,
    }
-
-   opponents = {}
+   -- create an opponent entity for each other player in the game
+   -- FIXME: handle AI on server here
+   local opponents_cfg = {}
    for i=2,#gui.players do
       local opp = {role = string.lower(gui.players[i].role),
                    name = gui.players[i].name,}
-      if not ishost then
+      -- if not ishost then
          opp.controller = "network"
          opp.network = {network_id = gui.players[i].userid}
-      else
-         opp.controller = "ai"
-         opp.ai = {behavior = "stalker"}
-      end
-      table.insert(opponents,opp)
+      -- end
+      -- else
+      --    opp.controller = "ai"
+      --    opp.ai = {behavior = "stalker"}
+      -- end
+      table.insert(opponents_cfg,opp)
    end
 
    gui.game_lobby.panel:Remove()
-   gs.switch("jeu/game",map_name, player, opponents)
+   gs.switch("jeu/game",map_name, player_cfg, opponents_cfg)
 end
 
 function gui.game_lobby.LeaveLobby()

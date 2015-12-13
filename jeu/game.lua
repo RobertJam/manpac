@@ -29,6 +29,8 @@ game = { world = nil,     -- our game world (map/environment)
 }
 
 -- FIXME: move entity system to its own file
+-- FIXME: this filter_entities thing is not efficient at all
+-- FIXME: but we need some profiling to be sure of hat
 function game.create_entity(name)
    local entity = {
       -- internal management
@@ -116,10 +118,9 @@ end
 
 function state.enter(map_name,player,opponents)
    -- default debug values
-   map_name = map_name or "assets/maps/sewers.lua"
+   map_name = map_name or "assets/maps/sewersbkup.lua"
    player = player or {name = "player",
-                       role = "hunter",
-                       network_id = -1}
+                       role = "hunter"}
    opponents = opponents or {
       {name = nil,
        controller = "ai",
@@ -153,7 +154,9 @@ function state.enter(map_name,player,opponents)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
                            "physics","input_controller","character"})
    game.player:addSystem(player.role)
-   game.player:addSystem("network",player)
+   -- FIXME: need two components ?
+   game.player.network_id = player.network_id
+   -- game.player:addSystem("network",player)
    player_spawn:placeEntity(game.player)
    -- create opponents entities
    for i,data in ipairs(opponents) do
@@ -196,8 +199,8 @@ function state.update(dt)
    systems.input_controller.update(game.filter_entities({"input_controller"}))
    systems.character.update(game.filter_entities({"character"}))
    -- send locally controlled entities state to server
-   systems.network.send_state(game.filter_entities({"input_controller",
-                                                    "ai_controller"}))
+   systems.network.send_state(game.filter_entities({"input_controller"}))
+   systems.network.send_state(game.filter_entities({"ai_controller"}))
 end
 
 function state.draw()

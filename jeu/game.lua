@@ -199,8 +199,11 @@ function state.update(dt)
    systems.input_controller.update(game.filter_entities({"input_controller"}))
    systems.character.update(game.filter_entities({"character"}))
    -- send locally controlled entities state to server
-   systems.network.send_state(game.filter_entities({"input_controller"}))
-   systems.network.send_state(game.filter_entities({"ai_controller"}))
+   -- FIXME: if block for quickstart to work
+   if game.player.network_id then
+      systems.network.send_state(game.filter_entities({"input_controller"}))
+      systems.network.send_state(game.filter_entities({"ai_controller"}))
+   end
 end
 
 function state.draw()

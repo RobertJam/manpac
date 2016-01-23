@@ -231,7 +231,7 @@ function gui.game_lobby.receiveData(data_object)
                         local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
                         gui.players[player_index].ping = math.floor((love.timer.getTime() - gui.game_lobby.pingTime) * 1000)
                 elseif data_object.action == "launch" then
-                        gui.game_lobby.Launch()
+                        gui.game_lobby.Launch(data_object)
                 end
         end
 end
@@ -283,23 +283,31 @@ function gui.game_lobby.Launch()
       network_id = gui.players[1].userid,
       name = gui.players[1].name,
    }
-   -- create an opponent entity for each other player in the game
-   -- FIXME: handle AI on server here
-   local opponents_cfg = {}
-   for i=2,#gui.players do
-      local opp = {role = string.lower(gui.players[i].role),
-                   name = gui.players[i].name,}
-      -- if not ishost then
-         opp.controller = "network"
-         opp.network = {network_id = gui.players[i].userid}
-      -- end
-      -- else
-      --    opp.controller = "ai"
-      --    opp.ai = {behavior = "stalker"}
-      -- end
-      table.insert(opponents_cfg,opp)
-   end
 
+   if data_object then
+      -- for i=1,#data_object.entities do
+         -- local opp = {data_object.entities[i].role,
+					   -- name = gui.players[i].name,}
+      -- end
+   else
+	   -- create an opponent entity for each other player in the game
+	   -- FIXME: handle AI on server here
+	   local opponents_cfg = {}
+	   for i=2,#gui.players do
+		  local opp = {role = string.lower(gui.players[i].role),
+					   name = gui.players[i].name,}
+		  -- if not ishost then
+			 opp.controller = "network"
+			 opp.network = {network_id = gui.players[i].userid}
+		  -- end
+		  -- else
+		  --    opp.controller = "ai"
+		  --    opp.ai = {behavior = "stalker"}
+		  -- end
+		  table.insert(opponents_cfg,opp)
+	   end
+   end
+   
    gui.game_lobby.panel:Remove()
    gs.switch("jeu/game",map_name, player_cfg, opponents_cfg)
 end

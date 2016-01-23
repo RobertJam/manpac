@@ -26,6 +26,7 @@ function reseau.update(dt)
          local notify_client = true
          if client_event.type == "receive" then
             local enc_data = tostring(client_event.data)
+            print(enc_data)
             client_event.dec_data = reseau.json.decode(enc_data)
          end
          for i,callback in ipairs(reseau.clientListeners) do

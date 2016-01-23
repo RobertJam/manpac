@@ -35,8 +35,8 @@ function network.StartGame()
       for i=1,#exit_list do
          table.insert(all_exit, {x = exit_list[i].x,
                                  y = exit_list[i].y,
-                                 width = exit_list[i].shape.width,
-                                 height = exit_list[i].shape.height})
+                                 width = exit_list[i].shape_width,
+                                 height = exit_list[i].shape_height})
       end
       
 		local data_object = {action = "launch",

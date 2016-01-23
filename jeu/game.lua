@@ -182,7 +182,7 @@ function state.enter(map_name,player,opponents,host_cfg)
          local net_entities = host_cfg.entities
          for i=1,#net_entities do
             local net_ent = net_entities[i]
-            local ent = network.find_entity(net_ent.network_id)
+            local ent = systems.network.find_entity(net_ent.network_id)
             -- FIXME this need to change if player is a normal network entity
             if net_ent.network_id == game.player.network_id then
                game.player:setPosition(net_ent.x,net_ent.y)

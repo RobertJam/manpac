@@ -283,7 +283,8 @@ function gui.game_lobby.Launch()
       network_id = gui.players[1].userid,
       name = gui.players[1].name,
    }
-
+   
+   local opponents_cfg = {}
    if data_object then
       -- for i=1,#data_object.entities do
          -- local opp = {data_object.entities[i].role,
@@ -292,7 +293,7 @@ function gui.game_lobby.Launch()
    else
 	   -- create an opponent entity for each other player in the game
 	   -- FIXME: handle AI on server here
-	   local opponents_cfg = {}
+
 	   for i=2,#gui.players do
 		  local opp = {role = string.lower(gui.players[i].role),
 					   name = gui.players[i].name,}

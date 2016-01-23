@@ -1,16 +1,6 @@
 local sti = require("libs/sti")
 local world = {}
 
-function world.randomSpawn(self,team_name)
-   local teamSpawns = {}
-   for i=1,#self.spawns do
-      if self.spawns[i].team == team_name then
-         table.insert(teamSpawns,self.spawns[i])
-      end
-   end
-   return teamSpawns[math.random(1,#teamSpawns)]
-end
-
 function world.draw(self)
    local windowWidth  = love.graphics.getWidth()
    local windowHeight = love.graphics.getHeight()
@@ -35,8 +25,6 @@ end
 
 function world.create(map_name)
    local world = {map = nil,
-                  spawns = nil,
-                  exits = nil,
                   -- camera position
                   posX = 0,posY = 0,
                   -- methods
@@ -48,7 +36,6 @@ function world.create(map_name)
    world.map = sti.new(map_name,{"box2d"})
    world.map:box2d_init(systems.physics.world)
    -- find special areas in the map
-   world.exits = {}
    local exitLayer = world.map.layers["sorties"]
    exitLayer.visible = false
    local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
@@ -56,27 +43,25 @@ function world.create(map_name)
    exit:addSystem("gfx",{image = "assets/maps/sortie.png",
                          offsetX = 0,
                          offsetY = 0})
-   exit.x,exit.y = mapExit.x,mapExit.y
-   table.insert(world.exits,exit)
+   exit:addSystem("physics",{width = exit.width,
+                             height = exit.height})
+   exit:addSystem("exit",{x = mapExit.x,
+                          y = mapExit.y})
+   -- FIXME: exit should be selected on server only
    world.spawns = {}
-   local spawnLayer = world.map.layers["spawns"]
-   spawnLayer.visible = false
-   for i=1,#spawnLayer.objects do
-      local mapSpawn = spawnLayer.objects[i]
-      -- mapSpawn.properties.sensor = true
-      local spawn = game.create_entity()
-      spawn.x,spawn.y = mapSpawn.x,mapSpawn.y
-      spawn.placeEntity = function (self,entity)
-         print("Spawn placing entity at "..self.x..";"..self.y)
-         entity:setPosition(self.x,self.y)
+   local registerSpawns = function(layer_name,team_name)
+      local spawnLayer = world.map.layers[layer_name]
+      spawnLayer.visible = false
+      for i=1,#spawnLayer.objects do
+         local mapSpawn = spawnLayer.objects[i]
+         local spawn = game.create_entity()
+         spawn:addSystem("spawn",{x = mapSpawn.x,
+                                  y = mapSpawn.y,
+                                  team = team_name})
       end
-      if mapSpawn.properties.spawn_team1 then
-         spawn.team = "team1"
-      else
-         spawn.team = "team2"
-      end
-      table.insert(world.spawns,spawn)
    end
+   registerSpawns("spawns_hunter","hunter")
+   registerSpawns("spawns_ghost","ghost")
    return world
 end
 

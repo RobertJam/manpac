@@ -35,22 +35,36 @@ function world.create(map_name)
    -- load our test map and link it to our physical world²
    world.map = sti.new(map_name,{"box2d"})
    world.map:box2d_init(systems.physics.world)
-   -- find special areas in the map
-   local exitLayer = world.map.layers["sorties"]
-   exitLayer.visible = false
-   local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
+   return world
+end
+
+local function _make_exit(x,y,width,height)
    local exit = game.create_entity()
    exit:addSystem("gfx",{image = "assets/maps/sortie.png",
                          offsetX = 0,
                          offsetY = 0})
-   exit:addSystem("physics",{width = exit.width,
-                             height = exit.height})
-   exit:addSystem("exit",{x = mapExit.x,
-                          y = mapExit.y})
-   -- FIXME: exit should be selected on server only
-   world.spawns = {}
+   exit:addSystem("physics",{width = width,
+                             height = height})
+   exit:addSystem("exit",{x = x,
+                          y = y})
+   return exit
+end
+
+function world.create_exits(w)
+   -- find special areas in the map
+   local exitLayer = w.map.layers["sorties"]
+   exitLayer.visible = false
+   local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
+   _make_exit(mapExit.x,mapExit.y,mapExit.width,mapExit.height)
+end
+
+function world.clone_exit(ex)
+   _make_exit(ex.x,ex.y,ex.shape.width,ex.shape.height)
+end
+
+function world.create_spawns(w)
    local registerSpawns = function(layer_name,team_name)
-      local spawnLayer = world.map.layers[layer_name]
+      local spawnLayer = w.map.layers[layer_name]
       spawnLayer.visible = false
       for i=1,#spawnLayer.objects do
          local mapSpawn = spawnLayer.objects[i]
@@ -62,7 +76,17 @@ function world.create(map_name)
    end
    registerSpawns("spawns_hunter","hunter")
    registerSpawns("spawns_ghost","ghost")
-   return world
+end
+
+function world.place_entities(entities)
+   for i=1,#entities do
+      local ent = entities[i]
+      local role = "hunter"
+      if ent:hasSystem("ghost") then role = "ghost" end
+      print("Placing role"..role)
+      local entity_spawn = systems.spawn.random(role)
+      entity_spawn:placeEntity(ent)
+   end
 end
 
 return world

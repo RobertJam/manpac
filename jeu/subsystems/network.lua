@@ -120,4 +120,9 @@ function network.send_state(entities)
    end
 end
 
+-- FIXME: should be changed if we remove network.entities list
+function network.find_entity(network_id)
+   return network.entities[network_id]
+end
+
 return network

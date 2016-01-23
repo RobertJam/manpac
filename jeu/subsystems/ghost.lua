@@ -1,7 +1,9 @@
 local ghost = {}
 
 function ghost.init_entity(self)
-   self.nbarriers = 3
+   self.hello = function()
+      print("HELLO GHOST!!!")
+   end
 end
 
 function ghost.init_system()

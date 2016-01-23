@@ -18,7 +18,16 @@ for i=1,#system_names do
    local sys_name = system_names[i]
    local pkg_name = "jeu/subsystems/"..sys_name
    package.loaded[pkg_name] = nil
-   systems[sys_name] = require(pkg_name)
+   local sys = require(pkg_name)
+   systems[sys_name] = sys
+   sys._entities = {}
+   sys.getEntities = function()
+      local res = {}
+      for k,_ in pairs(sys._entities) do
+         table.insert(res,k)
+      end
+      return res
+   end
 end
 
 -- game state data
@@ -52,6 +61,7 @@ function game.create_entity(name)
          sys.init_entity(self,cfg)
       end
       self._systems[sys_name] = true
+      sys._entities[self] =true
    end
    entity.removeSystem = function(self,sys_name)
       if self._systems[sys_name] == true then
@@ -60,17 +70,18 @@ function game.create_entity(name)
             sys.release_entity(self)
          end
          self._systems[sys_name] = nil
+         sys._entities[self] = nil
       end
    end
    entity.hasSystem = function(self,sys_name)
       return self._systems[sys_name]
    end
-   entity.hasSystems = function(self,sys_name_list)
-      for i=1,#sys_name_list do
-         if not self:hasSystem(sys_name_list[i]) then return false end
-      end
-      return true
-   end
+   -- entity.hasSystems = function(self,sys_name_list)
+   --    for i=1,#sys_name_list do
+   --       if not self:hasSystem(sys_name_list[i]) then return false end
+   --    end
+   --    return true
+   -- end
    entity.addSystems = function(self,sys_name_list)
       for i=1,#sys_name_list do
          local sys_desc = sys_name_list[i]
@@ -96,26 +107,26 @@ function game.kill_entity(entity)
    game.entities[entity._id] = nil
 end
 
-function game.filter_entities(filter)
-   local filter_func
-   if type(filter) == "table" then
-      filter_func = function(ent)
-         return ent:hasSystems(filter)
-      end
-   elseif type(filter) == "function" then
-      filter_func = filter
-   else
-      print("Invalid entity filter",filter)
-      return {}
-   end
-   local match_list = {}
-   for _,entity in pairs(game.entities) do
-      if filter_func(entity) then
-         table.insert(match_list,entity)
-      end
-   end
-   return match_list
-end
+-- function game.filter_entities(filter)
+--    local filter_func
+--    if type(filter) == "table" then
+--       filter_func = function(ent)
+--          return ent:hasSystems(filter)
+--       end
+--    elseif type(filter) == "function" then
+--       filter_func = filter
+--    else
+--       print("Invalid entity filter",filter)
+--       return {}
+--    end
+--    local match_list = {}
+--    for _,entity in pairs(game.entities) do
+--       if filter_func(entity) then
+--          table.insert(match_list,entity)
+--       end
+--    end
+--    return match_list
+-- end
 
 -- in-game state callbacks
 
@@ -186,16 +197,16 @@ function state.update(dt)
       game.world:setCenter(game.player.x,game.player.y)
    end
    -- update physics
-   systems.physics.update(game.filter_entities({"physics"}),dt)
+   systems.physics.update(systems.physics:getEntities(),dt)
    -- update character controllers
-   systems.ai_controller.update(game.filter_entities({"ai_controller"}),dt)
-   systems.input_controller.update(game.filter_entities({"input_controller"}))
-   systems.character.update(game.filter_entities({"character"}))
+   systems.ai_controller.update(systems.ai_controller:getEntities(),dt)
+   systems.input_controller.update(systems.input_controller:getEntities())
+   systems.character.update(systems.character:getEntities())
    -- send locally controlled entities state to server
    -- FIXME: if block for quickstart to work
    if game.player.network_id then
-      systems.network.send_state(game.filter_entities({"input_controller"}))
-      systems.network.send_state(game.filter_entities({"ai_controller"}))
+      systems.network.send_state(systems.input_controller:getEntities())
+      systems.network.send_state(systems.ai_controller:getEntities())
    end
 end
 
@@ -206,9 +217,9 @@ function state.draw()
    -- draw world
    game.world:draw()
    -- draw our graphic objects
-   systems.gfx.draw(game.filter_entities({"gfx"}))
+   systems.gfx.draw(systems.gfx:getEntities())
    -- draw our physical entities
-   for _,entity in pairs(game.filter_entities({"physics"})) do
+   for _,entity in pairs(systems.physics:getEntities()) do
       love.graphics.setColor(255, 0, 0, 255)
       love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
    end

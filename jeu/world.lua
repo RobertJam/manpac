@@ -31,7 +31,11 @@ function world.create(map_name)
                   draw = world.draw,
                   scroll = world.scroll,
                   setCenter = world.setCenter,
-                  randomSpawn = world.randomSpawn}
+                  randomSpawn = world.randomSpawn,
+                  createExits = world.createExits,
+                  createSpawns = world.createSpawns,
+                  placeEntities = world.placeEntities,
+                  cloneExit = world.cloneExit}
    -- load our test map and link it to our physical world²
    world.map = sti.new(map_name,{"box2d"})
    world.map:box2d_init(systems.physics.world)
@@ -50,21 +54,21 @@ local function _make_exit(x,y,width,height)
    return exit
 end
 
-function world.create_exits(w)
+function world.createExits(self)
    -- find special areas in the map
-   local exitLayer = w.map.layers["sorties"]
+   local exitLayer = self.map.layers["sorties"]
    exitLayer.visible = false
    local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
    _make_exit(mapExit.x,mapExit.y,mapExit.width,mapExit.height)
 end
 
-function world.clone_exit(ex)
+function world.cloneExit(self,ex)
    _make_exit(ex.x,ex.y,ex.shape.width,ex.shape.height)
 end
 
-function world.create_spawns(w)
+function world.createSpawns(self)
    local registerSpawns = function(layer_name,team_name)
-      local spawnLayer = w.map.layers[layer_name]
+      local spawnLayer = self.map.layers[layer_name]
       spawnLayer.visible = false
       for i=1,#spawnLayer.objects do
          local mapSpawn = spawnLayer.objects[i]
@@ -78,7 +82,7 @@ function world.create_spawns(w)
    registerSpawns("spawns_ghost","ghost")
 end
 
-function world.place_entities(entities)
+function world.placeEntities(self,entities)
    for i=1,#entities do
       local ent = entities[i]
       local role = "hunter"

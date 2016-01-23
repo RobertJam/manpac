@@ -56,6 +56,8 @@ function world.create(map_name)
    exit:addSystem("gfx",{image = "assets/maps/sortie.png",
                          offsetX = 0,
                          offsetY = 0})
+   exit:addSystem("physics",{width = exit.width,
+                             height = exit.height})
    exit.x,exit.y = mapExit.x,mapExit.y
    table.insert(world.exits,exit)
    world.spawns = {}
@@ -64,6 +66,7 @@ function world.create(map_name)
    for i=1,#spawnLayer.objects do
       local mapSpawn = spawnLayer.objects[i]
       -- mapSpawn.properties.sensor = true
+      -- FIXME: create a spawn component maybe ?
       local spawn = game.create_entity()
       spawn.x,spawn.y = mapSpawn.x,mapSpawn.y
       spawn.placeEntity = function (self,entity)

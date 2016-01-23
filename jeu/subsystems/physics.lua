@@ -31,7 +31,9 @@ function physics.init_entity(self, cfg)
    if cfg.vertices then
       self.shape = love.physics.newChainShape(cfg.vertices,true)
    else
-      self.shape = love.physics.newRectangleShape(27, 32)
+      width = cfg.width or 10
+      height = cfg.height or 10
+      self.shape = love.physics.newRectangleShape(width,height)
    end
    self.fixture = love.physics.newFixture(self.body, self.shape)
    self.fixture:setRestitution(3)

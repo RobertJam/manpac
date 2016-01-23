@@ -152,7 +152,7 @@ function state.enter(map_name,player,opponents)
    end
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
-         "physics",
+         {"physics",{width = 27,height = 32}},
          "input_controller","character"})
    game.player:addSystem(player.role)
    -- FIXME: need two components ?
@@ -164,7 +164,7 @@ function state.enter(map_name,player,opponents)
       entity = game.create_entity(data.name)
       entity:addSystems({{"gfx",{image = "assets/sprites/crabe.png",
                                  scale = 0.1}},
-            "physics"})
+            {"physics",{width = 27,height = 32}}})
       if data.controller == "ai" then
          entity:addSystem("ai_controller",data.ai)
       else

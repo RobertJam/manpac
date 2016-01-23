@@ -92,8 +92,9 @@ function game.create_entity(name)
    entity.sendMessage = function(self,msg,...)
       for sys_name,_ in pairs(self._systems) do
          local sys = systems[sys_name]
-         if sys[msg] then
-            sys.msg(...)
+         print("Sending message "..msg.." to "..sys_name)
+         if type(sys[msg]) == 'function' then
+            sys[msg](self,...)
          end
       end
    end

@@ -1,12 +1,13 @@
 local ghost = {}
 
 function ghost.init_entity(self)
-   self.hello = function()
-      print("HELLO GHOST!!!")
-   end
 end
 
 function ghost.init_system()
+end
+
+function ghost.enter_collision(self,other)
+   print("Ghost colliding")
 end
 
 return ghost

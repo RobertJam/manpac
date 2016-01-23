@@ -18,9 +18,23 @@ end
 function physics.begin_contact(a,b,coll)
    local user_a = a:getUserData()
    local user_b = b:getUserData()
-   -- if game.is_entity(user_a
+   if game.is_entity(user_a) then
+      user_a:sendMessage("enter_collision",user_b)
+   end
+   if game.is_entity(user_b) then
+      user_b:sendMessage("enter_collision",user_a)
+   end
 end
+
 function physics.end_contact(a,b,coll)
+   local user_a = a:getUserData()
+   local user_b = b:getUserData()
+   if game.is_entity(user_a) then
+      user_a:sendMessage("exit_collision",user_b)
+   end
+   if game.is_entity(user_b) then
+      user_b:sendMessage("exit_collision",user_a)
+   end
 end
 
 -- entity initialisation

@@ -48,7 +48,8 @@ local function _make_exit(x,y,width,height)
                          offsetX = 0,
                          offsetY = 0})
    exit:addSystem("physics",{width = width,
-                             height = height})
+                             height = height,
+                             sensor = true})
    exit:addSystem("exit",{x = x,
                           y = y})
    return exit

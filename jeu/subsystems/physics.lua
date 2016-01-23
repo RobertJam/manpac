@@ -36,7 +36,7 @@ function physics.init_entity(self, cfg)
       self.shape = love.physics.newRectangleShape(width,height)
    end
    self.fixture = love.physics.newFixture(self.body, self.shape)
-   self.fixture:setRestitution(3)
+   self.fixture:setRestitution(0.1)
    self.fixture:setUserData(self)
    self.fixture:getMask( )
    self.fixture:setSensor(cfg.sensor or false)

@@ -8,9 +8,8 @@ local system_names = {"physics",
                       "character",
                       "input_controller",
                       "ai_controller",
-                      "ghost",
-                      "hunter",
                       "network",
+                      "ghost","hunter",
                       "spawn","exit",}
 systems = {} -- loaded systems references
 
@@ -76,12 +75,6 @@ function game.create_entity(name)
    entity.hasSystem = function(self,sys_name)
       return self._systems[sys_name]
    end
-   -- entity.hasSystems = function(self,sys_name_list)
-   --    for i=1,#sys_name_list do
-   --       if not self:hasSystem(sys_name_list[i]) then return false end
-   --    end
-   --    return true
-   -- end
    entity.addSystems = function(self,sys_name_list)
       for i=1,#sys_name_list do
          local sys_desc = sys_name_list[i]
@@ -97,6 +90,14 @@ function game.create_entity(name)
          self:addSystem(sys_name,sys_cfg)
       end
    end
+   entity.sendMessage = function(self,msg,...)
+      for sys_name,_ in pairs(self._systems) do
+         local sys = systems[sys_name]
+         if sys[msg] then
+            sys.msg(...)
+         end
+      end
+   end
    game.entities[game.entity_count] = entity
    print("Created entity "..entity._id)
    game.entity_count = game.entity_count + 1
@@ -110,27 +111,6 @@ end
 function game.kill_entity(entity)
    game.entities[entity._id] = nil
 end
-
--- function game.filter_entities(filter)
---    local filter_func
---    if type(filter) == "table" then
---       filter_func = function(ent)
---          return ent:hasSystems(filter)
---       end
---    elseif type(filter) == "function" then
---       filter_func = filter
---    else
---       print("Invalid entity filter",filter)
---       return {}
---    end
---    local match_list = {}
---    for _,entity in pairs(game.entities) do
---       if filter_func(entity) then
---          table.insert(match_list,entity)
---       end
---    end
---    return match_list
--- end
 
 -- in-game state callbacks
 
@@ -164,7 +144,8 @@ function state.enter(map_name,player,opponents)
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
          {"physics",{width = 27,height = 32}},
-         "input_controller","character"})
+         "input_controller",
+         "character"})
    game.player:addSystem(player.role)
    -- FIXME: need two components ?
    game.player.network_id = player.network_id
@@ -185,6 +166,7 @@ function state.enter(map_name,player,opponents)
       local entitySpawn = nil
       entitySpawn = systems.spawn.random(data.role)
       entitySpawn:placeEntity(entity)
+      entity:sendMessage("hello")
    end
    if game.player.network_id then
       systems.network.StartGame()

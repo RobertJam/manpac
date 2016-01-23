@@ -63,7 +63,7 @@ function world.createExits(self)
 end
 
 function world.cloneExit(self,ex)
-   _make_exit(ex.x,ex.y,ex.shape.width,ex.shape.height)
+   _make_exit(ex.x,ex.y,ex.width,ex.height)
 end
 
 function world.createSpawns(self)

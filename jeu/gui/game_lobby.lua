@@ -262,10 +262,10 @@ function gui.game_lobby.Launch()
       end
    end
 
-   if ishost then
-      local data_object = {action = "launch"}
-      gui.game_lobby.SendData(data_object)
-   end
+   -- if ishost then
+      -- local data_object = {action = "launch"}
+      -- gui.game_lobby.SendData(data_object)
+   -- end
 
    timer.removeListener(gui.game_lobby.SendPings)
    timer.removeListener(gui.game_lobby.RefreshPings)

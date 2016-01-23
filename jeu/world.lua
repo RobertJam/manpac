@@ -50,9 +50,9 @@ local function _make_exit(x,y,width,height)
    return exit
 end
 
-function world.create_exits()
+function world.create_exits(w)
    -- find special areas in the map
-   local exitLayer = world.map.layers["sorties"]
+   local exitLayer = w.map.layers["sorties"]
    exitLayer.visible = false
    local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
    _make_exit(mapExit.x,mapExit.y,mapExit.width,mapExit.height)
@@ -62,9 +62,9 @@ function world.clone_exit(ex)
    _make_exit(ex.x,ex.y,ex.shape.width,ex.shape.height)
 end
 
-function world.create_spawns()
+function world.create_spawns(w)
    local registerSpawns = function(layer_name,team_name)
-      local spawnLayer = world.map.layers[layer_name]
+      local spawnLayer = w.map.layers[layer_name]
       spawnLayer.visible = false
       for i=1,#spawnLayer.objects do
          local mapSpawn = spawnLayer.objects[i]
@@ -78,15 +78,12 @@ function world.create_spawns()
    registerSpawns("spawns_ghost","ghost")
 end
 
-function world.place_entities(player,opponents)
-   local player_spawn = systems.spawn.random(player.role)
-   player_spawn:placeEntity(game.player)
-   for i=1,#opponents do
-      local ent = opponents[i]
+function world.place_entities(entities)
+   for i=1,#entities do
+      local ent = entities[i]
       local role = "hunter"
-      if ent:hasSystem("ghost") then
-         role = "ghost"
-      end
+      if ent:hasSystem("ghost") then role = "ghost" end
+      print("Placing role"..role)
       local entity_spawn = systems.spawn.random(role)
       entity_spawn:placeEntity(ent)
    end

@@ -166,15 +166,16 @@ function state.enter(map_name,player,opponents,host_cfg)
          -- generate spawns and exit
          -- place entities at spawn points
          -- launch clients
-         world.create_exits()
-         world.create_spawns()
-         world.place_entities(game.player,game.opponents)
+         game_world.create_exits(game.world)
+         game_world.create_spawns(game.world)
+         game_world.place_entities({game.player})
+         game_world.place_entities(game.opponents)
          systems.network.StartGame()
       else
          -- configure spawns and exits from host_cfg
          for i=1,#host_cfg.exits do
             local exit = host_cfg.exits[i]
-            world.clone_exit(exit)
+            game_world.clone_exit(exit)
          end
          -- place entities from server config
          local net_entities = host_cfg.entities
@@ -192,7 +193,10 @@ function state.enter(map_name,player,opponents,host_cfg)
    else
       -- quick start mode, create spawn and exits locally
       -- and place everybody
-      world.place_entities(game.player,game.opponents)
+      game_world.create_exits(game.world)
+      game_world.create_spawns(game.world)
+      game_world.place_entities({game.player})
+      game_world.place_entities(game.opponents)
    end
 end
 

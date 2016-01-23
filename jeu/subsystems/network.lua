@@ -13,7 +13,12 @@ function network.init_system()
 end
 
 function network.StartGame()
-	
+	if reseau.host then
+		local data_object = {action = "launch",
+							 host_entity = game.player,
+							 entities = network.entities}
+		gui.game_lobby.SendData(data_object)
+	elseif reseau.client then
 end
 
 function network.exit_system()

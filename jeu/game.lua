@@ -103,6 +103,10 @@ function game.create_entity(name)
    return entity
 end
 
+function game.is_entity(obj)
+   if obj['_id'] then return true else return nil end
+end
+
 function game.kill_entity(entity)
    game.entities[entity._id] = nil
 end

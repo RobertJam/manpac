@@ -67,6 +67,7 @@ function physics.init_entity(self, cfg)
    end
    self.setPosition = function(self,x,y)
       self.body:setPosition(x,y)
+      self.x , self.y = self.body:getPosition()
    end
 end
 

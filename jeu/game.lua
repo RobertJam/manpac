@@ -186,7 +186,9 @@ function state.enter(map_name,player,opponents)
       entitySpawn = systems.spawn.random(data.role)
       entitySpawn:placeEntity(entity)
    end
-   systems.network.StartGame()
+   if game.player.network_id then
+      systems.network.StartGame()
+   end
 end
 
 function state.update(dt)

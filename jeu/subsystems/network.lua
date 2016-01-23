@@ -16,9 +16,10 @@ function network.StartGame()
 	if reseau.host then
 		local data_object = {action = "launch",
 							 host_entity = game.player,
-							 entities = network.entities}
+							 entities = network:getEntities(),
+							 exit = systems.exit:getEntities()}
 		gui.game_lobby.SendData(data_object)
-	elseif reseau.client then
+	end
 end
 
 function network.exit_system()

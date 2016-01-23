@@ -1,5 +1,4 @@
 local state = {}
-local all_teams = {"team1","team2"}
 local game_world = require("jeu/world")
 
 -- subsystems
@@ -11,7 +10,8 @@ local system_names = {"physics",
                       "ai_controller",
                       "ghost",
                       "hunter",
-                      "network",}
+                      "network",
+                      "spawn","exit",}
 systems = {} -- loaded systems references
 
 for i=1,#system_names do
@@ -45,6 +45,9 @@ function game.create_entity(name)
       cfg = cfg or {}
       print(cfg)
       local sys = systems[sys_name]
+      if not sys then
+         print("Non existing system "..sys_name)
+      end
       if sys.init_entity then
          sys.init_entity(self,cfg)
       end
@@ -142,14 +145,7 @@ function state.enter(map_name,player,opponents)
    -- initialize game world
    game.world = game_world.create(map_name)
    -- create player controlled entity
-   local player_team = all_teams[math.random(1,#all_teams)]
-   local player_spawn = game.world:randomSpawn(player_team)
-   local opponent_team = nil
-   if player_team == "team1" then
-      opponent_team = "team2"
-   else
-      opponent_team = "team1"
-   end
+   local player_spawn = spawn.random(player.role)
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
          {"physics",{width = 27,height = 32}},
@@ -172,11 +168,7 @@ function state.enter(map_name,player,opponents)
       end
       entity:addSystem(data.role)
       local entitySpawn = nil
-      if data.role == player.role then -- same team as player
-         entitySpawn = game.world:randomSpawn(player_team)
-      else
-         entitySpawn = game.world:randomSpawn(opponent_team)
-      end
+      entitySpawn = spawn.random(data.role)
       entitySpawn:placeEntity(entity)
    end
 end

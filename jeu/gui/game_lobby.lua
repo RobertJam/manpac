@@ -251,7 +251,7 @@ function gui.game_lobby.GetReady(ready_button)
         end
 end
 
-function gui.game_lobby.Launch()
+function gui.game_lobby.Launch(data_object)
    local ishost = gui.players[1].host
    if ishost then
       for i,player in ipairs(gui.players) do
@@ -285,32 +285,24 @@ function gui.game_lobby.Launch()
    }
    
    local opponents_cfg = {}
-   if data_object then
-      -- for i=1,#data_object.entities do
-         -- local opp = {data_object.entities[i].role,
-					   -- name = gui.players[i].name,}
-      -- end
-   else
-	   -- create an opponent entity for each other player in the game
-	   -- FIXME: handle AI on server here
-
-	   for i=2,#gui.players do
-		  local opp = {role = string.lower(gui.players[i].role),
-					   name = gui.players[i].name,}
-		  -- if not ishost then
-			 opp.controller = "network"
-			 opp.network = {network_id = gui.players[i].userid}
-		  -- end
-		  -- else
-		  --    opp.controller = "ai"
-		  --    opp.ai = {behavior = "stalker"}
-		  -- end
-		  table.insert(opponents_cfg,opp)
-	   end
+   -- create an opponent entity for each other player in the game
+   -- FIXME: handle AI on server here
+   for i=2,#gui.players do
+     local opp = {role = string.lower(gui.players[i].role),
+               name = gui.players[i].name,}
+     -- if not ishost then
+       opp.controller = "network"
+       opp.network = {network_id = gui.players[i].userid}
+     -- end
+     -- else
+     --    opp.controller = "ai"
+     --    opp.ai = {behavior = "stalker"}
+     -- end
+     table.insert(opponents_cfg,opp)
    end
    
    gui.game_lobby.panel:Remove()
-   gs.switch("jeu/game",map_name, player_cfg, opponents_cfg)
+   gs.switch("jeu/game",map_name, player_cfg, opponents_cfg, data_object)
 end
 
 function gui.game_lobby.LeaveLobby()

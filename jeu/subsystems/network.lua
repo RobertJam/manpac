@@ -19,26 +19,29 @@ function network.StartGame()
       local openents = systems.network:getEntities()
       local all_players = {}
       for i=1,#openents do
-         openent_data = {openents[i].x,
-                         openents[i].y,
-                         openents[i].network_id}
+         openent_data = {x = openents[i].x,
+                         y = openents[i].y,
+                         network_id = openents[i].network_id}
          table.insert(all_players, openent_data)
       end
       
-      local host_data = {game.player.x,
-                         game.player.y,
-                         game.player.network_id}
+      local host_data = {x = game.player.x,
+                         y = game.player.y,
+                         network_id = game.player.network_id}
       table.insert(all_players, host_data)
       
       local exit_list = systems.exit:getEntities()
       local all_exit = {}
       for i=1,#exit_list do
-         table.insert(all_exit, {exit_list[i].x, exit_list[i].y})
+         table.insert(all_exit, {x = exit_list[i].x,
+                                 y = exit_list[i].y,
+                                 width = exit_list[i].shape.width,
+                                 height = exit_list[i].shape.height})
       end
       
 		local data_object = {action = "launch",
-                           players = all_players,
-                           exit = all_exit}
+                           entities = all_players,
+                           exits = all_exit}
 		gui.game_lobby.SendData(data_object)
 	end
 end

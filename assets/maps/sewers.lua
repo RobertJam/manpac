@@ -18,7 +18,7 @@ return {
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "../../manpac/assets/maps/couloirs_64px.png",
+      image = "couloirs_64px.png",
       imagewidth = 832,
       imageheight = 832,
       tileoffset = {

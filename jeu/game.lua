@@ -145,7 +145,7 @@ function state.enter(map_name,player,opponents)
    -- initialize game world
    game.world = game_world.create(map_name)
    -- create player controlled entity
-   local player_spawn = spawn.random(player.role)
+   local player_spawn = systems.spawn.random(player.role)
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
          {"physics",{width = 27,height = 32}},
@@ -168,7 +168,7 @@ function state.enter(map_name,player,opponents)
       end
       entity:addSystem(data.role)
       local entitySpawn = nil
-      entitySpawn = spawn.random(data.role)
+      entitySpawn = systems.spawn.random(data.role)
       entitySpawn:placeEntity(entity)
    end
 end

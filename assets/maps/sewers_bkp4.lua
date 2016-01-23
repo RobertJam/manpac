@@ -8,7 +8,7 @@ return {
   height = 24,
   tilewidth = 64,
   tileheight = 64,
-  nextobjectid = 82,
+  nextobjectid = 72,
   properties = {},
   tilesets = {
     {
@@ -18,7 +18,7 @@ return {
       tileheight = 64,
       spacing = 0,
       margin = 0,
-      image = "../../manpac/assets/maps/couloirs_64px.png",
+      image = "couloirs_64px.png",
       imagewidth = 832,
       imageheight = 832,
       tileoffset = {
@@ -61,7 +61,10 @@ return {
       opacity = 1,
       offsetx = 0,
       offsety = 0,
-      properties = {},
+      properties = {
+         ["sorties"] = "true",
+         ["collidable"] = "true"
+      },
       objects = {
         {
           id = 2,
@@ -74,7 +77,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 3,
@@ -87,7 +92,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 4,
@@ -100,7 +107,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 5,
@@ -113,7 +122,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 6,
@@ -126,7 +137,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 7,
@@ -139,7 +152,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 8,
@@ -152,7 +167,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 9,
@@ -165,7 +182,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 10,
@@ -178,7 +197,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 11,
@@ -191,7 +212,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 12,
@@ -204,7 +227,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 13,
@@ -217,7 +242,9 @@ return {
           height = 66,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 14,
@@ -230,7 +257,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 15,
@@ -243,7 +272,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 16,
@@ -256,7 +287,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 17,
@@ -269,7 +302,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 18,
@@ -282,7 +317,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 19,
@@ -295,7 +332,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 20,
@@ -308,7 +347,9 @@ return {
           height = 61,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 21,
@@ -321,7 +362,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 22,
@@ -334,7 +377,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 23,
@@ -360,7 +405,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 25,
@@ -373,7 +420,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 26,
@@ -386,7 +435,9 @@ return {
           height = 61,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 27,
@@ -399,7 +450,9 @@ return {
           height = 61,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 28,
@@ -412,7 +465,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 29,
@@ -438,7 +493,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 31,
@@ -451,7 +508,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 32,
@@ -464,7 +523,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 33,
@@ -477,7 +538,9 @@ return {
           height = 61,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 34,
@@ -490,7 +553,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 35,
@@ -503,7 +568,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 36,
@@ -516,7 +583,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 37,
@@ -529,7 +598,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 38,
@@ -542,7 +613,9 @@ return {
           height = 61,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 39,
@@ -555,7 +628,9 @@ return {
           height = 60,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 40,
@@ -568,7 +643,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 41,
@@ -594,7 +671,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 43,
@@ -607,7 +686,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 44,
@@ -620,7 +701,9 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 45,
@@ -633,7 +716,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 46,
@@ -659,7 +744,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 48,
@@ -672,7 +759,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 49,
@@ -685,7 +774,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 50,
@@ -698,7 +789,9 @@ return {
           height = 65,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 51,
@@ -711,7 +804,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 52,
@@ -737,7 +832,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 54,
@@ -763,7 +860,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 56,
@@ -776,7 +875,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 57,
@@ -789,7 +890,9 @@ return {
           height = 63,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 58,
@@ -802,7 +905,9 @@ return {
           height = 67,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 59,
@@ -815,7 +920,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         },
         {
           id = 60,
@@ -828,13 +935,15 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+             ["sensor"] = "true",
+          }
         }
       }
     },
     {
       type = "objectgroup",
-      name = "spawns_hunter",
+      name = "spawns",
       visible = true,
       opacity = 1,
       offsetx = 0,
@@ -852,7 +961,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team1"] = "true"
+          }
         },
         {
           id = 62,
@@ -865,7 +976,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team1"] = "true"
+          }
         },
         {
           id = 63,
@@ -878,7 +991,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team1"] = "true"
+          }
         },
         {
           id = 64,
@@ -891,7 +1006,9 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team1"] = "true"
+          }
         },
         {
           id = 65,
@@ -904,21 +1021,27 @@ return {
           height = 64,
           rotation = 0,
           visible = true,
-          properties = {}
-        }
-      }
-    },
-    {
-      type = "objectgroup",
-      name = "spawns_ghost",
-      visible = true,
-      opacity = 1,
-      offsetx = 0,
-      offsety = 0,
-      properties = {},
-      objects = {
+          properties = {
+            ["spawn_team1"] = "true"
+          }
+        },
         {
-          id = 78,
+          id = 66,
+          name = "",
+          type = "",
+          shape = "rectangle",
+          x = 384,
+          y = 318,
+          width = 64,
+          height = 64,
+          rotation = 0,
+          visible = true,
+          properties = {
+            ["spawn_team2"] = "true"
+          }
+        },
+        {
+          id = 67,
           name = "",
           type = "",
           shape = "rectangle",
@@ -928,10 +1051,12 @@ return {
           height = 60,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team2"] = "true"
+          }
         },
         {
-          id = 79,
+          id = 68,
           name = "",
           type = "",
           shape = "rectangle",
@@ -941,10 +1066,12 @@ return {
           height = 62,
           rotation = 0,
           visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team2"] = "true"
+          }
         },
         {
-          id = 80,
+          id = 69,
           name = "",
           type = "",
           shape = "rectangle",
@@ -954,20 +1081,9 @@ return {
           height = 66,
           rotation = 0,
           visible = true,
-          properties = {}
-        },
-        {
-          id = 81,
-          name = "",
-          type = "",
-          shape = "rectangle",
-          x = 386,
-          y = 323,
-          width = 60,
-          height = 60,
-          rotation = 0,
-          visible = true,
-          properties = {}
+          properties = {
+            ["spawn_team2"] = "true"
+          }
         }
       }
     }

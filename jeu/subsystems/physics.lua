@@ -16,8 +16,9 @@ end
 
 -- Box2D callbacks
 function physics.begin_contact(a,b,coll)
-   local entity_a = a:getUserData()
-   local entity_b = b:getUserData()
+   local user_a = a:getUserData()
+   local user_b = b:getUserData()
+   -- if game.is_entity(user_a
 end
 function physics.end_contact(a,b,coll)
 end

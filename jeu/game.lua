@@ -32,13 +32,12 @@ end
 -- game state data
 game = { world = nil,     -- our game world (map/environment)
          player = nil,    -- player controlled entity
+         opponents = {},  -- non player entities (opponents is a BAD name)
          entities = {},   -- all existing game object
          entity_count = 1,-- entity counter to generate unique ids
 }
 
 -- FIXME: move entity system to its own file
--- FIXME: this filter_entities thing is not efficient at all
--- FIXME: but we need some profiling to be sure of hat
 function game.create_entity(name)
    local entity = {
       -- internal management
@@ -114,7 +113,7 @@ end
 
 -- in-game state callbacks
 
-function state.enter(map_name,player,opponents)
+function state.enter(map_name,player,opponents,host_cfg)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
@@ -140,17 +139,14 @@ function state.enter(map_name,player,opponents)
    -- initialize game world
    game.world = game_world.create(map_name)
    -- create player controlled entity
-   local player_spawn = systems.spawn.random(player.role)
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
          {"physics",{width = 27,height = 32}},
          "input_controller",
          "character"})
    game.player:addSystem(player.role)
-   -- FIXME: need two components ?
+   -- FIXME: we need to make it a proper network entity
    game.player.network_id = player.network_id
-   -- game.player:addSystem("network",player)
-   player_spawn:placeEntity(game.player)
    -- create opponents entities
    for i,data in ipairs(opponents) do
       entity = game.create_entity(data.name)
@@ -163,13 +159,40 @@ function state.enter(map_name,player,opponents)
          entity:addSystem("network",data.network)
       end
       entity:addSystem(data.role)
-      local entitySpawn = nil
-      entitySpawn = systems.spawn.random(data.role)
-      entitySpawn:placeEntity(entity)
-      entity:sendMessage("hello")
+      table.insert(game.opponents,entity)
    end
    if game.player.network_id then
-      systems.network.StartGame()
+      if reseau.host then
+         -- generate spawns and exit
+         -- place entities at spawn points
+         -- launch clients
+         world.create_exits()
+         world.create_spawns()
+         world.place_entities(game.player,game.opponents)
+         systems.network.StartGame()
+      else
+         -- configure spawns and exits from host_cfg
+         for i=1,#host_cfg.exits do
+            local exit = host_cfg.exits[i]
+            world.clone_exit(exit)
+         end
+         -- place entities from server config
+         local net_entities = host_cfg.entities
+         for i=1,#net_entities do
+            local net_ent = net_entities[i]
+            local ent = network.find_entity(net_ent.network_id)
+            -- FIXME this need to change if player is a normal network entity
+            if net_ent.network_id == game.player.network_id then
+               game.player:setPosition(net_ent.x,net_ent.y)
+            else
+               ent:setPosition(net_ent.x,net_ent.y)
+            end
+         end
+      end
+   else
+      -- quick start mode, create spawn and exits locally
+      -- and place everybody
+      world.place_entities(game.player,game.opponents)
    end
 end
 

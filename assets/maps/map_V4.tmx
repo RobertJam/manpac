@@ -7,6 +7,11 @@
     <property name="collidable" value="true"/>
    </properties>
   </tile>
+  <tile id="97">
+   <properties>
+    <property name="collidable" value="true"/>
+   </properties>
+  </tile>
  </tileset>
  <layer name="Calque de Tile 1" width="24" height="24">
   <data encoding="base64">

@@ -8,10 +8,13 @@ local audio = {
       chasseur_casse_barriere = "chasseur_casse_barriere.wav",
       fantome_recupere_barriere = "fantome_recupere_barriere.wav",
       chasseur_capture_fantome = "chasseur_capture_fantome.wav",
-      menu_click = "menu_click.wav"
+      menu_click = "menu_click.wav",
+      menu_music = "menu_music.wav"
    },
    slam = require("libs/slam")
 }
+
+-- love.audio.play(audio.sounds.menu_click)
 
 function audio.load()
    for sound_name,sound_file in pairs(audio.sounds) do

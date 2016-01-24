@@ -3,6 +3,10 @@ local state = {}
 function state.enter()
 	gui = require("jeu.gui.main_menu")
 	gui.main_menu.Load()
+   
+   audio.sounds.menu_music:setLooping(true)
+   audio.sounds.menu_music:setVolume(.3)
+   love.audio.play(audio.sounds.menu_music)
 end
 
 function state.update(dt)

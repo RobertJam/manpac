@@ -6,3 +6,5 @@ chasseur_casse_barriere.wav   http://soundbible.com/2028-Hammering.html
 fantome_recupere_barriere.wav http://soundbible.com/1982-Gum-Bubble-Pop.html
 chasseur_capture_fantome.wav  http://soundbible.com/1769-Laser-Gun.html
 menu_click.wav                http://soundbible.com/1682-Robot-Blip.html
+menu_music.wav                http://www.looperman.com/loops/detail/92420/kool-kat-percussion-loop-by-northgav000mps-free-140bpm-dubstep-percussion-loop
+menu_music2.wav               http://www.looperman.com/loops/detail/92621/dubstep-pack-lead-synth-by-acrillex-free-140bpm-dubstep-synth-loop

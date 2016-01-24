@@ -10,7 +10,8 @@ local system_names = {"physics",
                       "ai_controller",
                       "network",
                       "ghost","hunter",
-                      "spawn","exit",}
+                      "spawn","exit",
+                      "barrier"}
 systems = {} -- loaded systems references
 
 for i=1,#system_names do
@@ -92,7 +93,6 @@ function game.create_entity(name)
    entity.sendMessage = function(self,msg,...)
       for sys_name,_ in pairs(self._systems) do
          local sys = systems[sys_name]
-         print("Sending message "..msg.." to "..sys_name)
          if type(sys[msg]) == 'function' then
             sys[msg](self,...)
          end
@@ -109,6 +109,13 @@ function game.is_entity(obj)
 end
 
 function game.kill_entity(entity)
+   local sys_list = {}
+   for sys_name,_ in pairs(entity._systems) do
+      table.insert(sys_list,sys_name)
+   end
+   for i=1,#sys_list do
+      entity:removeSystem(sys_list[i])
+   end
    game.entities[entity._id] = nil
 end
 
@@ -118,7 +125,7 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
-                       role = "hunter"}
+                       role = "ghost"}
    opponents = opponents or {
       {name = nil,
        controller = "ai",
@@ -143,7 +150,12 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.player = game.create_entity(player.name)
    game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
          {"physics",{width = 27,height = 32}},
-         "input_controller",
+         {"input_controller",{keymap = {move_left = "left",
+                                        move_right = "right",
+                                        move_up = "up",
+                                        move_down = "down",
+                                        build_barrier = "c",
+                                        destroy_barrier = "v"}}},
          "character"})
    game.player:addSystem(player.role)
    -- FIXME: we need to make it a proper network entity

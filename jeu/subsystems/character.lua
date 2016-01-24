@@ -5,22 +5,18 @@ local character = {}
 function character.init_entity(self)
    self.move_x = 0
    self.move_y = 0
-end
-
-function character.move_left(self)
-   self.move_x = -4000
-end
-
-function character.move_right(self)
-   self.move_x = 4000
-end
-
-function character.move_up(self)
-   self.move_y = -4000
-end
-
-function character.move_down(self)
-   self.move_y = 4000
+   self.move_left = function(self)
+      self.move_x = -4000
+   end
+   self.move_right = function(self)
+      self.move_x = 4000
+   end
+   self.move_up = function(self)
+      self.move_y = -4000
+   end
+   self.move_down = function(self)
+      self.move_y = 4000
+   end
 end
 
 function character.update(entities)

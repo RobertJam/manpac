@@ -4,10 +4,12 @@ lovebird = require("libs/lovebird")
 gs = require("libs/states")
 reseau = require("libs/reseau")
 timer = require("libs/timer")
+audio = require("jeu/audio")
 
 -- load stuff
 function love.load()
    math.randomseed(os.time())
+   audio.load()
    gs.switch("jeu/start")
 end
 

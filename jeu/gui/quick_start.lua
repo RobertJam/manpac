@@ -39,12 +39,14 @@ function gui.quick_start.Load()
 end
 
 function gui.quick_start.Launch()
+   love.audio.play(audio.sounds.menu_click)
 	if gui.map ~= nil then
 		gs.switch("jeu/game", gui.map)
 	end
 end
 
 function gui.quick_start.Cancel()
+   love.audio.play(audio.sounds.menu_click)
 	gui.quick_start.panel:Remove()
 	gui.main_menu.Load()
 end

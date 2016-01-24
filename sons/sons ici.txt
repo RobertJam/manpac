@@ -1,7 +1,8 @@
-﻿fantome_approche.wav		http://soundbible.com/1707-Hearbeat-2.html
+﻿fantome_approche.wav          http://soundbible.com/1707-Hearbeat-2.html
 fantom_construit_barriere.wav	http://soundbible.com/2067-Blop.html
-victoire_fantome.wav		http://soundbible.com/2054-Evil-Laugh-Male-9.html
-victoire_chasseurs.wav		http://soundbible.com/2041-News-Intro.html
-chasseur_casse_barriere.wav	http://soundbible.com/2028-Hammering.html
-fantome_recupere_barriere.wav	http://soundbible.com/1982-Gum-Bubble-Pop.html
-chasseur_capture_fantome.wav	http://soundbible.com/1769-Laser-Gun.html
+victoire_fantome.wav          http://soundbible.com/2054-Evil-Laugh-Male-9.html
+victoire_chasseurs.wav        http://soundbible.com/2041-News-Intro.html
+chasseur_casse_barriere.wav   http://soundbible.com/2028-Hammering.html
+fantome_recupere_barriere.wav http://soundbible.com/1982-Gum-Bubble-Pop.html
+chasseur_capture_fantome.wav  http://soundbible.com/1769-Laser-Gun.html
+menu_click.wav                http://soundbible.com/1682-Robot-Blip.html

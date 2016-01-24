@@ -55,17 +55,20 @@ function gui.main_menu.Load()
 end
 
 function gui.main_menu.HostGame()
+   love.audio.play(audio.sounds.menu_click)
 	gui.players[1].host = true
 	gui.main_menu.panel:Remove()
 	gui.game_lobby.Load()
 end
 
 function gui.main_menu.JoinGame()
+   love.audio.play(audio.sounds.menu_click)
 	gui.main_menu.panel:Remove()
 	gui.join_menu.Load()
 end
 
 function gui.main_menu.QuickStart()
+   love.audio.play(audio.sounds.menu_click)
 	gui.main_menu.panel:Remove()
 	gui.quick_start.Load()
 end

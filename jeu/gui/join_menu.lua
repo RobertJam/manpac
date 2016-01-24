@@ -42,6 +42,7 @@ function gui.join_menu.Load()
 end
 
 function gui.join_menu.Cancel()
+   love.audio.play(audio.sounds.menu_click)
 	reseau.close()
 	gui.join_menu.panel:Remove()
 	gui.main_menu.Load()
@@ -49,6 +50,7 @@ end
 
 function gui.join_menu.Connect(connect_button)
 	local remote_host = gui.join_menu.hostinput:GetText()
+   love.audio.play(audio.sounds.menu_click)
 	reseau.addClientListener(gui.join_menu.clientListener)
 	reseau.connect(remote_host, manpac.port)
 	connect_button:SetEnabled(false)

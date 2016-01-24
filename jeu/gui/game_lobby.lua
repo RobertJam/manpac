@@ -237,18 +237,19 @@ function gui.game_lobby.receiveData(data_object)
 end
 
 function gui.game_lobby.GetReady(ready_button)
-        if gui.players[1].host then
-                gui.game_lobby.Launch()
-        else
-                gui.players[1].ready = not gui.players[1].ready
-                gui.game_lobby.RefreshList()
-                gui.game_lobby.synchronize()
-                if gui.players[1].ready then
-                        ready_button:SetText("Not Ready")
-                else
-                        ready_button:SetText("Ready")
-                end
-        end
+   love.audio.play(audio.sounds.menu_click)
+   if gui.players[1].host then
+      gui.game_lobby.Launch()
+   else
+      gui.players[1].ready = not gui.players[1].ready
+      gui.game_lobby.RefreshList()
+      gui.game_lobby.synchronize()
+      if gui.players[1].ready then
+         ready_button:SetText("Not Ready")
+      else
+         ready_button:SetText("Ready")
+      end
+   end
 end
 
 function gui.game_lobby.Launch(data_object)
@@ -306,13 +307,14 @@ function gui.game_lobby.Launch(data_object)
 end
 
 function gui.game_lobby.LeaveLobby()
-        timer.removeListener(gui.game_lobby.SendPings)
-        timer.removeListener(gui.game_lobby.RefreshPings)
-        reseau.removeClientListener(gui.game_lobby.clientListener)
-        reseau.removeHostListener(gui.game_lobby.hostListener)
-        reseau.close()
-        gui.game_lobby.panel:Remove()
-        gui.main_menu.Load()
+   love.audio.play(audio.sounds.menu_click)
+   timer.removeListener(gui.game_lobby.SendPings)
+   timer.removeListener(gui.game_lobby.RefreshPings)
+   reseau.removeClientListener(gui.game_lobby.clientListener)
+   reseau.removeHostListener(gui.game_lobby.hostListener)
+   reseau.close()
+   gui.game_lobby.panel:Remove()
+   gui.main_menu.Load()
 end
 
 function gui.game_lobby.ChangeName(textinput)

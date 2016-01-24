@@ -1,5 +1,6 @@
 local gui = {
-	players = {}
+	players = {},
+	map = nil
 }
 
 gui.main_menu = {
@@ -13,6 +14,7 @@ function gui.main_menu.Load()
 	
 	require("jeu.gui.join_menu")
 	require("jeu.gui.game_lobby")
+	require("jeu.gui.quick_start")
 	
 	local width = love.graphics.getWidth()
 	local height = love.graphics.getHeight()
@@ -65,7 +67,7 @@ end
 
 function gui.main_menu.QuickStart()
 	gui.main_menu.panel:Remove()
-	gs.switch("jeu/game")
+	gui.quick_start.Load()
 end
 
 return gui

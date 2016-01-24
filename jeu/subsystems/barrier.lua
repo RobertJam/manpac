@@ -32,6 +32,7 @@ function barrier.build(self,amount)
    self:setColor({1.0,1.0,1.0,self.build_state})
    if self.build_state >= 1.0 then
       self.build_state = 1.0
+      love.audio.play(audio.sounds.fantom_construit_barriere)
       return true
    end
    return false
@@ -44,6 +45,7 @@ function barrier.destroy(self,amount)
    self:setColor({1.0,1.0,1.0,self.build_state})
    if self.build_state <= 0.0 then
       game.kill_entity(self)
+      love.audio.play(audio.sounds.fantome_recupere_barriere)
       return true
    end
    return false

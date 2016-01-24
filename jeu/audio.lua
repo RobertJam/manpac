@@ -9,7 +9,9 @@ local audio = {
       fantome_recupere_barriere = "fantome_recupere_barriere.wav",
       chasseur_capture_fantome = "chasseur_capture_fantome.wav",
       menu_click = "menu_click.wav",
-      menu_music = "menu_music.wav"
+      menu_music = "menu_music.wav",
+      map_music1 = "map_music1.wav",
+      map_music2 = "map_music2.wav"
    },
    slam = require("libs/slam")
 }
@@ -20,6 +22,12 @@ function audio.load()
    for sound_name,sound_file in pairs(audio.sounds) do
       audio.sounds[sound_name] = love.audio.newSource(audio.directory .. sound_file, 'static')
    end
+end
+
+function audio.LoopMusic(music, volume)
+   music:setLooping(true)
+   music:setVolume(volume)
+   love.audio.play(music)
 end
 
 return audio

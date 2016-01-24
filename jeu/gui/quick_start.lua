@@ -49,7 +49,7 @@ function gui.quick_start.Launch()
       elseif map_choice == "map_V4" then
          audio.LoopMusic(audio.sounds.map_music1, 0.05)
       else
-         audio.LoopMusic(audio.sounds.map_music1, 0.05)
+         audio.LoopMusic(audio.sounds.map_music2, 0.05)
       end
       
 		gs.switch("jeu/game", gui.map)

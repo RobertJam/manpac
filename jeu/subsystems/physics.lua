@@ -71,6 +71,14 @@ function physics.init_entity(self, cfg)
    end
 end
 
+function physics.release_entity(self)
+   self.fixture:destroy()
+   self.body:destroy()
+   self.fixture = nil
+   self.shape = nil
+   self.body = nil
+end
+
 function physics.update(entities,dt)
    -- box2d update
    physics.world:update(dt)

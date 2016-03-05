@@ -148,7 +148,16 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.world = game_world.create(map_name)
    -- create player controlled entity
    game.player = game.create_entity(player.name)
-   game.player:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
+   
+   if player.role == "hunter" then
+      player.image = "assets/sprites/player.tga"
+      player.scale = 1
+   else
+      player.image = "assets/sprites/crabe.png"
+      player.scale = .1
+   end
+   
+   game.player:addSystems({{"gfx",{image = player.image, scale = player.scale}},
          {"physics",{width = 27,height = 32}},
          {"input_controller",{keymap = {move_left = "left",
                                         move_right = "right",
@@ -162,9 +171,15 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.player.network_id = player.network_id
    -- create opponents entities
    for i,data in ipairs(opponents) do
+      if data.role == "hunter" then
+         data.image = "assets/sprites/player.tga"
+         data.scale = 1
+      else
+         data.image = "assets/sprites/crabe.png"
+         data.scale = .1
+      end
       entity = game.create_entity(data.name)
-      entity:addSystems({{"gfx",{image = "assets/sprites/crabe.png",
-                                 scale = 0.1}},
+      entity:addSystems({{"gfx",{image = data.image, scale = data.scale}},
             {"physics",{width = 27,height = 32}}})
       if data.controller == "ai" then
          entity:addSystem("ai_controller",data.ai)

@@ -71,7 +71,7 @@ function network.hostListener(event)
    elseif event.type == "disconnect" then
       -- FIXME: handle client disconnection
    elseif event.type == "receive" then
-      -- reseau.dispatch(event)
+      reseau.dispatch(event)
       network.receiveData(event.dec_data)
    end
 end

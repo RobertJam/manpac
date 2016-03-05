@@ -21,6 +21,7 @@ function gui.quick_start.Load()
       gui.quick_start.multichoice:SetPos(width / 2 - 100, height / 2 - 15 - object_spaing - 30)
       gui.quick_start.multichoice:AddChoice("sewers")
       gui.quick_start.multichoice:AddChoice("map_V4")
+      gui.quick_start.multichoice:AddChoice("map_V5")
       gui.quick_start.multichoice.OnChoiceSelected = function()
       gui.map = "assets/maps/" .. gui.quick_start.multichoice:GetChoice() .. ".lua"
 	end
@@ -48,6 +49,8 @@ function gui.quick_start.Launch()
          audio.LoopMusic(audio.sounds.map_music2, 0.05)
       elseif map_choice == "map_V4" then
          audio.LoopMusic(audio.sounds.map_music1, 0.05)
+	   elseif map_choice == "map_V5" then
+         audio.LoopMusic(audio.sounds.map_music1, 0.05) 
       else
          audio.LoopMusic(audio.sounds.map_music2, 0.05)
       end

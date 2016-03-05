@@ -10,6 +10,12 @@ gui.main_menu = {
 function gui.main_menu.Load()
 	loveframes = require("libs.loveframes")
 	
+	-- default font
+	local font_default = love.graphics.newFont('assets/fonts/Xolonium-Regular.otf', 16)
+	-- title font
+	local font_title = love.graphics.newFont('assets/fonts/Xolonium-Bold.otf', 96)
+	-- love.graphics.setFont(font_default)
+	
 	loveframes.util.SetActiveSkin("Dark")
 	
 	require("jeu.gui.join_menu")
@@ -29,40 +35,45 @@ function gui.main_menu.Load()
 		host = false
 	}
 	
-	local button_spaing = 20
+	local button_spacing = 60
 	
 	gui.main_menu.panel = loveframes.Create("panel")
 	gui.main_menu.panel = gui.main_menu.panel:SetSize(width, height)
 	gui.main_menu.panel = gui.main_menu.panel:SetPos(0, 0)
 
+	local buttons_x_origin = width / 3
+	local buttons_y_origin = height / 6
+
 	local text_game_title = loveframes.Create("text", gui.main_menu.panel)
-	text_game_title:SetSize(200, 60)
-	text_game_title:SetPos(width / 2 - 100, height / 2 - 180 - button_spaing / 2)
+	text_game_title:SetSize(400, 60)
+	text_game_title:SetPos(buttons_x_origin - 100, buttons_y_origin - 60)
 	text_game_title:SetShadow(true)
-	text_game_title:SetDefaultColor(255, 0, 0)
+	text_game_title:SetDefaultColor(64, 64, 192)
+	text_game_title:SetFont(font_title)
 	text_game_title:SetText("ManPac")
 	
 	local host_button = loveframes.Create("button", gui.main_menu.panel)
 	host_button:SetSize(200, 30)
-	host_button:SetPos(width / 2 - 100, height / 2 - 30 - button_spaing / 2)
+	host_button:SetPos(buttons_x_origin, buttons_y_origin + button_spacing)
 	host_button:SetText("Host a game")
 	host_button.OnClick = gui.main_menu.HostGame
 	
 	local join_button = loveframes.Create("button", gui.main_menu.panel)
 	join_button:SetSize(200, 30)
-	join_button:SetPos(width / 2 - 100, height / 2 + button_spaing / 2)
+	join_button:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 2)
 	join_button:SetText("Join a game")
 	join_button.OnClick = gui.main_menu.JoinGame
 	
 	local quick_button = loveframes.Create("button", gui.main_menu.panel)
 	quick_button:SetSize(200, 30)
-	quick_button:SetPos(width / 2 - 100, height / 2 + 60)
+	quick_button:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 3)
 	quick_button:SetText("Quick Start")
 	quick_button.OnClick = gui.main_menu.QuickStart
 
 	local text_shortcuts = loveframes.Create("text", gui.main_menu.panel)
-	text_shortcuts:SetSize(200, 30)
-	text_shortcuts:SetPos(width / 2 - 100, height / 2 + 120)
+	text_shortcuts:SetSize(400, 30)
+	text_shortcuts:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 4)
+	text_shortcuts:SetFont(font_default)
 	text_shortcuts:SetText("Keys:\n"..
 		"Arrows: Move\n"..
 		"Ghost: C: Create barrier\n"..

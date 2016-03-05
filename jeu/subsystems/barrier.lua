@@ -17,13 +17,12 @@ end
 function barrier.create(owner,x,y)
    local self = game.create_entity()
    self:addSystem("gfx",{image = "assets/sprites/barriere.png"})
-   self:addSystem("physics",{width = 64,height=64})
+   self:addSystem("physics",{width = 64,height=64,body_type="static"})
    self:addSystem("barrier",{owner = owner})
    self:setPosition(x,y)
    self:setColor({1.0,1.0,1.0,0.0})
    return self
 end
-
 
 function barrier.build(self,amount)
    self.build_state = self.build_state + amount

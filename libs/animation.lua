@@ -4,26 +4,60 @@ function love.load()
   fantome_IA = love.graphics.newImage('../assets/sprites/fantome_IA.png')
 
                          -- frame, image,    offsets, border
-  local walk = anim8.newGrid(52,52, 11628,57,   0,0,     1)
+  local grid = anim8.newGrid(52,52, 11628,57,   0,0,     0)
 
-  walk_down = {
+  -- walk
+  walk_down = 
+  {
                      -- type    -- frames                   --default delay
-    anim8.newAnimation(walk('18-34',2), 0.2),
+    anim8.newAnimation(grid('18-34',10), 0.2),
   }
-  walk_left = {
-                     -- type    -- frames                   --default delay
-    anim8.newAnimation(walk('52-68',2), 0.2),
+  walk_left = 
+  {
+    anim8.newAnimation(grid('52-68',10), 0.2),
   }
-  walk_right = {
-                     -- type    -- frames                   --default delay
-    anim8.newAnimation(walk('86-102',2), 0.2),
+  walk_right = 
+  {
+    anim8.newAnimation(grid('86-102',10), 0.2),
   }
-  walk_up = {
-                     -- type    -- frames                   --default delay
-    anim8.newAnimation(walk('120-136',2), 0.2),
+  walk_up = 
+  {
+    anim8.newAnimation(grid('120-136',10), 0.2),
   }
-  	
-	
+  -- iddle
+  iddle_down = 
+  {
+    anim8.newAnimation(grid('1-17',10), 0.2),
+  }
+  iddle_left = 
+  {
+    anim8.newAnimation(grid('35-51',10), 0.2),
+  }
+  iddle_right = 
+  {
+    anim8.newAnimation(grid('86-102',10), 0.2),
+  }
+  iddle_up = 
+  {
+    anim8.newAnimation(grid('103-119',10), 0.2),
+  } 
+  -- gausse
+  gausse_down = 
+  {
+    anim8.newAnimation(grid('137-153',10), 0.2),
+  }
+  gausse_left = 
+  {
+    anim8.newAnimation(grid('154-170',10), 0.2),
+  }
+  gausse_right = 
+  {
+    anim8.newAnimation(grid('171-187',10), 0.2),
+  }
+  gausse_up = 
+  {
+    anim8.newAnimation(grid('188-204',10), 0.2),
+  } 	
 	
   
 end

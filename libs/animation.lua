@@ -1,0 +1,1 @@
+local anim8 = require 'anim8'

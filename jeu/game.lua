@@ -149,14 +149,7 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- create player controlled entity
    game.player = game.create_entity(player.name)
    
-   if player.role == "hunter" then
-      player.image = "assets/sprites/player.tga"
-      player.scale = 1
-   else
-      player.image = "assets/sprites/crabe.png"
-      player.scale = .1
-   end
-   
+   --[[
    game.player:addSystems({{"gfx",{image = player.image, scale = player.scale}},
          {"physics",{width = 27,height = 32}},
          {"input_controller",{keymap = {move_left = "left",
@@ -166,21 +159,17 @@ function state.enter(map_name,player,opponents,host_cfg)
                                         build_barrier = "c",
                                         destroy_barrier = "v"}}},
          "character"})
+   ]]--
    game.player:addSystem(player.role)
    -- FIXME: we need to make it a proper network entity
    game.player.network_id = player.network_id
    -- create opponents entities
    for i,data in ipairs(opponents) do
-      if data.role == "hunter" then
-         data.image = "assets/sprites/player.tga"
-         data.scale = 1
-      else
-         data.image = "assets/sprites/crabe.png"
-         data.scale = .1
-      end
       entity = game.create_entity(data.name)
+      --[[
       entity:addSystems({{"gfx",{image = data.image, scale = data.scale}},
             {"physics",{width = 27,height = 32}}})
+      ]]--
       if data.controller == "ai" then
          entity:addSystem("ai_controller",data.ai)
       else

@@ -6,6 +6,16 @@ function ghost.init_entity(self,cfg)
    self.build_barrier = ghost.build_barrier
    self.destroy_barrier = ghost.destroy_barrier
    self.building = nil
+   
+   self:addSystems({{"gfx",{image = "assets/sprites/crabe.png", scale = .1}},
+         {"physics",{width = 27,height = 32}},
+         {"input_controller",{keymap = {move_left = "left",
+                                        move_right = "right",
+                                        move_up = "up",
+                                        move_down = "down",
+                                        build_barrier = "c",
+                                        destroy_barrier = "v"}}},
+         "character"})
 end
 
 function ghost.init_system()

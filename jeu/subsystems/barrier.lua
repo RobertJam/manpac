@@ -17,7 +17,7 @@ end
 
 function barrier.create(owner,x,y)
    local self = game.create_entity()
-   self:addSystem("gfx",{image = "assets/sprites/barriere.png"})
+   self:addSystem("gfx",{image = "assets/sprites/barriere_64x64.png"})
    self:addSystem("physics",{width = 64,height=64,body_type="static"})
    self:addSystem("barrier",{owner = owner})
    self:setPosition(x,y)

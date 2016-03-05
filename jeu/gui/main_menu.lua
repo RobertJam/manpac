@@ -34,6 +34,13 @@ function gui.main_menu.Load()
 	gui.main_menu.panel = loveframes.Create("panel")
 	gui.main_menu.panel = gui.main_menu.panel:SetSize(width, height)
 	gui.main_menu.panel = gui.main_menu.panel:SetPos(0, 0)
+
+	local text_game_title = loveframes.Create("text", gui.main_menu.panel)
+	text_game_title:SetSize(200, 60)
+	text_game_title:SetPos(width / 2 - 100, height / 2 - 180 - button_spaing / 2)
+	text_game_title:SetShadow(true)
+	text_game_title:SetDefaultColor(255, 0, 0)
+	text_game_title:SetText("ManPac")
 	
 	local host_button = loveframes.Create("button", gui.main_menu.panel)
 	host_button:SetSize(200, 30)
@@ -52,6 +59,11 @@ function gui.main_menu.Load()
 	quick_button:SetPos(width / 2 - 100, height / 2 + 60)
 	quick_button:SetText("Quick Start")
 	quick_button.OnClick = gui.main_menu.QuickStart
+
+	local text_shortcuts = loveframes.Create("text", gui.main_menu.panel)
+	text_shortcuts:SetSize(200, 30)
+	text_shortcuts:SetPos(width / 2 - 100, height / 2 + 120)
+	text_shortcuts:SetText("Shortcuts:\nESC: Exit\nF5: Reload map\nF6: Reload game")
 end
 
 function gui.main_menu.HostGame()

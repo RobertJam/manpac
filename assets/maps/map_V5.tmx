@@ -46,15 +46,15 @@
  </objectgroup>
  <objectgroup name="spawns_hunter">
   <object id="61" x="640" y="384" width="64" height="64"/>
-  <object id="62" x="896" y="574" width="64" height="64"/>
+  <object id="62" x="896" y="576" width="64" height="64"/>
   <object id="63" x="768" y="832" width="64" height="64"/>
   <object id="64" x="704" y="638" width="64" height="64"/>
   <object id="65" x="704" y="1088" width="64" height="64"/>
  </objectgroup>
  <objectgroup name="spawns_ghost">
-  <object id="78" x="1152" y="318" width="60" height="60"/>
-  <object id="79" x="1152" y="1150" width="62" height="62"/>
-  <object id="80" x="316" y="1088" width="66" height="66"/>
-  <object id="81" x="322" y="259" width="60" height="60"/>
+  <object id="78" x="1152" y="320" width="64" height="64"/>
+  <object id="79" x="1152" y="1152" width="64" height="64"/>
+  <object id="80" x="320.125" y="1088.12" width="64" height="64"/>
+  <object id="81" x="320" y="256" width="64" height="64"/>
  </objectgroup>
 </map>

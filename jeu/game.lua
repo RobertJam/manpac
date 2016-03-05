@@ -31,7 +31,8 @@ for i=1,#system_names do
 end
 
 -- game state data
-game = { world = nil,     -- our game world (map/environment)
+game = { dt = 0.1,        -- last time step
+         world = nil,     -- our game world (map/environment)
          player = nil,    -- player controlled entity
          opponents = {},  -- non player entities (opponents is a BAD name)
          entities = {},   -- all existing game object
@@ -215,6 +216,7 @@ function state.enter(map_name,player,opponents,host_cfg)
 end
 
 function state.update(dt)
+   game.dt = dt
    -- map test keys
    local scrollX,scrollY = 0,0
    if love.keyboard.isDown("d") then scrollX = -10 end

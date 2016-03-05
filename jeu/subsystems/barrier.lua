@@ -40,6 +40,7 @@ function barrier.build(self,amount)
 end
 
 function barrier.set_state(self, amount)
+   print("Setting barrier state to "..amount)
    self.build_state = amount
    self:setColor({1.0,1.0,1.0, self.build_state})
 

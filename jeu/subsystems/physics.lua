@@ -12,6 +12,7 @@ end
 
 -- subsystem cleanup
 function physics.release_system()
+   -- TODO: remove world, unregister callbacks
 end
 
 -- Box2D callbacks

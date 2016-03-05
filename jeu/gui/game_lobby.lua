@@ -44,10 +44,44 @@ function gui.game_lobby.Load()
         multichoice:SetSize(355, 30)
         multichoice:AddChoice("Ghost")
         multichoice:AddChoice("Hunter")
+        multichoice:SetChoice(gui.players[1].role)
         multichoice.OnChoiceSelected = function()
                 gui.players[1].role = multichoice:GetChoice()
                 gui.game_lobby.RefreshList()
                 gui.game_lobby.synchronize()
+        end
+        
+        gui.game_lobby.map_label = loveframes.Create("text", gui.game_lobby.panel)
+        gui.game_lobby.map_label:SetText("Map")
+        gui.game_lobby.map_label:SetPos(5, 558)
+        
+        if gui.players[1].host then
+           gui.game_lobby.map_label:SetSize(30, 15)
+           
+           local multichoice = loveframes.Create("multichoice", frame)
+           multichoice:SetPos(50, 550)
+           multichoice:SetSize(355, 30)
+           multichoice.OnChoiceSelected = function()
+               gui.game_lobby.current_map = multichoice:GetChoice()
+               gui.game_lobby.SendData({action = "change_map",
+                                        map = gui.game_lobby.current_map})
+           end
+
+           local files = love.filesystem.getDirectoryItems("assets/maps")
+           for k, file in ipairs(files) do
+               local the_file = "assets/maps/" .. file
+               if love.filesystem.isFile(the_file) then
+                  local file_ext = string.sub(file, string.find(file, "[.]")+1)
+                  local file_name = string.sub(file, 1, string.find(file, "[.]")-1)
+                  if file_ext == "lua" then
+                     multichoice:AddChoice(file_name)
+                  end
+               end
+           end
+           multichoice:SetChoice("sewers")
+           gui.game_lobby.current_map = "sewers"
+        else
+           gui.game_lobby.map_label:SetSize(200, 15)
         end
 
         gui.game_lobby.tchat = loveframes.Create("textinput", gui.game_lobby.panel)
@@ -136,7 +170,8 @@ function gui.game_lobby.disconnectedPlayer(peer_index)
                 action = "disconnect_player",
                 player_id = peer_index
         }
-        gui.game_lobby.SendData(data_object)gui.game_lobby.removePlayer(player_index)
+        gui.game_lobby.SendData(data_object)
+        gui.game_lobby.removePlayer(player_index)
 end
 
 function gui.game_lobby.removePlayer(player_index)
@@ -152,9 +187,10 @@ function gui.game_lobby.newPlayer(peer)
         gui.game_lobby.AddText("A new player has entered the game")
         local data_object = {
                 action = "init_id",
-                value = peer:index()
+                value = peer:index(),
+                map = gui.game_lobby.current_map
         }
-
+        
         reseau.send(peer, data_object)
         
         local new_player = {
@@ -197,10 +233,15 @@ function gui.game_lobby.receiveData(data_object)
                         gui.game_lobby.AddText(data_object.oldname .. " has changed name to " .. data_object.newname)
                 elseif data_object.action == "init_id" then
                         gui.players[1].userid = data_object.value
+                        gui.game_lobby.current_map = data_object.map
+                        gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
                 elseif data_object.action == "disconnect_player" then
                         local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
                         gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
                         gui.game_lobby.removePlayer(player_index)
+                elseif data_object.action == "change_map" then
+                        gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
+                        gui.game_lobby.current_map = data_object.map
                 elseif data_object.action == "synchronize" then
                         if gui.players[1].host then
                                 for i,player in ipairs(gui.players) do
@@ -223,9 +264,7 @@ function gui.game_lobby.receiveData(data_object)
                         end
                         gui.game_lobby.RefreshList()
                 elseif data_object.action == "ping" then
-                        local data_object = { action = "pong",
-                                                                  player_id = gui.players[1].userid
-                        }
+                        local data_object = {action = "pong", player_id = gui.players[1].userid}
                         gui.game_lobby.SendData(data_object)
                 elseif data_object.action == "pong" then
                         local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
@@ -281,8 +320,6 @@ function gui.game_lobby.Launch(data_object)
    reseau.removeClientListener(gui.game_lobby.clientListener)
    reseau.removeHostListener(gui.game_lobby.hostListener)
 
-   map_name = "assets/maps/sewers.lua"
-
    -- FIXME: we probably need just a game instance id (peer id)
    -- FIXME: and another entity id to keep the whole world in sync
    -- FIXME: we need to consider barriers and maybe destructible objects etc
@@ -311,7 +348,10 @@ function gui.game_lobby.Launch(data_object)
    end
    
    gui.game_lobby.panel:Remove()
-   gs.switch("jeu/game",map_name, player_cfg, opponents_cfg, data_object)
+   local map_file = "assets/maps/" .. gui.game_lobby.current_map .. ".lua"
+   love.audio.stop(audio.sounds.menu_music)
+   audio.LoopMusic(audio.sounds.map_music2, 0.05)
+   gs.switch("jeu/game", map_file, player_cfg, opponents_cfg, data_object)
 end
 
 function gui.game_lobby.LeaveLobby()

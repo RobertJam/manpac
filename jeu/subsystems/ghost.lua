@@ -1,6 +1,13 @@
 local utils = require("jeu/utils")
 local ghost = {}
 
+ghost.keymap = {move_left = "left",
+                 move_right = "right",
+                 move_up = "up",
+                 move_down = "down",
+                 build_barrier = "c",
+                 destroy_barrier = "v"}
+
 function ghost.init_entity(self,cfg)
    self.nbarriers = cfg.max_barriers or 3
    self.build_barrier = ghost.build_barrier
@@ -9,12 +16,6 @@ function ghost.init_entity(self,cfg)
    
    self:addSystems({{"gfx",{image = "assets/sprites/crabe.png", scale = .1}},
          {"physics",{width = 27,height = 32}},
-         {"input_controller",{keymap = {move_left = "left",
-                                        move_right = "right",
-                                        move_up = "up",
-                                        move_down = "down",
-                                        build_barrier = "c",
-                                        destroy_barrier = "v"}}},
          "character"})
 end
 

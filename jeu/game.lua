@@ -161,15 +161,12 @@ function state.enter(map_name,player,opponents,host_cfg)
          "character"})
    ]]--
    game.player:addSystem(player.role)
+   game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity
    game.player.network_id = player.network_id
    -- create opponents entities
    for i,data in ipairs(opponents) do
       entity = game.create_entity(data.name)
-      --[[
-      entity:addSystems({{"gfx",{image = data.image, scale = data.scale}},
-            {"physics",{width = 27,height = 32}}})
-      ]]--
       if data.controller == "ai" then
          entity:addSystem("ai_controller",data.ai)
       else

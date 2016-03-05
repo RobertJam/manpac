@@ -25,18 +25,20 @@ end
 function ghost.build_barrier(self)
    -- building something, just update it with some build amount
    if self.building ~= nil then
-      if self.building:build(0.01) then
-         self.building = nil
-      end
+      local build_finish = self.building:build(0.01)
+      systems.network.sendData({action = "build_barrier", state = self.building.build_state, x = self.building.x, y = self.building.y})
+      if build_finish then self.building = nil end
    else
       -- create a new one
       if self.nbarriers == 0 then return end
+
+      local barrier_position = {x = math.floor((self.x + self.direction.x * (self.shape_width / 2)) / 64) * 64 + self.direction.x * 64 + 32,
+                                y = math.floor((self.y + self.direction.y * (self.shape_height / 2)) / 64) * 64 + self.direction.y * 64 + 32}
+      local bar = systems.barrier.find(barrier_position.x , barrier_position.y)
+      if bar then return end
       self.nbarriers = self.nbarriers - 1
-      -- FIXME: find proper location to place the barrier
-      print(tostring(reseau.json.encode(self)))
-      self.building = systems.barrier.create(self,
-                                             math.floor((self.x + self.direction.x * (self.shape_width / 2)) / 64) * 64 + self.direction.x * 64 + 32,
-                                             math.floor((self.y + self.direction.y * (self.shape_height / 2)) / 64) * 64 + self.direction.y * 64 + 32)
+      self.building = systems.barrier.create(self, barrier_position.x ,barrier_position.y)
+      systems.network.sendData({action = "create_barrier", x = self.building.x, y = self.building.y})
    end
 end
 
@@ -58,8 +60,13 @@ end
 
 function ghost.destroy_barrier(self)
    self.building = _find_closest_barrier(self)
-   if self.building and self.building:destroy(0.1) then
-      self.building = nil
+   if self.building then
+      if self.building:destroy(0.1) then
+         systems.network.sendData({action = "destroy_barrier", x = self.building.x, y = self.building.y})
+         self.building = nil
+      else
+         systems.network.sendData({action = "build_barrier", state = self.building.build_state, x = self.building.x, y = self.building.y})
+      end
    end
 end
 

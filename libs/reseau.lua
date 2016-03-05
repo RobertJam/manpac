@@ -12,6 +12,7 @@ function reseau.update(dt)
       while host_event do
          if host_event.type == "receive" then
             local enc_data = tostring(host_event.data)
+            print(enc_data)
             host_event.dec_data = reseau.json.decode(enc_data)
          end
          for i,callback in ipairs(reseau.hostListeners) do

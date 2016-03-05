@@ -85,12 +85,13 @@ function network.clientListener(event)
 end
 
 function network.sendData(data_object, peer)
+   
    if peer then
       reseau.send(peer, data_object)
    else
       if reseau.host then
          reseau.broadcast(data_object)
-      else
+      elseif reseau.client then
          local peer = reseau.client:get_peer(1)
          reseau.send(peer, data_object)
       end
@@ -106,6 +107,19 @@ function network.receiveData(msg)
       end
       -- print("Received position of",ent.name,ent.network_id,msg.x,msg.y)
       ent:setPosition(msg.x,msg.y)
+   elseif msg.action == "build_barrier" then
+      local bar = systems.barrier.find(msg.x , msg.y)
+      if bar then
+         bar:set_state(msg.state)
+      end
+   elseif msg.action == "create_barrier" then
+      systems.barrier.create(self, msg.x , msg.y)
+   elseif msg.action == "destroy_barrier" then
+      local bar = systems.barrier.find(msg.x , msg.y)
+      if bar then
+         game.kill_entity(bar)
+         love.audio.play(audio.sounds.fantome_recupere_barriere)
+      end
    else
       print("Unhandled network message received:",msg.action)
    end

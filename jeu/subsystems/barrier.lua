@@ -5,10 +5,11 @@ function barrier.init_entity(self,cfg)
    self.build_state = 0.0 -- percentage built
    self.build = barrier.build
    self.destroy = barrier.destroy
+   self.set_state = barrier.set_state
 end
 
 function barrier.release_entity(self)
-   self.owner.nbarriers = self.owner.nbarriers + 1
+   if self.owner then self.owner.nbarriers = self.owner.nbarriers + 1 end
 end
 
 function barrier.init_system()
@@ -33,8 +34,18 @@ function barrier.build(self,amount)
       self.build_state = 1.0
       love.audio.play(audio.sounds.fantom_construit_barriere)
       return true
+   else
+      return false
    end
-   return false
+end
+
+function barrier.set_state(self, amount)
+   self.build_state = amount
+   self:setColor({1.0,1.0,1.0, self.build_state})
+
+   if self.build_state == 1.0 then
+      love.audio.play(audio.sounds.fantom_construit_barriere)
+   end
 end
 
 function barrier.destroy(self,amount)
@@ -48,6 +59,16 @@ function barrier.destroy(self,amount)
       return true
    end
    return false
+end
+
+function barrier.find(posx, posy)
+   local barrier_list = barrier:getEntities()
+   for i,bar in ipairs(barrier_list) do
+      if bar.x == posx and bar.y == posy then
+         return bar
+      end
+   end
+   return nil
 end
 
 return barrier

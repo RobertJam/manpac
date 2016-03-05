@@ -33,7 +33,9 @@ function ghost.build_barrier(self)
       if self.nbarriers == 0 then return end
       self.nbarriers = self.nbarriers - 1
       -- FIXME: find proper location to place the barrier
-      self.building = systems.barrier.create(self,self.x,self.y)
+      self.building = systems.barrier.create(self,
+                                             math.floor(self.x / 64) * 64 + self.direction.x * 64 + 32,
+                                             math.floor(self.y / 64) * 64 + self.direction.y * 64 + 32)
    end
 end
 

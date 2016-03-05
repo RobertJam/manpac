@@ -232,6 +232,12 @@ function gui.game_lobby.receiveData(data_object)
                         gui.players[player_index].ping = math.floor((love.timer.getTime() - gui.game_lobby.pingTime) * 1000)
                 elseif data_object.action == "launch" then
                         gui.game_lobby.Launch(data_object)
+                elseif data_object.action == "get_ready" then
+                        if not gui.players[1].ready then
+                           gui.game_lobby.AddText("Get ready, we want to start the game !!")
+                        else
+                           gui.game_lobby.AddText("Host wants to start the game but some players are not ready yet !")
+                        end
                 end
         end
 end
@@ -257,6 +263,8 @@ function gui.game_lobby.Launch(data_object)
    if ishost then
       for i,player in ipairs(gui.players) do
          if not player.ready then
+            local msg_object = {action = "get_ready"}
+            gui.game_lobby.SendData(msg_object)
             gui.game_lobby.AddText("All players are not ready...")
             return
          end

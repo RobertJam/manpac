@@ -15,7 +15,7 @@ end
 
 -- update a frame
 function love.update(dt)
-   --lovebird.update()
+   lovebird.update()
    gs.update(dt)
    reseau.update()
    timer.update()

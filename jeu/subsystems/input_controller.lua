@@ -1,7 +1,9 @@
 -- input player controler
 -- maps keyboard input to character controls
 
+
 local input = {}
+
 
 function input.init_entity(self,cfg)
    self.keymap = cfg.keymap or {}

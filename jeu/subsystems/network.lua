@@ -108,6 +108,7 @@ function network.receiveData(msg)
       -- print("Received position of",ent.name,ent.network_id,msg.x,msg.y)
       ent:setPosition(msg.x,msg.y)
    elseif msg.action == "build_barrier" then
+      print("Reveived barrier update",msg.state)
       local bar = systems.barrier.find(msg.x , msg.y)
       if bar then
          bar:set_state(msg.state)

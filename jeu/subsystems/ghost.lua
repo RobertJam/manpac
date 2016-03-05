@@ -32,8 +32,8 @@ function ghost.build_barrier(self)
    if self.building ~= nil then
       local build_finish = self.building:build(game.dt*ghost.build_speed)
       systems.network.sendData({action = "build_barrier",
-                                state = self.build_state,
-                                x = self.x, y = self.y})
+                                state = self.building.build_state,
+                                x = self.building.x, y = self.building.y})
       if build_finish then self.building = nil end
    else
       -- create a new one

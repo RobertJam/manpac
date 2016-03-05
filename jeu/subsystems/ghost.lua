@@ -33,9 +33,10 @@ function ghost.build_barrier(self)
       if self.nbarriers == 0 then return end
       self.nbarriers = self.nbarriers - 1
       -- FIXME: find proper location to place the barrier
+      print(tostring(reseau.json.encode(self)))
       self.building = systems.barrier.create(self,
-                                             math.floor(self.x / 64) * 64 + self.direction.x * 64 + 32,
-                                             math.floor(self.y / 64) * 64 + self.direction.y * 64 + 32)
+                                             math.floor((self.x + self.direction.x * (self.shape_width / 2)) / 64) * 64 + self.direction.x * 64 + 32,
+                                             math.floor((self.y + self.direction.y * (self.shape_height / 2)) / 64) * 64 + self.direction.y * 64 + 32)
    end
 end
 

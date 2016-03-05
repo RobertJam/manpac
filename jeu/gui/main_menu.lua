@@ -41,16 +41,14 @@ function gui.main_menu.Load()
 	gui.main_menu.panel = gui.main_menu.panel:SetSize(width, height)
 	gui.main_menu.panel = gui.main_menu.panel:SetPos(0, 0)
 
-	local buttons_x_origin = width / 3
+	local buttons_x_origin = 300
 	local buttons_y_origin = height / 6
 
-	local text_game_title = loveframes.Create("text", gui.main_menu.panel)
-	text_game_title:SetSize(400, 60)
-	text_game_title:SetPos(buttons_x_origin - 100, buttons_y_origin - 60)
-	text_game_title:SetShadow(true)
-	text_game_title:SetDefaultColor(64, 64, 192)
-	text_game_title:SetFont(font_title)
-	text_game_title:SetText("ManPac")
+    -- Game title
+    local image = loveframes.Create("image", frame)
+	image:SetImage("assets/images/title.png")
+	image:SetPos(buttons_x_origin - 70, buttons_y_origin - 60)
+	image:SetScale(1.2)
 	
 	local host_button = loveframes.Create("button", gui.main_menu.panel)
 	host_button:SetSize(200, 30)
@@ -74,6 +72,9 @@ function gui.main_menu.Load()
 	text_shortcuts:SetSize(400, 30)
 	text_shortcuts:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 4)
 	text_shortcuts:SetFont(font_default)
+	text_shortcuts:SetShadow(true)
+	text_shortcuts:SetLinksEnabled(true)
+	text_shortcuts:SetDetectLinks(true)
 	text_shortcuts:SetText("Keys:\n"..
 		"Arrows: Move\n"..
 		"Ghost: C: Create barrier\n"..
@@ -81,7 +82,9 @@ function gui.main_menu.Load()
 		"\n"..
 		"ESC: Exit\n"..
 		"F5: Reload map\n"..
-		"F6: Reload game")
+		"F6: Reload game\n"..
+		"\n"..
+		'https://github.com/RobertJam/manpac')
 end
 
 function gui.main_menu.HostGame()

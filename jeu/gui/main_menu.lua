@@ -63,7 +63,14 @@ function gui.main_menu.Load()
 	local text_shortcuts = loveframes.Create("text", gui.main_menu.panel)
 	text_shortcuts:SetSize(200, 30)
 	text_shortcuts:SetPos(width / 2 - 100, height / 2 + 120)
-	text_shortcuts:SetText("Shortcuts:\nESC: Exit\nF5: Reload map\nF6: Reload game")
+	text_shortcuts:SetText("Keys:\n"..
+		"Arrows: Move\n"..
+		"Ghost: C: Create barrier\n"..
+		"Ghost: V: Remove barrier\n"..
+		"\n"..
+		"ESC: Exit\n"..
+		"F5: Reload map\n"..
+		"F6: Reload game")
 end
 
 function gui.main_menu.HostGame()

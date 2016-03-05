@@ -49,6 +49,9 @@ function love.keypressed(key, isrepeat)
    if key == "f5" then
       gs.reload()
    end
+   if key == "f6" then
+	  gs.switch("jeu/start")
+   end
    gs.keypressed(key, isrepeat)
 end
 

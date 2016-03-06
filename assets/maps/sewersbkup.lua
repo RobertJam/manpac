@@ -9,7 +9,8 @@ return {
   tilewidth = 24,
   tileheight = 24,
   nextobjectid = 4,
-  properties = {},
+  properties = {
+     game_time = 90},
   tilesets = {
     {
       name = "sewer_tileset",

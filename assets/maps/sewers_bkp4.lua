@@ -9,7 +9,8 @@ return {
   tilewidth = 64,
   tileheight = 64,
   nextobjectid = 72,
-  properties = {},
+  properties = {
+     game_time = 90},
   tilesets = {
     {
       name = "couloirs 64px",

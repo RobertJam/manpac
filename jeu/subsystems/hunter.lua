@@ -9,6 +9,22 @@ hunter.keymap = {move_left = "left",
 
 hunter.destroy_speed = 0.3
 
+function hunter.enter_collision(self,other)
+   if reseau.host then
+      if game.is_entity(other) and other:hasSystem("exit") then
+         game.hunter_exit(true)
+      end
+   end
+end
+
+function hunter.exit_collision(self,other)
+   if reseau.host then
+      if game.is_entity(other) and other:hasSystem("exit") then
+         game.hunter_exit(false)
+      end
+   end
+end
+
 function hunter.init_entity(self)
    self.destroy_barrier = hunter.destroy_barrier
 

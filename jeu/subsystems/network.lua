@@ -121,6 +121,12 @@ function network.receiveData(msg)
          game.kill_entity(bar)
          love.audio.play(audio.sounds.fantome_recupere_barriere)
       end
+   elseif msg.action == "game_over" then
+      if game.player:hasSystem(msg.win_team) then
+         gs.switch("jeu/game_over",true)
+      else
+         gs.switch("jeu/game_over",false)
+      end
    else
       print("Unhandled network message received:",msg.action)
    end

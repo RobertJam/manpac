@@ -32,6 +32,8 @@ end
 
 -- game state data
 game = { dt = 0.1,        -- last time step
+         timer = 0,       -- current game timer
+         max_time = 60,   -- on game duratoin (XXX:should depend on the map ?)
          world = nil,     -- our game world (map/environment)
          player = nil,    -- player controlled entity
          opponents = {},  -- non player entities (opponents is a BAD name)
@@ -120,6 +122,14 @@ function game.kill_entity(entity)
    game.entities[entity._id] = nil
 end
 
+function game.hunter_exit(value)
+   if value == true then
+      game.nhunter_exit = game.nhunter_exit + 1
+   else
+      game.nhunter_exit = game.nhunter_exit - 1
+   end
+end
+
 -- in-game state callbacks
 
 function state.enter(map_name,player,opponents,host_cfg)
@@ -147,9 +157,11 @@ function state.enter(map_name,player,opponents,host_cfg)
    end
    -- initialize game world
    game.world = game_world.create(map_name)
+   game.nhunter = 0
+   game.nhunter_exit = 0
+   game.timer = 0
    -- create player controlled entity
    game.player = game.create_entity(player.name)
-   
    --[[
    game.player:addSystems({{"gfx",{image = player.image, scale = player.scale}},
          {"physics",{width = 27,height = 32}},
@@ -162,6 +174,7 @@ function state.enter(map_name,player,opponents,host_cfg)
          "character"})
    ]]--
    game.player:addSystem(player.role)
+   if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
    game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity
    game.player.network_id = player.network_id
@@ -174,6 +187,7 @@ function state.enter(map_name,player,opponents,host_cfg)
          entity:addSystem("network",data.network)
       end
       entity:addSystem(data.role)
+      if data.role == "hunter" then game.nhunter = game.nhunter + 1 end
       table.insert(game.opponents,entity)
    end
    if game.player.network_id then
@@ -217,6 +231,21 @@ end
 
 function state.update(dt)
    game.dt = dt
+   game.timer = game.timer + dt
+   if reseau.host then
+      if game.nhunter_exit == game.nhunter then
+         print("Hunter victory !!!")
+         systems.network.sendData({action = "game_over",
+                                   win_team = "hunter"})
+         gs.switch("jeu/game_over", (game.player:hasSystem("hunter")))
+      end
+      if game.timer >= game.max_time then
+         print("Ghost victory !!!")
+         systems.network.sendData({action = "game_over",
+                                   win_team = "ghost"})
+         gs.switch("jeu/game_over", (game.player:hasSystem("ghost")))
+      end
+   end
    -- map test keys
    local scrollX,scrollY = 0,0
    if love.keyboard.isDown("d") then scrollX = -10 end
@@ -257,6 +286,10 @@ function state.draw()
    end
    -- reset tranformation stack
    love.graphics.pop()
+   -- in-game GUI
+   love.graphics.print(string.format("Remaining time: %.2f",
+                                     game.max_time-game.timer),
+                       10,10)
 end
 
 function state.leave()

@@ -17,7 +17,7 @@ function hunter.player_update(self, ghosts)
    end
    
    if dist < self.max_sound_dist then
-      print("Distance[" .. tostring(i) .. "] : " .. tostring(dist))
+      -- print("Distance[" .. tostring(i) .. "] : " .. tostring(dist))
       if not self.play_audio then
          audio.LoopMusic(audio.sounds.fantome_approche, 1 - dist / 350)
          self.play_audio = true

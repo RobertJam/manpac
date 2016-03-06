@@ -136,7 +136,7 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
-                       role = "ghost"}
+                       role = "hunter"}
    opponents = opponents or {
       {name = nil,
        controller = "ai",
@@ -255,6 +255,10 @@ function state.update(dt)
    systems.ai_controller.update(systems.ai_controller:getEntities(),dt)
    systems.input_controller.update(systems.input_controller:getEntities())
    systems.character.update(systems.character:getEntities())
+   
+   if game.player.player_update then
+      game.player:player_update(systems.ghost:getEntities())
+   end
    -- send locally controlled entities state to server
    -- FIXME: if block for quickstart to work
    if game.player.network_id then

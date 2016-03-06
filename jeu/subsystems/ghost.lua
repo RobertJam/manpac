@@ -8,8 +8,8 @@ ghost.keymap = {move_left = "left",
                  build_barrier = "c",
                  destroy_barrier = "v"}
 
-ghost.build_speed = 1.0
-ghost.destroy_speed = 1.0
+ghost.build_speed = 0.8
+ghost.destroy_speed = 0.8
 
 function ghost.init_entity(self,cfg)
    self.nbarriers = cfg.max_barriers or 3

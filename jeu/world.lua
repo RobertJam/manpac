@@ -6,9 +6,9 @@ function world.draw(self)
    local windowHeight = love.graphics.getHeight()
    self.map:setDrawRange(-self.posX, -self.posY, windowWidth, windowHeight)
    self.map:draw(1.0,1.0)
-   love.graphics.setColor(255, 0, 0, 255)
-   self.map:box2d_draw()
-   love.graphics.setColor(255, 255, 255, 255)
+   -- love.graphics.setColor(255, 0, 0, 255)
+   -- self.map:box2d_draw()
+   -- love.graphics.setColor(255, 255, 255, 255)
 end
 
 function world.scroll(self,dx,dy)

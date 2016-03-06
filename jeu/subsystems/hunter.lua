@@ -7,7 +7,7 @@ hunter.keymap = {move_left = "left",
                  move_down = "down",
                  destroy_barrier = "v"}
 
-hunter.destroy_speed = 0.3
+hunter.destroy_speed = 0.5
 
 function hunter.player_update(self, ghosts)
    local dist = self.max_sound_dist

@@ -280,10 +280,10 @@ function state.draw()
    -- draw our graphic objects
    systems.gfx.draw(systems.gfx:getEntities())
    -- draw our physical entities
-   for _,entity in pairs(systems.physics:getEntities()) do
-      love.graphics.setColor(255, 0, 0, 255)
-      love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
-   end
+   -- for _,entity in pairs(systems.physics:getEntities()) do
+   --    love.graphics.setColor(255, 0, 0, 255)
+   --    love.graphics.polygon("line", entity.body:getWorldPoints(entity.shape:getPoints()))
+   -- end
    -- reset tranformation stack
    love.graphics.pop()
    -- in-game GUI

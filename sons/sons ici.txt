@@ -11,3 +11,4 @@ menu_music2.wav               http://www.looperman.com/loops/detail/92621/dubste
 map_music1.wav                http://www.looperman.com/loops/detail/80215/synth-lead-1a-by-optimus1200-free-128bpm-house-synth-loop
 map_music2.wav                http://www.looperman.com/loops/detail/91497/evil-bass-and-percussion-by-alexananyan-free-86bpm-trance-bass-synth-loop
 fantome_approche2.mp3         http://soundbible.com/1137-Bubbles.html
+bruitage_alerte_prox		édité à partir de sources http://www.sound-fishing.net/bruitages/hitech : bip ordinateur 1, bip ordinateur 4, bruitage modem

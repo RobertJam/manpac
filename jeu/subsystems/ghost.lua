@@ -18,7 +18,7 @@ function ghost.init_entity(self,cfg)
    self.building = nil
 
    self:addSystems({{"gfx",{animation = "assets/sprites/fantome_IA.png"}},
-         {"physics",{width = 27,height = 32}},
+         {"physics",{width = 35,height = 50}},
          "character"})
 end
 

@@ -136,7 +136,7 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
-                       role = "hunter"}
+                       role = "ghost"}
    opponents = opponents or {
       {name = nil,
        controller = "ai",

@@ -12,7 +12,7 @@ function gfx.init_entity(self,cfg)
    if cfg.animation then
       self.image = love.graphics.newImage(cfg.animation)
       self.animation = nil
-      local anim_grid = anim8.newGrid(57,57,11628,57,0,0,0)
+      local anim_grid = anim8.newGrid(57,57,13680,57,0,0,0)
       self.anim_list = {
          --walk
          walk_down = anim8.newAnimation(anim_grid('18-34',1), 1.0,'loop'),

@@ -195,7 +195,7 @@ function gui.game_lobby.newPlayer(peer)
         
         local new_player = {
                 name = "Unknown",
-                role = "Ghost",
+                role = "?",
                 userid = peer:index(),
                 ready = false,
                 ping = 0,
@@ -235,6 +235,7 @@ function gui.game_lobby.receiveData(data_object)
                         gui.players[1].userid = data_object.value
                         gui.game_lobby.current_map = data_object.map
                         gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
+                        gui.game_lobby.synchronize()
                 elseif data_object.action == "disconnect_player" then
                         local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
                         gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")

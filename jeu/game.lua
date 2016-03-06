@@ -150,17 +150,6 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- create player controlled entity
    game.player = game.create_entity(player.name)
    
-   --[[
-   game.player:addSystems({{"gfx",{image = player.image, scale = player.scale}},
-         {"physics",{width = 27,height = 32}},
-         {"input_controller",{keymap = {move_left = "left",
-                                        move_right = "right",
-                                        move_up = "up",
-                                        move_down = "down",
-                                        build_barrier = "c",
-                                        destroy_barrier = "v"}}},
-         "character"})
-   ]]--
    game.player:addSystem(player.role)
    game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity
@@ -174,6 +163,9 @@ function state.enter(map_name,player,opponents,host_cfg)
          entity:addSystem("network",data.network)
       end
       entity:addSystem(data.role)
+      if player.role == "hunter" and data.role == "ghost" then
+         entity:setColor({1.0,1.0,1.0,0.0})
+      end
       table.insert(game.opponents,entity)
    end
    if game.player.network_id then

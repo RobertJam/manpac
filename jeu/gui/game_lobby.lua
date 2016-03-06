@@ -248,6 +248,7 @@ function gui.game_lobby.receiveData(data_object)
                 elseif data_object.action == "back_to_lobby" then
                         if gui.players[1].host then
                            table.insert(gui.players, data_object.player)
+                           gui.game_lobby.ready_button:SetEnabled(true)
                         else
                            gui.game_lobby.SendData({action = "back_to_lobby", player = gui.players[1]})
                         end

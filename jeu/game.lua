@@ -162,17 +162,6 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.timer = 0
    -- create player controlled entity
    game.player = game.create_entity(player.name)
-   --[[
-   game.player:addSystems({{"gfx",{image = player.image, scale = player.scale}},
-         {"physics",{width = 27,height = 32}},
-         {"input_controller",{keymap = {move_left = "left",
-                                        move_right = "right",
-                                        move_up = "up",
-                                        move_down = "down",
-                                        build_barrier = "c",
-                                        destroy_barrier = "v"}}},
-         "character"})
-   ]]--
    game.player:addSystem(player.role)
    if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
    game.player:addSystem("input_controller", systems[player.role])
@@ -188,6 +177,9 @@ function state.enter(map_name,player,opponents,host_cfg)
       end
       entity:addSystem(data.role)
       if data.role == "hunter" then game.nhunter = game.nhunter + 1 end
+      if player.role == "hunter" and data.role == "ghost" then
+         entity:setColor({1.0,1.0,1.0,0.0})
+      end
       table.insert(game.opponents,entity)
    end
    if game.player.network_id then

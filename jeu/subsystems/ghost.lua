@@ -28,13 +28,14 @@ end
 
 
 function ghost.build_barrier(self)
+   local barrier_position = utils.barrier_position(self)
+   local bar = systems.barrier.find(barrier_position.x,barrier_position.y)
    -- building something, just update it with some build amount
-   if self.building ~= nil then
-      local build_finish = self.building:build(game.dt*ghost.build_speed)
+   if bar ~= nil then
+      local build_finish = bar:build(game.dt*ghost.build_speed)
       systems.network.sendData({action = "build_barrier",
-                                state = self.building.build_state,
-                                x = self.building.x, y = self.building.y})
-      if build_finish then self.building = nil end
+                                state = bar.build_state,
+                                x = bar.x, y = bar.y})
    else
       -- create a new one
       if self.nbarriers == 0 then return end
@@ -43,10 +44,11 @@ function ghost.build_barrier(self)
       local bar = systems.barrier.find(barrier_position.x , barrier_position.y)
       if bar then return end
       self.nbarriers = self.nbarriers - 1
-      self.building = systems.barrier.create(self, barrier_position.x ,barrier_position.y)
+      bar = systems.barrier.create(self, barrier_position.x ,
+                                   barrier_position.y)
       systems.network.sendData({action = "create_barrier",
-                                x = self.building.x,
-                                y = self.building.y})
+                                x = bar.x,
+                                y = bar.y})
    end
 end
 
@@ -68,13 +70,5 @@ function ghost.destroy_barrier(self)
    end
 end
 
-function ghost.update(entities)
-   -- TODO: cancel building when too far
-   -- for _,entity in pairs(entities) do
-   --    if entity.building and dist(self,entity.building) > max_build_dist then
-   --       entity.building = nil
-   --    end
-   -- end
-end
 
 return ghost

@@ -14,6 +14,8 @@ function gui.main_menu.Load()
 	local font_default = love.graphics.newFont('assets/fonts/Xolonium-Regular.otf', 16)
 	-- title font
 	local font_title = love.graphics.newFont('assets/fonts/Xolonium-Bold.otf', 96)
+	-- button font
+	local font_title = love.graphics.newFont('assets/fonts/Xolonium-Bold.otf', 96)
 	-- love.graphics.setFont(font_default)
 	
 	loveframes.util.SetActiveSkin("Dark")
@@ -69,22 +71,27 @@ function gui.main_menu.Load()
 	quick_button.OnClick = gui.main_menu.QuickStart
 
 	local text_shortcuts = loveframes.Create("text", gui.main_menu.panel)
-	text_shortcuts:SetSize(400, 30)
-	text_shortcuts:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 4)
+	text_shortcuts:SetSize(640, 30)
+	text_shortcuts:SetPos(buttons_x_origin-170, buttons_y_origin + button_spacing * 4)
 	text_shortcuts:SetFont(font_default)
 	text_shortcuts:SetShadow(true)
 	text_shortcuts:SetLinksEnabled(true)
 	text_shortcuts:SetDetectLinks(true)
-	text_shortcuts:SetText("Keys:\n"..
-		"Arrows: Move\n"..
-		"Ghost: C: Create barrier\n"..
-		"Ghost: V: Remove barrier\n"..
+	text_shortcuts:SetDefaultColor(162, 206, 202, 255)
+	text_shortcuts:SetShadowColor(34, 37, 46, 255)
+	text_shortcuts:SetText("                                    -- Hunters --\n"..
+		"       Your goal: look for the exit and escape altogether. \n"..
+		"   You can destroy barriers (V key) and attack the ghost... \n"..
+		"                        if you find him ! (V key)\n"..
 		"\n"..
-		"ESC: Exit\n"..
-		"F5: Reload map\n"..
-		"F6: Reload game\n"..
+		"                                     -- Ghost --\n"..
+        "      Your goal: survive and don't let the hunters escape. \n"..		
+		"Put one of your 3 barriers in their ways to block them (C key) \n"..
+		"                  and remove them when needed (V key)\n"..
 		"\n"..
-		'https://github.com/RobertJam/manpac')
+		"        ESC: Exit  -  F5: Reload map  -  F6: Reload game\n"..
+		"\n"..
+		"               https://github.com/RobertJam/manpac")
 end
 
 function gui.main_menu.HostGame()

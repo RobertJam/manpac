@@ -10,28 +10,12 @@ function gfx.init_entity(self,cfg)
    self.animation = nil
    self.anim_list = {}
    if cfg.animation then
-      self.image = love.graphics.newImage(cfg.animation)
+      local anim = love.filesystem.load(cfg.animation)()
+      self.image = love.graphics.newImage(anim.image)
       self.animation = nil
-      local anim_grid = anim8.newGrid(57,57,13680,57,0,0,0)
-      self.anim_list = {
-         --walk
-         walk_down = anim8.newAnimation(anim_grid('18-34',1), 0.1),
-         walk_left = anim8.newAnimation(anim_grid('52-68',1), 0.1),
-         walk_right = anim8.newAnimation(anim_grid('86-102',1), 0.1),
-         walk_up = anim8.newAnimation(anim_grid('120-136',1), 0.1),
-         --idle
-         idle_down = anim8.newAnimation(anim_grid('1-17',1), 0.1),
-         idle_left = anim8.newAnimation(anim_grid('35-51',1), 0.1),
-         idle_right = anim8.newAnimation(anim_grid('86-102',1), 0.1),
-         idle_up = anim8.newAnimation(anim_grid('103-119',1), 0.1),
-         --gausse
-         gausse_down = anim8.newAnimation(anim_grid('137-153',1), 0.1),
-         gausse_left = anim8.newAnimation(anim_grid('154-170',1), 0.1),
-         gausse_right = anim8.newAnimation(anim_grid('171-187',1), 0.1),
-         gausse_up = anim8.newAnimation(anim_grid('188-204',1), 0.1),
-      }
-      self.offsetX= cfg.offsetX or 57/2
-      self.offsetY = cfg.offsetY or 57/2
+      self.anim_list = anim.anim_list
+      self.offsetX= cfg.offsetX or anim.frame_width/2
+      self.offsetY = cfg.offsetY or anim.frame_height/2
    else
       self.image = love.graphics.newImage(cfg.image or "assets/sprites/player.tga")
       self.offsetX= cfg.offsetX or self.image:getWidth()/2

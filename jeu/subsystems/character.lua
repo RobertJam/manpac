@@ -26,6 +26,17 @@ function character.init_entity(self)
       self.direction = {x = 0, y = 1}
       self:setAnimation("walk_down")
    end
+   self.dont_move = function(self)
+      if self.direction.x == 1 and self.direction.y == 0 then
+         self:setAnimation("idle_right")
+      elseif self.direction.x == -1 and self.direction.y == 0 then
+         self:setAnimation("idle_left")
+      elseif self.direction.y == 1 and self.direction.x == 0 then
+         self:setAnimation("idle_down")
+      elseif self.direction.y == -1 and self.direction.x == 0 then
+         self:setAnimation("idle_up")
+      end
+   end
 end
 
 function character.update(entities)

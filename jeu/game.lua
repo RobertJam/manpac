@@ -231,7 +231,7 @@ function state.update(dt)
                                    win_team = "hunter"})
          gs.switch("jeu/game_over", (game.player:hasSystem("hunter")))
       end
-      if game.timer >= game.max_time then
+      if game.timer >= game.world.game_time then
          print("Ghost victory !!!")
          systems.network.sendData({action = "game_over",
                                    win_team = "ghost"})
@@ -284,8 +284,13 @@ function state.draw()
    love.graphics.pop()
    -- in-game GUI
    love.graphics.print(string.format("Remaining time: %.2f",
-                                     game.max_time-game.timer),
+                                     game.world.game_time-game.timer),
                        10,10)
+   if game.player:hasSystem("ghost") then
+   love.graphics.print(string.format("Remaining barriers: %d",
+                                     game.player.nbarriers),
+                       10,20)
+   end
 end
 
 function state.leave()

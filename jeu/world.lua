@@ -27,6 +27,8 @@ function world.create(map_name)
    local world = {map = nil,
                   -- camera position
                   posX = 0,posY = 0,
+                  -- max timer for map
+                  game_time = 60,
                   -- methods
                   draw = world.draw,
                   scroll = world.scroll,
@@ -39,6 +41,7 @@ function world.create(map_name)
    -- load our test map and link it to our physical world²
    world.map = sti.new(map_name,{"box2d"})
    world.map:box2d_init(systems.physics.world)
+   world.game_time = world.map.properties["game_time"] or 60
    return world
 end
 

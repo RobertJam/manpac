@@ -30,9 +30,9 @@ function utils.find_closest_barrier(self)
 end
 
 function utils.barrier_position(self)
-   return {x = math.floor((self.x + self.direction.x * (self.shape_width / 2)) / 64)
+   return {x = math.floor((self.x + self.direction.x ) / 64)
               * 64 +self.direction.x * 64 + 32,
-           y = math.floor((self.y + self.direction.y * (self.shape_height / 2)) / 64)
+           y = math.floor((self.y + self.direction.y ) / 64)
               * 64 + self.direction.y * 64 + 32}
 end
 

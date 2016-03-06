@@ -44,14 +44,14 @@ end
 
 local function _make_exit(x,y,width,height)
    local exit = game.create_entity()
+   exit:addSystem("exit",{x = x,
+                          y = y})
    exit:addSystem("gfx",{image = "assets/maps/sortie.png",
-                         offsetX = 0,
-                         offsetY = 0})
+                         offsetX = width/2,
+                         offsetY = height/2})
    exit:addSystem("physics",{width = width,
                              height = height,
                              sensor = true})
-   exit:addSystem("exit",{x = x,
-                          y = y})
    return exit
 end
 
@@ -60,7 +60,8 @@ function world.createExits(self)
    local exitLayer = self.map.layers["sorties"]
    exitLayer.visible = false
    local mapExit = exitLayer.objects[math.random(1,#exitLayer.objects)]
-   _make_exit(mapExit.x,mapExit.y,mapExit.width,mapExit.height)
+   _make_exit(mapExit.x+mapExit.width/2,mapExit.y+mapExit.height/2,
+              mapExit.width,mapExit.height)
 end
 
 function world.cloneExit(self,ex)

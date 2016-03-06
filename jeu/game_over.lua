@@ -1,8 +1,14 @@
 -- Game Over screen
+local gui = require("jeu/gui/main_menu")
 local state = {}
 
 function state.enter(has_won)
    state.has_won = has_won
+   timer.removeListener(gui.game_lobby.SendPings)
+   timer.removeListener(gui.game_lobby.RefreshPings)
+   reseau.removeClientListener(gui.game_lobby.clientListener)
+   reseau.removeHostListener(gui.game_lobby.hostListener)
+   reseau.close()
 end
 
 function state.update(dt)

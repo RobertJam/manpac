@@ -292,9 +292,7 @@ function state.draw()
    love.graphics.print(string.format("Remaining barriers: %d",
                                      game.player.nbarriers),
                        10,20)
-   end
-
-   -- Draw polygon to show barriers number
+    -- Draw polygon to show barriers number
    gui_x = 300
    gui_y = 10
    for i=1, game.player.nbarriers, 1 do
@@ -306,6 +304,7 @@ function state.draw()
 		x + 40, y + 20,
 		x - 10, y + 20
 	)
+   end
    end
 end
 

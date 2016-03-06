@@ -293,6 +293,20 @@ function state.draw()
                                      game.player.nbarriers),
                        10,20)
    end
+
+   -- Draw polygon to show barriers number
+   gui_x = 300
+   gui_y = 10
+   for i=1, game.player.nbarriers, 1 do
+      x = gui_x + (i * 60)
+      y = gui_y
+      love.graphics.polygon('fill',
+		x, y,
+		x + 50, y,
+		x + 40, y + 20,
+		x - 10, y + 20
+	)
+   end
 end
 
 function state.leave()

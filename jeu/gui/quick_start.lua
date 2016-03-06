@@ -19,14 +19,34 @@ function gui.quick_start.Load()
 	gui.quick_start.multichoice = loveframes.Create("multichoice", frame)
     gui.quick_start.multichoice:SetSize(200, 30)
     gui.quick_start.multichoice:SetPos(width / 2 - 100, height / 2 - 15 - object_spaing - 30)
-    gui.quick_start.multichoice:AddChoice("sewers")
-    gui.quick_start.multichoice:AddChoice("map_V4")
-    gui.quick_start.multichoice:AddChoice("map_V5")
-    gui.quick_start.multichoice:AddChoice("giant_rock_maze")
-    gui.quick_start.multichoice:AddChoice("giant_earth_maze")
     gui.quick_start.multichoice.OnChoiceSelected = function()
-    gui.map = "assets/maps/" .. gui.quick_start.multichoice:GetChoice() .. ".lua"
+      gui.quick_start.map = gui.quick_start.multichoice:GetChoice()
 	end
+   
+   local files = love.filesystem.getDirectoryItems("assets/maps")
+   for k, file in ipairs(files) do
+      local the_file = "assets/maps/" .. file
+      if love.filesystem.isFile(the_file) then
+         local file_ext = string.sub(file, string.find(file, "[.]")+1)
+         local file_name = string.sub(file, 1, string.find(file, "[.]")-1)
+         if file_ext == "lua" then
+            gui.quick_start.multichoice:AddChoice(file_name)
+         end
+      end
+   end
+   gui.quick_start.multichoice:SetChoice("sewers")
+   gui.quick_start.map = "sewers"
+   
+   local multichoice = loveframes.Create("multichoice", frame)
+   multichoice:SetSize(200, 30)
+   multichoice:SetPos(width / 2 - 100, height / 2 - 15 - 2 * object_spaing - 60)
+   multichoice:AddChoice("Hunter")
+   multichoice:AddChoice("Ghost")
+   multichoice.OnChoiceSelected = function()
+      gui.quick_start.role = multichoice:GetChoice()
+	end
+   multichoice:SetChoice("Ghost")
+   gui.quick_start.role = multichoice:GetChoice()
 
 	local start_button = loveframes.Create("button", gui.quick_start.panel)
 	start_button:SetSize(200, 30)
@@ -43,25 +63,11 @@ end
 
 function gui.quick_start.Launch()
    love.audio.play(audio.sounds.menu_click)
-	if gui.map ~= nil then
+	if gui.quick_start.map ~= nil then
       love.audio.stop(audio.sounds.menu_music)
-      
-      local map_choice = gui.quick_start.multichoice:GetChoice()
-      if map_choice == "sewers" then
-         audio.LoopMusic(audio.sounds.map_music2, 0.05)
-      elseif map_choice == "map_V4" then
-         audio.LoopMusic(audio.sounds.map_music1, 0.05)
-	  elseif map_choice == "map_V5" then
-         audio.LoopMusic(audio.sounds.map_music1, 0.05)
-	  elseif map_choice == "giant_rock_maze" then
-         audio.LoopMusic(audio.sounds.map_music2, 0.05)
-	  elseif map_choice == "giant_earth_maze" then
-         audio.LoopMusic(audio.sounds.map_music1, 0.05) 
-      else
-         audio.LoopMusic(audio.sounds.map_music2, 0.05)
-      end
-      
-		gs.switch("jeu/game", gui.map)
+      audio.LoopMusic(audio.sounds.map_music2, 0.05)
+      local map_file = "assets/maps/" .. gui.quick_start.map .. ".lua"
+		gs.switch("jeu/game", map_file, {role = string.lower(gui.quick_start.role)})
 	end
 end
 

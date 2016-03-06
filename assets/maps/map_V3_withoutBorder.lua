@@ -1,7 +1,7 @@
 return {
   version = "1.1",
   luaversion = "5.1",
-  tiledversion = "0.14.2",
+  tiledversion = "0.15.1",
   orientation = "orthogonal",
   renderorder = "right-down",
   width = 24,
@@ -10,8 +10,7 @@ return {
   tileheight = 64,
   nextobjectid = 82,
   properties = {
-     game_time = 90
-  },
+     game_time = 90},
   tilesets = {
     {
       name = "couloirs 64px",

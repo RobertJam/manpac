@@ -10,3 +10,4 @@ menu_music.wav                http://www.looperman.com/loops/detail/92420/kool-k
 menu_music2.wav               http://www.looperman.com/loops/detail/92621/dubstep-pack-lead-synth-by-acrillex-free-140bpm-dubstep-synth-loop
 map_music1.wav                http://www.looperman.com/loops/detail/80215/synth-lead-1a-by-optimus1200-free-128bpm-house-synth-loop
 map_music2.wav                http://www.looperman.com/loops/detail/91497/evil-bass-and-percussion-by-alexananyan-free-86bpm-trance-bass-synth-loop
+fantome_approche2.mp3         http://soundbible.com/1137-Bubbles.html

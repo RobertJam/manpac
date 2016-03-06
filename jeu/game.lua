@@ -282,6 +282,11 @@ function state.draw()
    love.graphics.print(string.format("Remaining time: %.2f",
                                      game.world.game_time-game.timer),
                        10,10)
+   if game.player:hasSystem("ghost") then
+   love.graphics.print(string.format("Remaining barriers: %d",
+                                     game.player.nbarriers),
+                       10,20)
+   end
 end
 
 function state.leave()

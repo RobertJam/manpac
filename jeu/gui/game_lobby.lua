@@ -1,5 +1,3 @@
-local gui = require("jeu.gui.main_menu")
-
 gui.game_lobby = {}
 
 function gui.game_lobby.Load()
@@ -30,7 +28,7 @@ function gui.game_lobby.Load()
         local textinput = loveframes.Create("textinput", gui.game_lobby.panel)
         textinput:SetPos(50, 460)
         textinput:SetSize(355, 30)
-        textinput:SetText("Unknown")
+        textinput:SetText(gui.players[1].name)
         textinput.OnEnter = gui.game_lobby.ChangeName
         textinput.OnFocusLost = gui.game_lobby.ChangeName
 
@@ -39,7 +37,7 @@ function gui.game_lobby.Load()
         text:SetPos(5, 515)
         text:SetSize(30, 15)
 
-        local multichoice = loveframes.Create("multichoice", frame)
+        local multichoice = loveframes.Create("multichoice", gui.game_lobby.panel)
         multichoice:SetPos(50, 505)
         multichoice:SetSize(355, 30)
         multichoice:AddChoice("Ghost")
@@ -58,7 +56,7 @@ function gui.game_lobby.Load()
         if gui.players[1].host then
            gui.game_lobby.map_label:SetSize(30, 15)
            
-           local multichoice = loveframes.Create("multichoice", frame)
+           local multichoice = loveframes.Create("multichoice", gui.game_lobby.panel)
            multichoice:SetPos(50, 550)
            multichoice:SetSize(355, 30)
            multichoice.OnChoiceSelected = function()
@@ -117,8 +115,12 @@ function gui.game_lobby.Load()
         if gui.players[1].host then
                 gui.players[1].ready = true
                 reseau.addHostListener(gui.game_lobby.hostListener)
-                reseau.start_server(manpac.port)
-                gui.game_lobby.AddText("Server started on port 9500")
+                if not reseau.host then
+                  reseau.start_server(manpac.port)
+                  gui.game_lobby.AddText("Server started on port 9500")
+                else
+                  gui.game_lobby.AddText("Welcome back to lobby")
+                end
                 timer.addListener(gui.game_lobby.SendPings, 2000)
                 timer.addListener(gui.game_lobby.RefreshPings, 2000)
                 timer.wait(gui.game_lobby.RefreshPings, 1000)
@@ -154,7 +156,7 @@ function gui.game_lobby.hostListener(event)
         elseif event.type == "disconnect" then
                 gui.game_lobby.disconnectedPlayer(event.peer:index())
         elseif event.type == "receive" then
-                if event.dec_data and event.dec_data.action ~= "synchronize" and event.dec_data.action ~= "pong" then
+                if event.dec_data and event.dec_data.action ~= "synchronize" and event.dec_data.action ~= "pong" and event.dec_data.action ~= "back_to_lobby" then
                         reseau.dispatch(event)
                 end
                 gui.game_lobby.receiveData(event.dec_data)
@@ -243,6 +245,13 @@ function gui.game_lobby.receiveData(data_object)
                 elseif data_object.action == "change_map" then
                         gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
                         gui.game_lobby.current_map = data_object.map
+                elseif data_object.action == "back_to_lobby" then
+                        if gui.players[1].host then
+                           table.insert(gui.players, data_object.player)
+                        else
+                           gui.game_lobby.SendData({action = "back_to_lobby", player = gui.players[1]})
+                        end
+                        gui.game_lobby.synchronize()
                 elseif data_object.action == "synchronize" then
                         if gui.players[1].host then
                                 for i,player in ipairs(gui.players) do
@@ -392,12 +401,12 @@ function gui.game_lobby.SendMessage(textinput, message)
 end
 
 function gui.game_lobby.SendData(data_object)
-        if gui.players[1].host then
-                reseau.broadcast(data_object)
-        else
-                local peer = reseau.client:get_peer(1)
-                reseau.send(peer, data_object)
-        end
+   if gui.players[1].host then
+      reseau.broadcast(data_object)
+   else
+      local peer = reseau.client:get_peer(1)
+      reseau.send(peer, data_object)
+   end
 end
 
 function gui.game_lobby.AddText(text)
@@ -413,4 +422,3 @@ function gui.game_lobby.RefreshList()
         end
 end
 
-return gui

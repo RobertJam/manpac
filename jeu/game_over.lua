@@ -1,14 +1,10 @@
 -- Game Over screen
-local gui = require("jeu/gui/main_menu")
+require("jeu.gui.game_lobby")
+--local gui = require("jeu/gui/main_menu")
 local state = {}
 
 function state.enter(has_won)
    state.has_won = has_won
-   timer.removeListener(gui.game_lobby.SendPings)
-   timer.removeListener(gui.game_lobby.RefreshPings)
-   reseau.removeClientListener(gui.game_lobby.clientListener)
-   reseau.removeHostListener(gui.game_lobby.hostListener)
-   reseau.close()
 end
 
 function state.update(dt)
@@ -24,9 +20,37 @@ function state.draw()
 end
 
 function state.keypressed(key, isrepeat)
-   if love.keyboard.isDown(" ") then
-      gs.switch("jeu/start")
+   if love.keyboard.isDown(" ") then state.BackToLobby() end
+end
+
+function state.BackToLobby()
+   gs.switch("jeu/start")
+   
+   gui.players = {}
+
+   gui.players[1] = {
+		name = game.player.name,
+		role = "Hunter",
+		userid = game.player.network_id,
+		controller = "network",
+		ready = false,
+		ping = 0,
+		host = false
+	}
+   
+   if game.player.role == "hunter" then
+      gui.players[1].role = "Hunter"
+   else
+      gui.players[1].role = "Ghost"
    end
+   
+   if reseau.host then gui.players[1].host = true end
+   
+   reseau.removeHostListener(systems.network.hostListener)
+   reseau.removeClientListener(systems.network.clientListener)
+
+   gui.game_lobby.Load()
+   gui.game_lobby.SendData({action = "back_to_lobby", player = gui.players[1]})
 end
 
 return state

@@ -11,6 +11,7 @@ function love.load()
    math.randomseed(os.time())
    audio.load()
    gs.switch("jeu/start")
+   gs.current.Main()
 end
 
 -- update a frame

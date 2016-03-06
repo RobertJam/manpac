@@ -1,9 +1,11 @@
 local state = {}
+gui = require("jeu.gui.main_menu")
+
+function state.Main()
+   gui.main_menu.Load()
+end
 
 function state.enter()
-	gui = require("jeu.gui.main_menu")
-	gui.main_menu.Load()
-   
    audio.LoopMusic(audio.sounds.menu_music, 0.3)
 end
 

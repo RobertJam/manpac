@@ -163,6 +163,8 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- create player controlled entity
    game.player = game.create_entity(player.name)
    game.player:addSystem(player.role)
+   game.player.role = player.role
+   game.player.name = player.name
    if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
    game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity

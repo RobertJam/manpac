@@ -10,7 +10,7 @@ return {
   tileheight = 64,
   nextobjectid = 82,
   properties = {
-     game_time = 90
+     game_time = 10
   },
   tilesets = {
     {

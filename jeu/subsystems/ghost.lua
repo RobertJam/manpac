@@ -17,7 +17,7 @@ function ghost.init_entity(self,cfg)
    self.destroy_barrier = ghost.destroy_barrier
    self.building = nil
 
-   self:addSystems({{"gfx",{image = "assets/sprites/crabe.png", scale = .1}},
+   self:addSystems({{"gfx",{animation = "assets/sprites/fantome_IA.png"}},
          {"physics",{width = 27,height = 32}},
          "character"})
 end

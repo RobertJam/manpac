@@ -249,6 +249,8 @@ function state.update(dt)
    else
       game.world:setCenter(game.player.x,game.player.y)
    end
+   -- update gfx
+   systems.gfx.update(systems.gfx:getEntities(),dt)
    -- update physics
    systems.physics.update(systems.physics:getEntities(),dt)
    -- update character controllers

@@ -31,13 +31,14 @@ end
 function barrier.build(self,amount)
    self.build_state = self.build_state + amount
    
-   -- Calculate step from 1 to 10
-   step = math.ceil(self.build_state * 10)
+   -- Calculate step from 1 to 14
+   step = math.ceil(self.build_state * 14)
    self:setAnimation("step"..step)
 
    if self.build_state >= 1.0 then
       self.build_state = 1.0
-	  self:setAnimation("step".."10")
+	  -- Last step.
+	  self:setAnimation("step".."14")
       love.audio.play(audio.sounds.fantom_construit_barriere)
       return true
    else
@@ -56,8 +57,8 @@ end
 function barrier.destroy(self,amount)
    self.build_state = self.build_state - amount
    
-   -- Calculate step from 1 to 10
-   step = math.ceil(self.build_state * 10)
+   -- Calculate step from 1 to 14
+   step = math.ceil(self.build_state * 14)
    self:setAnimation("step"..step)
 
    if self.build_state <= 0.0 then

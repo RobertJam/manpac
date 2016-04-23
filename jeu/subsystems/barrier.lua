@@ -23,6 +23,8 @@ function barrier.create(owner,x,y)
    self:addSystem("physics",{width = 64,height=64,body_type="static"})
    self:addSystem("barrier",{owner = owner})
    self:setPosition(x,y)
+   -- Init
+   self:setAnimation("step".."1")
    return self
 end
 

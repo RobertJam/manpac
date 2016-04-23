@@ -168,16 +168,18 @@ function gui.game_lobby.hostListener(event)
 end
 
 function gui.game_lobby.disconnectedPlayer(peer_index)
-        local player_index = gui.game_lobby.getPlayerIndex(peer_index)
-        gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
-        reseau.disconnect_peer(peer_index)
+   local player_index = gui.game_lobby.getPlayerIndex(peer_index)
+   if player_index >= 0 then
+      gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
+      reseau.disconnect_peer(peer_index)
 
-        local data_object = {
-                action = "disconnect_player",
-                player_id = peer_index
-        }
-        gui.game_lobby.SendData(data_object)
-        gui.game_lobby.removePlayer(player_index)
+      local data_object = {
+      action = "disconnect_player",
+      player_id = peer_index
+      }
+      gui.game_lobby.SendData(data_object)
+      gui.game_lobby.removePlayer(player_index)
+   end
 end
 
 function gui.game_lobby.removePlayer(player_index)

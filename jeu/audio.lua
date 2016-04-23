@@ -1,5 +1,5 @@
 local audio = {
-   global_volume = .1,
+   global_volume = .05,
    directory = "sons/",
    sounds = {
       fantome_approche = "fantome_approche.wav",

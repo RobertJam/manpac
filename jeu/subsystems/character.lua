@@ -2,27 +2,28 @@
 
 local character = {}
 
-function character.init_entity(self)
+function character.init_entity(self,cfg)
+   self.move_force = cfg.move_force or 10000
    self.move_x = 0
    self.move_y = 0
    self.direction = {x = 1, y = 0}
    self.move_left = function(self)
-      self.move_x = -4000
+      self.move_x = -self.move_force
       self.direction = {x = -1, y = 0}
       self:setAnimation("walk_left")
    end
    self.move_right = function(self)
-      self.move_x = 4000
+      self.move_x = self.move_force
       self.direction = {x = 1, y = 0}
       self:setAnimation("walk_right")
    end
    self.move_up = function(self)
-      self.move_y = -4000
+      self.move_y = -self.move_force
       self.direction = {x = 0, y = -1}
       self:setAnimation("walk_up")
    end
    self.move_down = function(self)
-      self.move_y = 4000
+      self.move_y = self.move_force
       self.direction = {x = 0, y = 1}
       self:setAnimation("walk_down")
    end

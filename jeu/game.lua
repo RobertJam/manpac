@@ -1,5 +1,6 @@
 local state = {}
 local game_world = require("jeu/world")
+local utils = require("jeu/utils")
 
 -- subsystems
 -- Add your system name here (filename in jeu/subsystems/ without extension)
@@ -52,9 +53,9 @@ function game.create_entity(name)
       x = 0, y = 0 -- world position of the entity
    }
    entity.addSystem = function(self,sys_name,cfg)
-      print("Adding system "..sys_name.." to entity "..self._id)
+      -- print("Adding system "..sys_name.." to entity "..self._id)
       cfg = cfg or {}
-      print(cfg)
+      -- print(cfg)
       local sys = systems[sys_name]
       if not sys then
          print("Non existing system "..sys_name)
@@ -102,7 +103,7 @@ function game.create_entity(name)
       end
    end
    game.entities[game.entity_count] = entity
-   print("Created entity "..entity._id)
+   -- print("Created entity "..entity._id)
    game.entity_count = game.entity_count + 1
    return entity
 end
@@ -130,6 +131,66 @@ function game.hunter_exit(value)
    end
 end
 
+function game.create_prefab(prefab)
+   local ent = game.create_entity(prefab.name)
+end
+
+function game.create_entities(player,opponents,host_cfg)
+   local gameplay_cfg = (host_cfg and host_cfg.gameplay) or {ghost = {},hunter={},game ={}}
+   local create_entity = {}
+   create_entity.hunter =  function(name,cfg)
+      print("Creating hunter")
+      utils.tprint(cfg)
+      local ent = game.create_entity(name)
+      ent:addSystems({
+            {"hunter",{destroy_speed = cfg.destroy_speed,
+                       ghost_detect_dist = cfg.ghost_detect_dist}},
+            {"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
+            {"physics",{width = 35,height = 50}},
+            {"character",{move_force = cfg.move_force}}}
+      )
+      return ent
+   end
+   create_entity.ghost = function(name,cfg)
+      print("Creating ghost")
+      utils.tprint(cfg)
+      local ent = game.create_entity(name)
+      ent:addSystems({
+            {"ghost", {max_barriers = cfg.max_barriers,
+                        build_speed = cfg.build_speed,
+                        destroy_speed = cfg.destroy_speed,
+                        shared_barriers = cfg.shared_barriers
+            }},
+            {"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
+            {"physics",{width = 35,height = 50}},
+            {"character",{move_force = cfg.move_force}}}
+      )
+      return ent
+   end
+   -- create player controlled entity
+   game.player = create_entity[player.role](player.name,
+                                            gameplay_cfg[player.role])
+   if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
+   -- FIXME: allow to specify keymap
+   game.player:addSystem("input_controller", systems[player.role])
+   -- FIXME: we need to make it a proper network entity
+   game.player.network_id = player.network_id
+   -- create opponents entities
+   for i,data in ipairs(opponents) do
+      entity = create_entity[data.role](data.name,gameplay_cfg[data.role])
+      if data.controller == "ai" then
+         entity:addSystem("ai_controller",data.ai)
+      else
+         entity:addSystem("network",data.network)
+      end
+      if data.role == "hunter" then game.nhunter = game.nhunter + 1 end
+      if player.role == "hunter" and data.role == "ghost" then
+         entity:setColor({1.0,1.0,1.0,0.0})
+      end
+      table.insert(game.opponents,entity)
+   end
+end
+
 -- in-game state callbacks
 
 function state.enter(map_name,player,opponents,host_cfg)
@@ -151,6 +212,7 @@ function state.enter(map_name,player,opponents,host_cfg)
        controller = "ai",
        role = "ghost"},
    }
+   local gameplay_cfg = require("game_cfg")   -- init subsystems
    -- init subsystems
    for _,sys in pairs(systems) do
       if sys.init_system then sys.init_system() end
@@ -160,30 +222,11 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.nhunter = 0
    game.nhunter_exit = 0
    game.timer = 0
-   -- create player controlled entity
-   game.player = game.create_entity(player.name)
-   game.player:addSystem(player.role)
-   game.player.role = player.role
-   game.player.name = player.name
-   if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
-   game.player:addSystem("input_controller", systems[player.role])
-   -- FIXME: we need to make it a proper network entity
-   game.player.network_id = player.network_id
-   -- create opponents entities
-   for i,data in ipairs(opponents) do
-      entity = game.create_entity(data.name)
-      if data.controller == "ai" then
-         entity:addSystem("ai_controller",data.ai)
-      else
-         entity:addSystem("network",data.network)
-      end
-      entity:addSystem(data.role)
-      if data.role == "hunter" then game.nhunter = game.nhunter + 1 end
-      if player.role == "hunter" and data.role == "ghost" then
-         entity:setColor({1.0,1.0,1.0,0.0})
-      end
-      table.insert(game.opponents,entity)
+   if gameplay_cfg.ghost.shared_barriers then
+      systems.ghost.nbarriers = gameplay_cfg.ghost.max_barriers
    end
+   game.timeout = gameplay_cfg.game.timeout or game.world.game_time
+   game.create_entities(player,opponents,{gameplay = gameplay_cfg})
    if game.player.network_id then
       if reseau.host then
          -- generate spawns and exit
@@ -193,7 +236,7 @@ function state.enter(map_name,player,opponents,host_cfg)
          game.world:createSpawns()
          game.world:placeEntities({game.player})
          game.world:placeEntities(game.opponents)
-         systems.network.StartGame()
+         systems.network.StartGame(gameplay_cfg)
       else
          -- configure spawns and exits from host_cfg
          for i=1,#host_cfg.exits do
@@ -237,7 +280,7 @@ function state.update(dt)
             gs.switch("jeu/game_over", "defeat")
          end
       end
-      if game.timer >= game.world.game_time then
+      if game.timer >= game.timeout then
          print("Ghost victory !!!")
          systems.network.sendData({action = "game_over",
                                    win_team = "ghost"})
@@ -267,7 +310,6 @@ function state.update(dt)
    systems.ai_controller.update(systems.ai_controller:getEntities(),dt)
    systems.input_controller.update(systems.input_controller:getEntities())
    systems.character.update(systems.character:getEntities())
-   
    if game.player.player_update then
       game.player:player_update(systems.ghost:getEntities())
    end
@@ -296,24 +338,24 @@ function state.draw()
    love.graphics.pop()
    -- in-game GUI
    love.graphics.print(string.format("Remaining time: %.2f",
-                                     game.world.game_time-game.timer),
+                                     game.timeout-game.timer),
                        10,10)
    if game.player:hasSystem("ghost") then
    love.graphics.print(string.format("Remaining barriers: %d",
-                                     game.player.nbarriers),
+                                     game.player:nBarriers()),
                        10,20)
     -- Draw polygon to show barriers number
    gui_x = 300
    gui_y = 10
-   for i=1, game.player.nbarriers, 1 do
+   for i=1, game.player:nBarriers(), 1 do
       x = gui_x + (i * 60)
       y = gui_y
       love.graphics.polygon('fill',
-		x, y,
-		x + 50, y,
-		x + 40, y + 20,
-		x - 10, y + 20
-	)
+                            x, y,
+                            x + 50, y,
+                            x + 40, y + 20,
+                            x - 10, y + 20
+      )
    end
    end
 end

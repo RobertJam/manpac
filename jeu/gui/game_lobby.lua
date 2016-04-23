@@ -48,7 +48,7 @@ function gui.game_lobby.Load()
                 gui.game_lobby.RefreshList()
                 gui.game_lobby.synchronize()
         end
-        
+
         gui.game_lobby.map_label = loveframes.Create("text", gui.game_lobby.panel)
         gui.game_lobby.map_label:SetText("Map")
         gui.game_lobby.map_label:SetPos(5, 558)
@@ -365,22 +365,17 @@ function gui.game_lobby.Launch(data_object)
    reseau.removeClientListener(gui.game_lobby.clientListener)
    reseau.removeHostListener(gui.game_lobby.hostListener)
 
-   -- FIXME: we probably need just a game instance id (peer id)
-   -- FIXME: and another entity id to keep the whole world in sync
-   -- FIXME: we need to consider barriers and maybe destructible objects etc
-   -- FIXME: this probably means entities need to be created by the network
    local player_cfg = {
       role = string.lower(gui.players[1].role),
       network_id = gui.players[1].userid,
-      name = gui.players[1].name,
+      name = gui.players[1].name
    }
-   
+
    local opponents_cfg = {}
    -- create an opponent entity for each other player in the game
-   -- FIXME: handle AI on server here
    for i=2,#gui.players do
      local opp = {role = string.lower(gui.players[i].role),
-               name = gui.players[i].name,}
+                  name = gui.players[i].name,}
      -- if not ishost then
        opp.controller = "network"
        opp.network = {network_id = gui.players[i].userid}
@@ -391,7 +386,7 @@ function gui.game_lobby.Launch(data_object)
      -- end
      table.insert(opponents_cfg,opp)
    end
-   
+
    gui.game_lobby.panel:Remove()
    local map_file = "assets/maps/" .. gui.game_lobby.current_map .. ".lua"
    love.audio.stop(audio.sounds.menu_music)

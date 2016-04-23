@@ -9,7 +9,9 @@ function barrier.init_entity(self,cfg)
 end
 
 function barrier.release_entity(self)
-   if self.owner then self.owner.nbarriers = self.owner.nbarriers + 1 end
+   if self.owner then
+      self.owner:addBarrier()
+   end
 end
 
 function barrier.init_system()
@@ -17,22 +19,26 @@ end
 
 function barrier.create(owner,x,y)
    local self = game.create_entity()
-   self:addSystem("gfx",{image = "assets/sprites/barriere_64x64.png"})
+   self:addSystem("gfx",{animation = "assets/sprites/barriere.lua"})
    self:addSystem("physics",{width = 64,height=64,body_type="static"})
    self:addSystem("barrier",{owner = owner})
    self:setPosition(x,y)
-   self:setColor({1.0,1.0,1.0,0.0})
+   -- Init
+   self:setAnimation("step".."1")
    return self
 end
 
 function barrier.build(self,amount)
    self.build_state = self.build_state + amount
-   -- TODO: update current animation state based on build
-   -- TODO: state
-   self:setColor({1.0,1.0,1.0,self.build_state})
+   
+   -- Calculate step from 1 to 14
+   step = math.ceil(self.build_state * 14)
+   self:setAnimation("step"..step)
+
    if self.build_state >= 1.0 then
       self.build_state = 1.0
-      self:setColor({1.0,1.0,1.0,1.0})
+	  -- Last step.
+	  self:setAnimation("step".."14")
       love.audio.play(audio.sounds.fantom_construit_barriere)
       return true
    else
@@ -42,7 +48,6 @@ end
 
 function barrier.set_state(self, amount)
    self.build_state = amount
-   self:setColor({1.0,1.0,1.0, self.build_state})
 
    if self.build_state == 1.0 then
       love.audio.play(audio.sounds.fantom_construit_barriere)
@@ -51,9 +56,11 @@ end
 
 function barrier.destroy(self,amount)
    self.build_state = self.build_state - amount
-   -- TODO: update current animation state based on build
-   -- TODO: state
-   self:setColor({1.0,1.0,1.0,self.build_state})
+   
+   -- Calculate step from 1 to 14
+   step = math.ceil(self.build_state * 14)
+   self:setAnimation("step"..step)
+
    if self.build_state <= 0.0 then
       game.kill_entity(self)
       love.audio.play(audio.sounds.fantome_recupere_barriere)

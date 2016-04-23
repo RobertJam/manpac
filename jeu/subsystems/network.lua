@@ -12,10 +12,11 @@ function network.init_system()
    end
 end
 
-function network.StartGame()
-	if reseau.host then
-   
-      -- Création de la table des openents
+-- launched from server to quickstart clients
+function network.StartGame(gameplay_cfg)
+   if reseau.host then
+      -- create entities table (opponents + player)
+      -- used by client to set entities positions
       local openents = systems.network:getEntities()
       local all_players = {}
       for i=1,#openents do
@@ -24,12 +25,11 @@ function network.StartGame()
                          network_id = openents[i].network_id}
          table.insert(all_players, openent_data)
       end
-      
       local host_data = {x = game.player.x,
                          y = game.player.y,
                          network_id = game.player.network_id}
       table.insert(all_players, host_data)
-      
+      -- exit list
       local exit_list = systems.exit:getEntities()
       local all_exit = {}
       for i=1,#exit_list do
@@ -38,12 +38,13 @@ function network.StartGame()
                                  width = exit_list[i].shape_width,
                                  height = exit_list[i].shape_height})
       end
-      
-		local data_object = {action = "launch",
+      -- launch game message
+      local data_object = {action = "launch",
+                           gameplay = gameplay_cfg,
                            entities = all_players,
                            exits = all_exit}
-		gui.game_lobby.SendData(data_object)
-	end
+      gui.game_lobby.SendData(data_object)
+   end
 end
 
 function network.exit_system()
@@ -90,6 +91,10 @@ function network.clientListener(event)
 end
 
 function network.sendData(data_object, peer)
+<<<<<<< HEAD
+=======
+
+>>>>>>> 9db2aad33178d4c1710a45dc3dbff09354d5aa8a
    if peer then
       reseau.send(peer, data_object)
    else

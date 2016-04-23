@@ -10,21 +10,43 @@ ghost.keymap = {move_left = "left",
 
 ghost.build_speed = 0.8
 ghost.destroy_speed = 0.8
+ghost.nbarriers = nil
 
 function ghost.init_entity(self,cfg)
    self.nbarriers = cfg.max_barriers or 3
+   self.build_speed = cfg.build_speed or ghost.build_speed
+   self.destroy_speed = cfg.destroy_speed or ghost.destroy_speed
    self.build_barrier = ghost.build_barrier
    self.destroy_barrier = ghost.destroy_barrier
    self.building = nil
-
-   self:addSystems({{"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
-         {"physics",{width = 35,height = 50}},
-         "character"})
+   self.removeBarrier = function(self)
+      if ghost.nbarriers then
+         ghost.nbarriers = ghost.nbarriers - 1
+      else
+         self.nbarriers = self.nbarriers - 1
+      end
+   end
+   self.addBarrier = function(self)
+      if ghost.nbarriers then
+         ghost.nbarriers = ghost.nbarriers + 1
+      else
+         self.nbarriers = self.nbarriers + 1
+      end
+   end
+   self.hasBarriers = function(self)
+      if ghost.nbarriers then
+         return ghost.nbarriers ~= 0
+      else
+         return self.nbarriers ~= 0
+      end
+   end
+   self.nBarriers = function(self)
+      return ghost.nbarriers or self.nbarriers
+   end
 end
 
 function ghost.init_system()
 end
-
 
 
 function ghost.build_barrier(self)
@@ -38,12 +60,12 @@ function ghost.build_barrier(self)
                                 x = bar.x, y = bar.y})
    else
       -- create a new one
-      if self.nbarriers == 0 then return end
+      if not self:hasBarriers() then return end
 
       local barrier_position = utils.barrier_position(self)
       local bar = systems.barrier.find(barrier_position.x , barrier_position.y)
       if bar then return end
-      self.nbarriers = self.nbarriers - 1
+      self:removeBarrier()
       bar = systems.barrier.create(self, barrier_position.x ,
                                    barrier_position.y)
       systems.network.sendData({action = "create_barrier",

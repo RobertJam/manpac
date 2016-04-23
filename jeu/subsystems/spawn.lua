@@ -11,7 +11,6 @@ function spawn.init_entity(self,cfg)
       spawn.ghost_spawns[self] = true
    end
    self.placeEntity = function (self,entity)
-      print("Spawn placing entity at "..self.x..";"..self.y)
       entity:setPosition(self.x,self.y)
    end
 end

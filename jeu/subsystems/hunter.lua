@@ -8,6 +8,7 @@ hunter.keymap = {move_left = "left",
                  destroy_barrier = "v"}
 
 hunter.destroy_speed = 0.5
+hunter.ghost_detect_dist = 350
 
 function hunter.player_update(self, ghosts)
    local dist = self.max_sound_dist
@@ -15,7 +16,6 @@ function hunter.player_update(self, ghosts)
       local ghost_dist = utils.dist(self, ghost)
       if ghost_dist < dist then dist = ghost_dist end
    end
-   
    if dist < self.max_sound_dist then
       -- print("Distance[" .. tostring(i) .. "] : " .. tostring(dist))
       if not self.play_audio then
@@ -48,24 +48,24 @@ function hunter.exit_collision(self,other)
    end
 end
 
-function hunter.init_entity(self)
+function hunter.init_entity(self,cfg)
    self.destroy_barrier = hunter.destroy_barrier
+   self.destroy_speed = cfg.destroy_speed or hunter.destroy_speed
+   if cfg.move_force then
+      self.setMoveForce(cfg.move_force)
+   end
    if self == game.player then
       self.player_update = hunter.player_update
-      self.max_sound_dist = 250
+      self.max_sound_dist = cfg.ghost_detect_dist or 250
       self.play_audio = false
    end
-
-   self:addSystems({{"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
-         {"physics",{width = 35,height = 50}},
-         "character"})
 end
 
 function hunter.destroy_barrier(self)
    local barrier_position = utils.barrier_position(self)
    local bar = systems.barrier.find(barrier_position.x,barrier_position.y)
    if bar then
-      if bar:destroy(game.dt*hunter.destroy_speed) then
+      if bar:destroy(game.dt*self.destroy_speed) then
          systems.network.sendData({action = "destroy_barrier",
                                    x = bar.x,
                                    y = bar.y})

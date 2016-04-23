@@ -218,11 +218,11 @@ function state.enter(map_name,player,opponents,host_cfg)
          shared_barriers = true,
          build_speed = 0.8,
          destroy_speed = 0.8,
-         move_force = 40000
+         move_force = 15000
       },
       hunter = {
          destroy_speed = 0.5,
-         move_force = 4000,
+         move_force = 10000,
          ghost_detect_dist = 25.0
             },
       game = {

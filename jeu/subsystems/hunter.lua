@@ -71,6 +71,8 @@ function hunter.init_entity(self,cfg)
             local angle = utils.angle(self.direction,
                                       utils.dir(ghost_list[i],self))
             if (math.abs(angle) <= self.shoot_angle) then
+               systems.network.sendData({action = "kill_ghost",
+                                         ghost_id = ghost_list[i].network_id})
                game.kill_entity(ghost_list[i])
             end
          end

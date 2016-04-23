@@ -115,6 +115,10 @@ function network.receiveData(msg)
    elseif msg.action == "player_disonnected" then
       local ent = network.entities[msg.network_id]
       game.kill_entity(ent)
+   elseif msg.action == "ghost_kill" then
+      local ent = network.entities[msg.network_id]
+      game.kill_entity(ent)
+   end
    elseif msg.action == "build_barrier" then
       print("Reveived barrier update",msg.state)
       local bar = systems.barrier.find(msg.x , msg.y)

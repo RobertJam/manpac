@@ -227,6 +227,9 @@ function state.enter(map_name,player,opponents,host_cfg)
    if gameplay_cfg.ghost.shared_barriers then
       systems.ghost.nbarriers = gameplay_cfg.ghost.max_barriers
    end
+   if gamplay_cfg.hunter.can_shoot then
+      systems.hunter.can_shoot = true
+   end
    game.timeout = gameplay_cfg.game.timeout or game.world.game_time
    game.create_entities(player,opponents,{gameplay = gameplay_cfg})
    if game.player.network_id then

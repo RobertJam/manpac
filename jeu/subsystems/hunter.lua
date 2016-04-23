@@ -7,7 +7,7 @@ hunter.keymap = {move_left = "left",
                  move_down = "down",
                  shoot = "c",
                  destroy_barrier = "v"}
-
+hunter.can_shoot = false
 hunter.destroy_speed = 0.5
 hunter.ghost_detect_dist = 350
 
@@ -63,6 +63,7 @@ function hunter.init_entity(self,cfg)
    self.shoot_dist = cfg.shoot_dist or 100
    self.shoot_angle = cfg.shoot_angle or math.pi/4.0
    self.shoot = function(self)
+      if not hunter.can_shoot then return end
       local ghost_list = systems.ghost:getEntities()
       for i=1,#ghost_list do
          local dist = utils.dist(self,ghost_list[i])

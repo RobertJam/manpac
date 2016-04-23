@@ -15,6 +15,7 @@ return {
    },
    -- hunter entities config
    hunter = {
+      can_shoot = true,
       shoot_dist = 100,
       shoot_angle = 1.0,
       -- barrier destroy speed

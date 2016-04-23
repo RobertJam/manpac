@@ -148,7 +148,7 @@ function game.create_entities(player,opponents,host_cfg)
                        shoot_angle = cfg.shoot_angle,
                        ghost_detect_dist = cfg.ghost_detect_dist}},
             {"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
-            {"physics",{width = 35,height = 50}},
+            {"physics",{width = 35,height = 45}},
             {"character",{move_force = cfg.move_force}}}
       )
       return ent
@@ -164,7 +164,7 @@ function game.create_entities(player,opponents,host_cfg)
                         shared_barriers = cfg.shared_barriers
             }},
             {"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
-            {"physics",{width = 35,height = 50}},
+            {"physics",{width = 35,height = 45}},
             {"character",{move_force = cfg.move_force}}}
       )
       return ent

@@ -65,7 +65,7 @@ function gui.quick_start.Launch()
    love.audio.play(audio.sounds.menu_click)
 	if gui.quick_start.map ~= nil then
       love.audio.stop(audio.sounds.menu_music)
-      audio.LoopMusic(audio.sounds.map_music2, 0.05)
+      audio.LoopMusic(audio.sounds.map_music2)
       local map_file = "assets/maps/" .. gui.quick_start.map .. ".lua"
 		gs.switch("jeu/game", map_file, {role = string.lower(gui.quick_start.role)})
 	end

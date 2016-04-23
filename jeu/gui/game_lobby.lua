@@ -390,7 +390,7 @@ function gui.game_lobby.Launch(data_object)
    gui.game_lobby.panel:Remove()
    local map_file = "assets/maps/" .. gui.game_lobby.current_map .. ".lua"
    love.audio.stop(audio.sounds.menu_music)
-   audio.LoopMusic(audio.sounds.map_music2, 0.05)
+   audio.LoopMusic(audio.sounds.map_music2)
    gs.switch("jeu/game", map_file, player_cfg, opponents_cfg, data_object)
 end
 

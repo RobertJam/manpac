@@ -91,10 +91,6 @@ function network.clientListener(event)
 end
 
 function network.sendData(data_object, peer)
-<<<<<<< HEAD
-=======
-
->>>>>>> 9db2aad33178d4c1710a45dc3dbff09354d5aa8a
    if peer then
       reseau.send(peer, data_object)
    else

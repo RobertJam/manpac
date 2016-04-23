@@ -1,4 +1,5 @@
 local audio = {
+   global_volume = .1,
    directory = "sons/",
    sounds = {
       fantome_approche = "fantome_approche.wav",
@@ -25,6 +26,7 @@ function audio.load()
 end
 
 function audio.LoopMusic(music, volume)
+   if not volume then volume = audio.global_volume end
    music:setLooping(true)
    music:setVolume(volume)
    love.audio.play(music)

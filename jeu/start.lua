@@ -6,7 +6,7 @@ function state.Main()
 end
 
 function state.enter()
-   audio.LoopMusic(audio.sounds.menu_music, 0.3)
+   audio.LoopMusic(audio.sounds.menu_music)
 end
 
 function state.update(dt)

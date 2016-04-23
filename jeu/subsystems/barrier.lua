@@ -19,22 +19,23 @@ end
 
 function barrier.create(owner,x,y)
    local self = game.create_entity()
-   self:addSystem("gfx",{image = "assets/sprites/barriere_64x64.png"})
+   self:addSystem("gfx",{animation = "assets/sprites/barriere.lua"})
    self:addSystem("physics",{width = 64,height=64,body_type="static"})
    self:addSystem("barrier",{owner = owner})
    self:setPosition(x,y)
-   self:setColor({1.0,1.0,1.0,0.0})
    return self
 end
 
 function barrier.build(self,amount)
    self.build_state = self.build_state + amount
-   -- TODO: update current animation state based on build
-   -- TODO: state
-   self:setColor({1.0,1.0,1.0,self.build_state})
+   
+   -- Calculate step from 1 to 10
+   step = math.ceil(self.build_state * 10)
+   self:setAnimation("construct"..step)
+
    if self.build_state >= 1.0 then
       self.build_state = 1.0
-      self:setColor({1.0,1.0,1.0,1.0})
+	  self:setAnimation("construct10")
       love.audio.play(audio.sounds.fantom_construit_barriere)
       return true
    else
@@ -44,7 +45,6 @@ end
 
 function barrier.set_state(self, amount)
    self.build_state = amount
-   self:setColor({1.0,1.0,1.0, self.build_state})
 
    if self.build_state == 1.0 then
       love.audio.play(audio.sounds.fantom_construit_barriere)
@@ -53,9 +53,11 @@ end
 
 function barrier.destroy(self,amount)
    self.build_state = self.build_state - amount
-   -- TODO: update current animation state based on build
-   -- TODO: state
-   self:setColor({1.0,1.0,1.0,self.build_state})
+   
+   -- Calculate step from 1 to 10
+   step = math.ceil(self.build_state * 10)
+   self:setAnimation("destruct"..step)
+
    if self.build_state <= 0.0 then
       game.kill_entity(self)
       love.audio.play(audio.sounds.fantome_recupere_barriere)

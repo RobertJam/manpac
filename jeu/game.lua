@@ -212,24 +212,7 @@ function state.enter(map_name,player,opponents,host_cfg)
        controller = "ai",
        role = "ghost"},
    }
-   local gameplay_cfg = {
-      ghost = {
-         max_barriers = 3,
-         shared_barriers = true,
-         build_speed = 0.8,
-         destroy_speed = 0.8,
-         move_force = 40000
-      },
-      hunter = {
-         destroy_speed = 0.5,
-         move_force = 4000,
-         ghost_detect_dist = 25.0
-            },
-      game = {
-         timeout = 30
-      }
-   }
-   -- init subsystems
+   local gameplay_cfg = require("game_cfg")   -- init subsystems
    for _,sys in pairs(systems) do
       if sys.init_system then sys.init_system() end
    end

@@ -276,13 +276,21 @@ function state.update(dt)
          print("Hunter victory !!!")
          systems.network.sendData({action = "game_over",
                                    win_team = "hunter"})
-         gs.switch("jeu/game_over", (game.player:hasSystem("hunter")))
+         if game.player:hasSystem("hunter") then
+            gs.switch("jeu/game_over", "victory")
+         else
+            gs.switch("jeu/game_over", "defeat")
+         end
       end
       if game.timer >= game.timeout then
          print("Ghost victory !!!")
          systems.network.sendData({action = "game_over",
                                    win_team = "ghost"})
-         gs.switch("jeu/game_over", (game.player:hasSystem("ghost")))
+         if game.player:hasSystem("ghost") then
+            gs.switch("jeu/game_over", "victory")
+         else
+            gs.switch("jeu/game_over", "defeat")
+         end
       end
    end
    -- map test keys

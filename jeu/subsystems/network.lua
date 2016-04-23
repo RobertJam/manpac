@@ -70,7 +70,12 @@ function network.hostListener(event)
    if event.type == "connect" then
       network.sendData({action = "server_in_game"}, event.peer)
    elseif event.type == "disconnect" then
-      -- FIXME: handle client disconnection
+      reseau.disconnect_peer(event.peer:index())
+      local ent = network.entities[event.peer:index()]
+      if ent then
+         game.kill_entity(ent)
+         network.sendData({action = "player_disonnected", network_id = event.peer:index()})
+      end
    elseif event.type == "receive" then
       reseau.dispatch(event)
       network.receiveData(event.dec_data)
@@ -79,14 +84,17 @@ end
 
 function network.clientListener(event)
    if event.type == "disconnect" then
-      -- FIXME: handle server disconnection
+      gs.switch("jeu/game_over", "disconnected")
    elseif event.type == "receive" then
       network.receiveData(event.dec_data)
    end
 end
 
 function network.sendData(data_object, peer)
+<<<<<<< HEAD
+=======
 
+>>>>>>> 9db2aad33178d4c1710a45dc3dbff09354d5aa8a
    if peer then
       reseau.send(peer, data_object)
    else
@@ -108,6 +116,9 @@ function network.receiveData(msg)
       end
       -- print("Received position of",ent.name,ent.network_id,msg.x,msg.y)
       ent:setPosition(msg.x,msg.y)
+   elseif msg.action == "player_disonnected" then
+      local ent = network.entities[msg.network_id]
+      game.kill_entity(ent)
    elseif msg.action == "build_barrier" then
       print("Reveived barrier update",msg.state)
       local bar = systems.barrier.find(msg.x , msg.y)

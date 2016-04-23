@@ -156,7 +156,11 @@ function gui.game_lobby.hostListener(event)
         elseif event.type == "disconnect" then
                 gui.game_lobby.disconnectedPlayer(event.peer:index())
         elseif event.type == "receive" then
-                if event.dec_data and event.dec_data.action ~= "synchronize" and event.dec_data.action ~= "pong" and event.dec_data.action ~= "back_to_lobby" then
+                if event.dec_data
+                     and event.dec_data.action ~= "connect"
+                     and event.dec_data.action ~= "synchronize"
+                     and event.dec_data.action ~= "pong"
+                     and event.dec_data.action ~= "back_to_lobby" then
                         reseau.dispatch(event)
                 end
                 gui.game_lobby.receiveData(event.dec_data, event.peer)

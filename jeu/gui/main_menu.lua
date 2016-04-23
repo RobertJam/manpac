@@ -48,7 +48,7 @@ function gui.main_menu.Load()
 
     -- Game title
     local image = loveframes.Create("image", frame)
-	image:SetImage("assets/images/title.png")
+	image:SetImage("assets/images/Title.png")
 	image:SetPos(buttons_x_origin - 70, buttons_y_origin - 60)
 	image:SetScale(1.2)
 	

@@ -144,6 +144,8 @@ function game.create_entities(player,opponents,host_cfg)
       local ent = game.create_entity(name)
       ent:addSystems({
             {"hunter",{destroy_speed = cfg.destroy_speed,
+                       shoot_dist = cfg.shoot_dist,
+                       shoot_angle = cfg.shoot_angle,
                        ghost_detect_dist = cfg.ghost_detect_dist}},
             {"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
             {"physics",{width = 35,height = 50}},
@@ -224,6 +226,9 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.timer = 0
    if gameplay_cfg.ghost.shared_barriers then
       systems.ghost.nbarriers = gameplay_cfg.ghost.max_barriers
+   end
+   if gamplay_cfg.hunter.can_shoot then
+      systems.hunter.can_shoot = true
    end
    game.timeout = gameplay_cfg.game.timeout or game.world.game_time
    game.create_entities(player,opponents,{gameplay = gameplay_cfg})

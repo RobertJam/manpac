@@ -15,6 +15,9 @@ return {
    },
    -- hunter entities config
    hunter = {
+      can_shoot = true,
+      shoot_dist = 100,
+      shoot_angle = 1.0,
       -- barrier destroy speed
       destroy_speed = 0.5,
       -- force to apply when moving
@@ -24,7 +27,7 @@ return {
    },
    -- global game config
    game = {
-      -- game duration in seconds
-      timeout = 30
+      -- game duration in seconds (nil uses map value)
+      timeout = nil
    }
 }

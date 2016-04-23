@@ -5,8 +5,9 @@ hunter.keymap = {move_left = "left",
                  move_right = "right",
                  move_up = "up",
                  move_down = "down",
+                 shoot = "c",
                  destroy_barrier = "v"}
-
+hunter.can_shoot = false
 hunter.destroy_speed = 0.5
 hunter.ghost_detect_dist = 350
 
@@ -58,6 +59,22 @@ function hunter.init_entity(self,cfg)
       self.player_update = hunter.player_update
       self.max_sound_dist = cfg.ghost_detect_dist or 250
       self.play_audio = false
+   end
+   self.shoot_dist = cfg.shoot_dist or 100
+   self.shoot_angle = cfg.shoot_angle or math.pi/4.0
+   self.shoot = function(self)
+      if not hunter.can_shoot then return end
+      local ghost_list = systems.ghost:getEntities()
+      for i=1,#ghost_list do
+         local dist = utils.dist(self,ghost_list[i])
+         if (dist < self.shoot_dist) then
+            local angle = utils.angle(self.direction,
+                                      utils.dir(ghost_list[i],self))
+            if (math.abs(angle) <= self.shoot_angle) then
+               game.kill_entity(ghost_list[i])
+            end
+         end
+      end
    end
 end
 

@@ -67,7 +67,7 @@ end
 
 function network.hostListener(event)
    if event.type == "connect" then
-      network.SendData({action = "server_in_game"}, event.peer)
+      network.sendData({action = "server_in_game"}, event.peer)
    elseif event.type == "disconnect" then
       -- FIXME: handle client disconnection
    elseif event.type == "receive" then

@@ -159,7 +159,7 @@ function gui.game_lobby.hostListener(event)
                 if event.dec_data and event.dec_data.action ~= "synchronize" and event.dec_data.action ~= "pong" and event.dec_data.action ~= "back_to_lobby" then
                         reseau.dispatch(event)
                 end
-                gui.game_lobby.receiveData(event.dec_data)
+                gui.game_lobby.receiveData(event.dec_data, event.peer)
         end
 end
 
@@ -222,74 +222,104 @@ function gui.game_lobby.synchronize()
 end
 
 function gui.game_lobby.clientListener(event)
-        if event.type == "receive" then
-                gui.game_lobby.receiveData(event.dec_data)
-        end
+   if event.type == "receive" then
+      gui.game_lobby.receiveData(event.dec_data)
+   end
 end
 
-function gui.game_lobby.receiveData(data_object)
-        if data_object.action then
-                if data_object.action == "message" then
-                        gui.game_lobby.AddText(data_object.name .. ": " .. data_object.text)
-                elseif data_object.action == "rename" then
-                        gui.game_lobby.AddText(data_object.oldname .. " has changed name to " .. data_object.newname)
-                elseif data_object.action == "init_id" then
-                        gui.players[1].userid = data_object.value
-                        gui.game_lobby.current_map = data_object.map
-                        gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
-                        gui.game_lobby.synchronize()
-                elseif data_object.action == "disconnect_player" then
-                        local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
-                        gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
-                        gui.game_lobby.removePlayer(player_index)
-                elseif data_object.action == "change_map" then
-                        gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
-                        gui.game_lobby.current_map = data_object.map
-                elseif data_object.action == "back_to_lobby" then
-                        if gui.players[1].host then
-                           table.insert(gui.players, data_object.player)
-                           gui.game_lobby.ready_button:SetEnabled(true)
-                        else
-                           gui.game_lobby.SendData({action = "back_to_lobby", player = gui.players[1]})
-                        end
-                        gui.game_lobby.synchronize()
-                elseif data_object.action == "synchronize" then
-                        if gui.players[1].host then
-                                for i,player in ipairs(gui.players) do
-                                        if data_object.players.userid == gui.players[i].userid then
-                                                gui.players[i] = data_object.players
-                                        end
-                                end
-                                gui.game_lobby.synchronize()
-                        else
-                                while table.getn(gui.players) > 1 do
-                                        table.remove(gui.players)
-                                end
-                                for i,player in ipairs(data_object.players) do
-                                        if data_object.players[i].userid ~= gui.players[1].userid then
-                                                table.insert(gui.players, data_object.players[i])
-                                        else
-                                                gui.players[1].ping = data_object.players[i].ping
-                                        end
-                                end
-                        end
-                        gui.game_lobby.RefreshList()
-                elseif data_object.action == "ping" then
-                        local data_object = {action = "pong", player_id = gui.players[1].userid}
-                        gui.game_lobby.SendData(data_object)
-                elseif data_object.action == "pong" then
-                        local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
-                        gui.players[player_index].ping = math.floor((love.timer.getTime() - gui.game_lobby.pingTime) * 1000)
-                elseif data_object.action == "launch" then
-                        gui.game_lobby.Launch(data_object)
-                elseif data_object.action == "get_ready" then
-                        if not gui.players[1].ready then
-                           gui.game_lobby.AddText("Get ready, we want to start the game !!")
-                        else
-                           gui.game_lobby.AddText("Host wants to start the game but some players are not ready yet !")
-                        end
-                end
-        end
+function gui.game_lobby.hostBusy()
+   local frame = loveframes.Create("frame")
+   frame:SetModal(true)
+   frame:SetName("Server is in game")
+   frame:SetDockable(false)
+   frame:SetScreenLocked(true)
+   frame:ShowCloseButton(false)
+   frame:SetWidth(200)
+   frame:SetHeight(80)
+   frame:Center()
+
+   local button = loveframes.Create("button", frame)
+   button:SetText("OK")
+   button:SetWidth(100)
+   button:Center()
+   button.OnClick = function()
+      gui.game_lobby.LeaveLobby()
+      button:GetParent():Remove()
+   end
+end
+
+function gui.game_lobby.receiveData(data_object, peer)
+   if data_object.action then
+      if data_object.action == "message" then
+         gui.game_lobby.AddText(data_object.name .. ": " .. data_object.text)
+      elseif data_object.action == "rename" then
+         gui.game_lobby.AddText(data_object.oldname .. " has changed name to " .. data_object.newname)
+      elseif data_object.action == "server_in_game" then
+         gui.game_lobby.hostBusy()
+      elseif data_object.action == "init_id" then
+         gui.players[1].userid = data_object.value
+         gui.game_lobby.current_map = data_object.map
+         gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
+         gui.game_lobby.synchronize()
+      elseif data_object.action == "disconnect_player" then
+         local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
+         gui.game_lobby.AddText(gui.players[player_index].name .. " has left the lobby")
+         gui.game_lobby.removePlayer(player_index)
+      elseif data_object.action == "connect" then
+         gui.game_lobby.newPlayer(peer)
+      elseif data_object.action == "change_map" then
+         gui.game_lobby.map_label:SetText("Map : " .. data_object.map)
+         gui.game_lobby.current_map = data_object.map
+      elseif data_object.action == "back_to_lobby" then
+         if gui.players[1].host then
+            table.insert(gui.players, data_object.player)
+            gui.game_lobby.ready_button:SetEnabled(true)
+            gui.game_lobby.synchronize()
+         else
+            if(gui.players[1].userid == 0) then
+               gui.game_lobby.SendData({action = "connect"})
+            else
+               gui.game_lobby.SendData({action = "back_to_lobby", player = gui.players[1]})
+               gui.game_lobby.synchronize()
+            end
+         end
+      elseif data_object.action == "synchronize" then
+         if gui.players[1].host then
+            for i,player in ipairs(gui.players) do
+               if data_object.players.userid == gui.players[i].userid then
+                  gui.players[i] = data_object.players
+               end
+            end
+            gui.game_lobby.synchronize()
+         else
+            while table.getn(gui.players) > 1 do
+               table.remove(gui.players)
+            end
+            for i,player in ipairs(data_object.players) do
+               if data_object.players[i].userid ~= gui.players[1].userid then
+                  table.insert(gui.players, data_object.players[i])
+               else
+                  gui.players[1].ping = data_object.players[i].ping
+               end
+            end
+         end
+         gui.game_lobby.RefreshList()
+      elseif data_object.action == "ping" then
+         local data_object = {action = "pong", player_id = gui.players[1].userid}
+         gui.game_lobby.SendData(data_object)
+      elseif data_object.action == "pong" then
+         local player_index = gui.game_lobby.getPlayerIndex(data_object.player_id)
+         gui.players[player_index].ping = math.floor((love.timer.getTime() - gui.game_lobby.pingTime) * 1000)
+      elseif data_object.action == "launch" then
+         gui.game_lobby.Launch(data_object)
+      elseif data_object.action == "get_ready" then
+         if not gui.players[1].ready then
+            gui.game_lobby.AddText("Get ready, we want to start the game !!")
+         else
+            gui.game_lobby.AddText("Host wants to start the game but some players are not ready yet !")
+         end
+      end
+   end
 end
 
 function gui.game_lobby.GetReady(ready_button)

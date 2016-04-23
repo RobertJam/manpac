@@ -364,14 +364,8 @@ function gui.game_lobby.Launch(data_object)
    local player_cfg = {
       role = string.lower(gui.players[1].role),
       network_id = gui.players[1].userid,
-      name = gui.players[1].name,
+      name = gui.players[1].name
    }
-   -- set gameplay parameters
-   if not ishost then
-      for k,v in pairs(data_object.gameplay[player_cfg.role]) do
-         player_cfg[k] = v
-      end
-   end
 
    local opponents_cfg = {}
    -- create an opponent entity for each other player in the game
@@ -386,11 +380,6 @@ function gui.game_lobby.Launch(data_object)
      --    opp.controller = "ai"
      --    opp.ai = {behavior = "stalker"}
      -- end
-       if not ishost then
-          for k,v in pairs(data_object.gameplay[opp.role]) do
-             opp[k] = v
-          end
-       end
      table.insert(opponents_cfg,opp)
    end
 

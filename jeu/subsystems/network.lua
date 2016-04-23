@@ -13,7 +13,7 @@ function network.init_system()
 end
 
 -- launched from server to quickstart clients
-function network.StartGame(gameplay_params)
+function network.StartGame(gameplay_cfg)
    if reseau.host then
       -- create entities table (opponents + player)
       -- used by client to set entities positions
@@ -21,7 +21,7 @@ function network.StartGame(gameplay_params)
       local all_players = {}
       for i=1,#openents do
          openent_data = {x = openents[i].x,
-                         y = openents[entii].y,
+                         y = openents[i].y,
                          network_id = openents[i].network_id}
          table.insert(all_players, openent_data)
       end
@@ -40,7 +40,7 @@ function network.StartGame(gameplay_params)
       end
       -- launch game message
       local data_object = {action = "launch",
-                           gameplay = gameplay_params,
+                           gameplay = gameplay_cfg,
                            entities = all_players,
                            exits = all_exit}
       gui.game_lobby.SendData(data_object)

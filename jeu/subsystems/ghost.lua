@@ -18,11 +18,6 @@ function ghost.init_entity(self,cfg)
    self.build_barrier = ghost.build_barrier
    self.destroy_barrier = ghost.destroy_barrier
    self.building = nil
-
-   self:addSystems({
-         {"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
-         {"physics",{width = 35,height = 50}},
-         "character"})
 end
 
 function ghost.init_system()

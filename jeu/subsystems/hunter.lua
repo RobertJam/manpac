@@ -19,10 +19,10 @@ function hunter.player_update(self, ghosts)
    if dist < self.max_sound_dist then
       -- print("Distance[" .. tostring(i) .. "] : " .. tostring(dist))
       if not self.play_audio then
-         audio.LoopMusic(audio.sounds.fantome_approche, 1 - dist / self.ghost_detect_dist)
+         audio.LoopMusic(audio.sounds.fantome_approche, 1 - dist / 350)
          self.play_audio = true
       else
-         audio.sounds.fantome_approche:setVolume(1 - dist / self.ghost_detect_dist)
+         audio.sounds.fantome_approche:setVolume(1 - dist / 350)
       end
    else
       if self.play_audio then
@@ -54,16 +54,11 @@ function hunter.init_entity(self,cfg)
    if cfg.move_force then
       self.setMoveForce(cfg.move_force)
    end
-   self.ghost_detect_dist = cfg.ghost_detect_dist or 
    if self == game.player then
       self.player_update = hunter.player_update
-      self.max_sound_dist = 250
+      self.max_sound_dist = cfg.ghost_detect_dist or 250
       self.play_audio = false
    end
-
-   self:addSystems({{"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
-         {"physics",{width = 35,height = 50}},
-         "character"})
 end
 
 function hunter.destroy_barrier(self)

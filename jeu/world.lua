@@ -92,7 +92,6 @@ function world.placeEntities(self,entities)
       local ent = entities[i]
       local role = "hunter"
       if ent:hasSystem("ghost") then role = "ghost" end
-      print("Placing role"..role)
       local entity_spawn = systems.spawn.random(role)
       entity_spawn:placeEntity(ent)
    end

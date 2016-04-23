@@ -13,11 +13,14 @@ ghost.destroy_speed = 0.8
 
 function ghost.init_entity(self,cfg)
    self.nbarriers = cfg.max_barriers or 3
+   self.build_speed = cfg.build_speed or ghost.build_speed
+   self.destroy_speed = cfg.destroy_speed or ghost.destroy_speed
    self.build_barrier = ghost.build_barrier
    self.destroy_barrier = ghost.destroy_barrier
    self.building = nil
 
-   self:addSystems({{"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
+   self:addSystems({
+         {"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
          {"physics",{width = 35,height = 50}},
          "character"})
 end

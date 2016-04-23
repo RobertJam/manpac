@@ -130,6 +130,10 @@ function game.hunter_exit(value)
    end
 end
 
+function game.create_prefab(prefab)
+   local ent = game.create_entity(prefab.name)
+end
+
 -- in-game state callbacks
 
 function state.enter(map_name,player,opponents,host_cfg)
@@ -163,8 +167,6 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- create player controlled entity
    game.player = game.create_entity(player.name)
    game.player:addSystem(player.role)
-   game.player.role = player.role
-   game.player.name = player.name
    if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
    game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity
@@ -193,7 +195,23 @@ function state.enter(map_name,player,opponents,host_cfg)
          game.world:createSpawns()
          game.world:placeEntities({game.player})
          game.world:placeEntities(game.opponents)
-         systems.network.StartGame()
+         local gameplay_params = {
+            ghost = {
+               max_barriers = 3,
+               build_speed = 0.8,
+               destroy_speed = 0.8,
+               move_force = 4000
+            },
+            hunter = {
+               destroy_speed = 0.5,
+               move_force = 4000
+               ghost_detect_dist = 25.0
+            }
+            game = {
+               timeout = nil
+            }
+         }
+         systems.network.StartGame(gameplay_params)
       else
          -- configure spawns and exits from host_cfg
          for i=1,#host_cfg.exits do
@@ -259,7 +277,6 @@ function state.update(dt)
    systems.ai_controller.update(systems.ai_controller:getEntities(),dt)
    systems.input_controller.update(systems.input_controller:getEntities())
    systems.character.update(systems.character:getEntities())
-   
    if game.player.player_update then
       game.player:player_update(systems.ghost:getEntities())
    end
@@ -301,11 +318,11 @@ function state.draw()
       x = gui_x + (i * 60)
       y = gui_y
       love.graphics.polygon('fill',
-		x, y,
-		x + 50, y,
-		x + 40, y + 20,
-		x - 10, y + 20
-	)
+                            x, y,
+                            x + 50, y,
+                            x + 40, y + 20,
+                            x - 10, y + 20
+      )
    end
    end
 end

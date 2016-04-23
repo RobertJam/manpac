@@ -30,6 +30,7 @@ function audio.LoopMusic(music, volume)
    music:setLooping(true)
    music:setVolume(volume)
    love.audio.play(music)
+   audio.current_music = music
 end
 
 return audio

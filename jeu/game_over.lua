@@ -5,6 +5,8 @@ local state = {}
 
 function state.enter(status)
    state.status = status
+   
+   if audio.current_music then love.audio.stop(audio.current_music) end
 end
 
 function state.update(dt)

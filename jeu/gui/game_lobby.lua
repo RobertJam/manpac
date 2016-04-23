@@ -649,12 +649,16 @@ function gui.game_lobby.GameParams()
       gui.game_lobby.AddText("Ghost build speed :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.build_speed * 10))
       gui.game_lobby.AddText("Ghost destroy speed :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.destroy_speed * 10))
       gui.game_lobby.AddText("Ghost move speed :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.move_force / 1000))
-      gui.game_lobby.AddText("Game timeout (0 = map default) :  " .. tostring(gui.game_lobby.gameplay_cfg.game.timeout))
       gui.game_lobby.AddText("Hunter detection range :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.ghost_detect_dist))
       gui.game_lobby.AddText("Hunters can kill ghosts :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.can_shoot))
       gui.game_lobby.AddText("Hunter shoot range :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.shoot_dist))
       gui.game_lobby.AddText("Hunter shoot precision :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.shoot_angle))
       gui.game_lobby.AddText("Hunter move speed :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.move_force / 1000))
+      if gui.game_lobby.gameplay_cfg.game.timeout then
+         gui.game_lobby.AddText("Game timeout :  " .. tostring(gui.game_lobby.gameplay_cfg.game.timeout))
+      else
+         gui.game_lobby.AddText("Game timeout :  Map default")
+      end
    end
 end
 

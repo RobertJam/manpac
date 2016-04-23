@@ -9,7 +9,9 @@ function barrier.init_entity(self,cfg)
 end
 
 function barrier.release_entity(self)
-   if self.owner then self.owner.nbarriers = self.owner.nbarriers + 1 end
+   if self.owner then
+      self.owner:addBarrier()
+   end
 end
 
 function barrier.init_system()

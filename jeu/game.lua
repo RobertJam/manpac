@@ -158,7 +158,9 @@ function game.create_entities(player,opponents,host_cfg)
       ent:addSystems({
             {"ghost", {max_barriers = cfg.max_barriers,
                         build_speed = cfg.build_speed,
-                        destroy_speed = cfg.destroy_speed}},
+                        destroy_speed = cfg.destroy_speed,
+                        shared_barriers = cfg.shared_barriers
+            }},
             {"gfx",{animation = "assets/sprites/fantome_IA.lua"}},
             {"physics",{width = 35,height = 50}},
             {"character",{move_force = cfg.move_force}}}
@@ -213,6 +215,7 @@ function state.enter(map_name,player,opponents,host_cfg)
    local gameplay_cfg = {
       ghost = {
          max_barriers = 3,
+         shared_barriers = true,
          build_speed = 0.8,
          destroy_speed = 0.8,
          move_force = 40000
@@ -235,6 +238,9 @@ function state.enter(map_name,player,opponents,host_cfg)
    game.nhunter = 0
    game.nhunter_exit = 0
    game.timer = 0
+   if gameplay_cfg.ghost.shared_barriers then
+      systems.ghost.nbarriers = gameplay_cfg.ghost.max_barriers
+   end
    game.timeout = gameplay_cfg.game.timeout or game.world.game_time
    game.create_entities(player,opponents,{gameplay = gameplay_cfg})
    if game.player.network_id then
@@ -344,12 +350,12 @@ function state.draw()
                        10,10)
    if game.player:hasSystem("ghost") then
    love.graphics.print(string.format("Remaining barriers: %d",
-                                     game.player.nbarriers),
+                                     game.player:nBarriers()),
                        10,20)
     -- Draw polygon to show barriers number
    gui_x = 300
    gui_y = 10
-   for i=1, game.player.nbarriers, 1 do
+   for i=1, game.player:nBarriers(), 1 do
       x = gui_x + (i * 60)
       y = gui_y
       love.graphics.polygon('fill',

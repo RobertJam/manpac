@@ -144,6 +144,8 @@ function game.create_entities(player,opponents,host_cfg)
       local ent = game.create_entity(name)
       ent:addSystems({
             {"hunter",{destroy_speed = cfg.destroy_speed,
+                       shoot_dist = cfg.shoot_dist,
+                       shoot_angle = cfg.shoot_angle,
                        ghost_detect_dist = cfg.ghost_detect_dist}},
             {"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
             {"physics",{width = 35,height = 50}},

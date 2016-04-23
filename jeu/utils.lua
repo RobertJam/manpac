@@ -13,6 +13,19 @@ function utils.dist(a,b)
    return ((b.x-a.x)^2+(b.y-a.y)^2)^0.5
 end
 
+function utils.angle(v1,v2)
+   local x1,y1,z1 = utils.normalize(v1.x,v1.y)
+   local x2,y2,z2 = utils.normalize(v2.x,v2.y)
+   local cross = x1*y2-x2*y1
+   local dot = x1*x2+y1*y2
+   return math.atan2(cross,dot)
+end
+
+function utils.dir(a,b)
+   local x,y,z = utils.normalize(b.x - a.x,b.y - a.y)
+   return {x = x,y = y}
+end
+
 function utils.find_closest_barrier(self)
    -- FIXME: consider character direction instead of just the distance
    -- FIXME: consider a maximum distance

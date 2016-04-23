@@ -45,8 +45,8 @@ end
 function utils.barrier_position(self)
    return {x = math.floor((self.x + self.direction.x ) / 64)
               * 64 +self.direction.x * 64 + 32,
-           y = math.floor((self.y + self.direction.y ) / 64)
-              * 64 + self.direction.y * 64 + 32}
+           y = math.floor((self.y - self.direction.y ) / 64)
+              * 64 - self.direction.y * 64 + 32}
 end
 
 function utils.tprint ( t )

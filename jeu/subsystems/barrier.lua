@@ -31,11 +31,11 @@ function barrier.build(self,amount)
    
    -- Calculate step from 1 to 10
    step = math.ceil(self.build_state * 10)
-   self:setAnimation("construct"..step)
+   self:setAnimation("step"..step)
 
    if self.build_state >= 1.0 then
       self.build_state = 1.0
-	  self:setAnimation("construct10")
+	  self:setAnimation("step".."10")
       love.audio.play(audio.sounds.fantom_construit_barriere)
       return true
    else
@@ -56,7 +56,7 @@ function barrier.destroy(self,amount)
    
    -- Calculate step from 1 to 10
    step = math.ceil(self.build_state * 10)
-   self:setAnimation("destruct"..step)
+   self:setAnimation("step"..step)
 
    if self.build_state <= 0.0 then
       game.kill_entity(self)

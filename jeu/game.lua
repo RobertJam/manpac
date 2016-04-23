@@ -213,6 +213,7 @@ function state.enter(map_name,player,opponents,host_cfg)
        role = "ghost"},
    }
    local gameplay_cfg = require("game_cfg")   -- init subsystems
+   -- init subsystems
    for _,sys in pairs(systems) do
       if sys.init_system then sys.init_system() end
    end

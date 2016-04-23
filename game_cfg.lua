@@ -11,14 +11,14 @@ return {
       -- barrier destroy speed
       destroy_speed = 0.8,
       -- force to apply when moving
-      move_force = 40000
+      move_force = 15000
    },
    -- hunter entities config
    hunter = {
       -- barrier destroy speed
       destroy_speed = 0.5,
       -- force to apply when moving
-      move_force = 4000,
+      move_force = 10000,
       -- distance at which hunter starts to detect a ghost
       ghost_detect_dist = 25.0
    },

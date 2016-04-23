@@ -3,24 +3,40 @@ require("jeu.gui.game_lobby")
 --local gui = require("jeu/gui/main_menu")
 local state = {}
 
-function state.enter(has_won)
-   state.has_won = has_won
+function state.enter(status)
+   state.status = status
 end
 
 function state.update(dt)
 end
 
 function state.draw()
-   if state.has_won then
+   if state.status == "victory" then
       love.graphics.print("Victory !!!!",100,100)
-   else
+   elseif state.status == "defeat" then
       love.graphics.print("Defeat !!!!",100,100)
+   elseif state.status == "disconnected" then
+      love.graphics.print("Network connecion lost",100,100)
    end
    love.graphics.print("Press space to return to main menu",100,120)
 end
 
 function state.keypressed(key, isrepeat)
-   if love.keyboard.isDown(" ") then state.BackToLobby() end
+   if love.keyboard.isDown(" ") then
+      if state.status == "disconnected" then
+         state.BackToHome()
+      else
+         state.BackToLobby()
+      end
+   end
+end
+
+function state.BackToHome()
+   reseau.removeHostListener(systems.network.hostListener)
+   reseau.removeClientListener(systems.network.clientListener)
+   reseau.close()
+   gs.switch("jeu/start")
+   gui.main_menu.Load()
 end
 
 function state.BackToLobby()

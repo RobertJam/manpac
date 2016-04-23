@@ -1,4 +1,6 @@
-gui.game_lobby = {}
+gui.game_lobby = {
+   gameplay_cfg = require("game_cfg")
+}
 
 function gui.game_lobby.Load()
         loveframes = require("libs.loveframes")
@@ -97,7 +99,7 @@ function gui.game_lobby.Load()
 
         gui.game_lobby.ready_button = loveframes.Create("button", gui.game_lobby.panel)
         gui.game_lobby.ready_button:SetSize(150, 30)
-        gui.game_lobby.ready_button:SetPos(645, 505)
+        gui.game_lobby.ready_button:SetPos(645, 555)
         gui.game_lobby.ready_button.OnClick = gui.game_lobby.GetReady
         if gui.players[1].host then
                 gui.game_lobby.ready_button:SetEnabled(false)
@@ -108,9 +110,15 @@ function gui.game_lobby.Load()
 
         local leave_button = loveframes.Create("button", gui.game_lobby.panel)
         leave_button:SetSize(150, 30)
-        leave_button:SetPos(490, 505)
+        leave_button:SetPos(490, 555)
         leave_button:SetText("Leave")
         leave_button.OnClick = gui.game_lobby.LeaveLobby
+        
+        local param_button = loveframes.Create("button", gui.game_lobby.panel)
+        param_button:SetSize(150, 30)
+        param_button:SetPos(645, 515)
+        param_button:SetText("Game params")
+        param_button.OnClick = gui.game_lobby.GameParams
 
         if gui.players[1].host then
                 gui.players[1].ready = true
@@ -324,6 +332,9 @@ function gui.game_lobby.receiveData(data_object, peer)
          else
             gui.game_lobby.AddText("Host wants to start the game but some players are not ready yet !")
          end
+      elseif data_object.action == "update_params" then
+         gui.game_lobby.AddText("Game parameters are updated")
+         gui.game_lobby.gameplay_cfg = data_object.params
       end
    end
 end
@@ -357,11 +368,6 @@ function gui.game_lobby.Launch(data_object)
       end
    end
 
-   -- if ishost then
-      -- local data_object = {action = "launch"}
-      -- gui.game_lobby.SendData(data_object)
-   -- end
-
    timer.removeListener(gui.game_lobby.SendPings)
    timer.removeListener(gui.game_lobby.RefreshPings)
    reseau.removeClientListener(gui.game_lobby.clientListener)
@@ -376,24 +382,18 @@ function gui.game_lobby.Launch(data_object)
    local opponents_cfg = {}
    -- create an opponent entity for each other player in the game
    for i=2,#gui.players do
-     local opp = {role = string.lower(gui.players[i].role),
+      local opp = {role = string.lower(gui.players[i].role),
                   name = gui.players[i].name,}
-     -- if not ishost then
-       opp.controller = "network"
-       opp.network = {network_id = gui.players[i].userid}
-     -- end
-     -- else
-     --    opp.controller = "ai"
-     --    opp.ai = {behavior = "stalker"}
-     -- end
-     table.insert(opponents_cfg,opp)
+      opp.controller = "network"
+      opp.network = {network_id = gui.players[i].userid}
+      table.insert(opponents_cfg,opp)
    end
 
    gui.game_lobby.panel:Remove()
    local map_file = "assets/maps/" .. gui.game_lobby.current_map .. ".lua"
    love.audio.stop(audio.sounds.menu_music)
    audio.LoopMusic(audio.sounds.map_music2)
-   gs.switch("jeu/game", map_file, player_cfg, opponents_cfg, data_object)
+   gs.switch("jeu/game", map_file, player_cfg, opponents_cfg, data_object, gui.game_lobby.gameplay_cfg)
 end
 
 function gui.game_lobby.LeaveLobby()
@@ -452,5 +452,209 @@ function gui.game_lobby.RefreshList()
         for i, player in ipairs(gui.players) do
                 gui.game_lobby.list:AddRow(player.name, player.role, player.ready, player.ping)
         end
+end
+
+function gui.game_lobby.GameParams()
+   if gui.players[1].host then
+      local frame = loveframes.Create("frame")
+      frame:SetName("Game parameters")
+      frame:SetDockable(false)
+      frame:SetScreenLocked(true)
+      frame:ShowCloseButton(false)
+      frame:SetWidth(430)
+      frame:SetHeight(250)
+      frame:Center()
+
+      local button = loveframes.Create("button", frame)
+      button:SetText("OK")
+      button:SetSize(60, 30)
+      button:SetPos(360, 210)
+      button.OnClick = function()
+         gui.game_lobby.SendData({action = "update_params", params = gui.game_lobby.gameplay_cfg})
+         button:GetParent():Remove()
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Ghost max barriers")
+      gui.game_lobby.map_label:SetPos(10, 35)
+
+      local numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(135, 30)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(10)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.ghost.max_barriers)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.ghost.max_barriers = value
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Sharred barriers")
+      gui.game_lobby.map_label:SetPos(10, 68)
+
+      local multichoice = loveframes.Create("multichoice", frame)
+      multichoice:SetPos(135, 65)
+      multichoice:SetSize(50, 25)
+      multichoice:AddChoice("Yes")
+      multichoice:AddChoice("No")
+      if gui.game_lobby.gameplay_cfg.ghost.shared_barriers then
+         multichoice:SetChoice("Yes")
+      else
+         multichoice:SetChoice("No")
+      end
+      multichoice.OnChoiceSelected = function(object, choice)
+         gui.game_lobby.gameplay_cfg.ghost.shared_barriers = choice == "Yes"
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Ghost build speed")
+      gui.game_lobby.map_label:SetPos(10, 103)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(135, 100)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(15)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.ghost.build_speed * 10)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.ghost.build_speed = value / 10
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Ghost destroy speed")
+      gui.game_lobby.map_label:SetPos(10, 138)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(135, 135)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(15)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.ghost.destroy_speed * 10)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.ghost.destroy_speed = value / 10
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Ghost move speed")
+      gui.game_lobby.map_label:SetPos(10, 173)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(135, 170)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(50)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.ghost.move_force / 1000)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.ghost.move_force = value * 1000
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Game timeout (0 = map default)")
+      gui.game_lobby.map_label:SetPos(10, 208)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(205, 205)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(600)
+      if gui.game_lobby.gameplay_cfg.game.timeout then
+         numberbox:SetValue(gui.game_lobby.gameplay_cfg.game.timeout)
+      else
+         numberbox:SetValue(0)
+      end
+      numberbox.OnValueChanged = function(object, value)
+         if value == 0 then
+            gui.game_lobby.gameplay_cfg.game.timeout = nil
+         else
+            gui.game_lobby.gameplay_cfg.game.timeout = value
+         end
+      end
+      
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Hunter detection range")
+      gui.game_lobby.map_label:SetPos(210, 35)
+
+      local numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(370, 30)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(100)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.hunter.ghost_detect_dist)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.hunter.ghost_detect_dist = value
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Hunters can kill ghosts")
+      gui.game_lobby.map_label:SetPos(210, 68)
+
+      local multichoice = loveframes.Create("multichoice", frame)
+      multichoice:SetPos(370, 65)
+      multichoice:SetSize(50, 25)
+      multichoice:AddChoice("Yes")
+      multichoice:AddChoice("No")
+      if gui.game_lobby.gameplay_cfg.hunter.can_shoot then
+         multichoice:SetChoice("Yes")
+      else
+         multichoice:SetChoice("No")
+      end
+      multichoice.OnChoiceSelected = function(object, choice)
+         gui.game_lobby.gameplay_cfg.hunter.can_shoot = choice == "Yes"
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Hunter shoot range")
+      gui.game_lobby.map_label:SetPos(210, 103)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(370, 100)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(1000)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.hunter.shoot_dist)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.hunter.shoot_dist = value
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Hunter shoot precision")
+      gui.game_lobby.map_label:SetPos(210, 138)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(370, 135)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(6)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.hunter.shoot_angle)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.hunter.shoot_angle = value
+      end
+
+      gui.game_lobby.map_label = loveframes.Create("text", frame)
+      gui.game_lobby.map_label:SetText("Hunter move speed")
+      gui.game_lobby.map_label:SetPos(210, 173)
+
+      numberbox = loveframes.Create("numberbox", frame)
+      numberbox:SetPos(370, 170)
+      numberbox:SetSize(50, 25)
+      numberbox:SetMin(0)
+      numberbox:SetMax(50)
+      numberbox:SetValue(gui.game_lobby.gameplay_cfg.hunter.move_force / 1000)
+      numberbox.OnValueChanged = function(object, value)
+         gui.game_lobby.gameplay_cfg.hunter.move_force = value * 1000
+      end
+   else
+      gui.game_lobby.AddText("Ghost max barriers :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.max_barriers))
+      gui.game_lobby.AddText("Sharred barriers :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.shared_barriers))
+      gui.game_lobby.AddText("Ghost build speed :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.build_speed * 10))
+      gui.game_lobby.AddText("Ghost destroy speed :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.destroy_speed * 10))
+      gui.game_lobby.AddText("Ghost move speed :  " .. tostring(gui.game_lobby.gameplay_cfg.ghost.move_force / 1000))
+      gui.game_lobby.AddText("Game timeout (0 = map default) :  " .. tostring(gui.game_lobby.gameplay_cfg.game.timeout))
+      gui.game_lobby.AddText("Hunter detection range :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.ghost_detect_dist))
+      gui.game_lobby.AddText("Hunters can kill ghosts :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.can_shoot))
+      gui.game_lobby.AddText("Hunter shoot range :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.shoot_dist))
+      gui.game_lobby.AddText("Hunter shoot precision :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.shoot_angle))
+      gui.game_lobby.AddText("Hunter move speed :  " .. tostring(gui.game_lobby.gameplay_cfg.hunter.move_force / 1000))
+   end
 end
 

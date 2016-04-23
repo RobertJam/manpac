@@ -195,7 +195,7 @@ end
 
 -- in-game state callbacks
 
-function state.enter(map_name,player,opponents,host_cfg)
+function state.enter(map_name,player,opponents,host_cfg,gameplay_cfg)
    -- default debug values
    map_name = map_name or "assets/maps/sewers.lua"
    player = player or {name = "player",
@@ -214,7 +214,10 @@ function state.enter(map_name,player,opponents,host_cfg)
        controller = "ai",
        role = "ghost"},
    }
-   local gameplay_cfg = require("game_cfg")   -- init subsystems
+   
+   if gameplay_cfg == nil then
+      gameplay_cfg = require("game_cfg")   -- init subsystems
+   end
    -- init subsystems
    for _,sys in pairs(systems) do
       if sys.init_system then sys.init_system() end

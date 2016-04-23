@@ -56,8 +56,8 @@ function hunter.init_entity(self)
       self.play_audio = false
    end
 
-   self:addSystems({{"gfx",{image = "assets/sprites/player.tga"}},
-         {"physics",{width = 27,height = 32}},
+   self:addSystems({{"gfx",{animation = "assets/sprites/chasseur_robot.lua"}},
+         {"physics",{width = 35,height = 50}},
          "character"})
 end
 

@@ -1,11 +1,10 @@
 -- love entry point file
 
+audio = require("jeu/audio")
 lovebird = require("libs/lovebird")
 gs = require("libs/states")
 reseau = require("libs/reseau")
 timer = require("libs/timer")
-audio = require("jeu/audio")
-
 
 -- Override run for fixed physics
 function love.setUpdateTimestep(ts)

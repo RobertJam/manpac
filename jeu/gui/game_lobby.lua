@@ -340,7 +340,7 @@ function gui.game_lobby.receiveData(data_object, peer)
 end
 
 function gui.game_lobby.GetReady(ready_button)
-   love.audio.play(audio.sounds.menu_click)
+   love.audio.play(audio.sounds.menu_click.source)
    if gui.players[1].host then
       gui.game_lobby.Launch()
    else
@@ -397,7 +397,7 @@ function gui.game_lobby.Launch(data_object)
 end
 
 function gui.game_lobby.LeaveLobby()
-   love.audio.play(audio.sounds.menu_click)
+   love.audio.play(audio.sounds.menu_click.source)
    timer.removeListener(gui.game_lobby.SendPings)
    timer.removeListener(gui.game_lobby.RefreshPings)
    reseau.removeClientListener(gui.game_lobby.clientListener)

@@ -43,7 +43,7 @@ function barrier.build(self, amount, is_absolute_amount)
       self.build_state = 1.0
 	  -- Last step.
 	  self:setAnimation("step".."14")
-      love.audio.play(audio.sounds.fantom_construit_barriere)
+      love.audio.play(audio.sounds.fantom_construit_barriere.source)
       return true
    else
       return false
@@ -59,7 +59,7 @@ function barrier.destroy(self,amount)
 
    if self.build_state <= 0.0 then
       game.kill_entity(self)
-      love.audio.play(audio.sounds.fantome_recupere_barriere)
+      love.audio.play(audio.sounds.fantome_recupere_barriere.source)
       return true
    end
    return false

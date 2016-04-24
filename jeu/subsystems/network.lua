@@ -130,7 +130,7 @@ function network.receiveData(msg)
       local bar = systems.barrier.find(msg.x , msg.y)
       if bar then
          game.kill_entity(bar)
-         love.audio.play(audio.sounds.fantome_recupere_barriere)
+         love.audio.play(audio.sounds.fantome_recupere_barriere.source)
       end
    elseif msg.action == "game_over" then
       if game.player_cfg.role == msg.win_team then

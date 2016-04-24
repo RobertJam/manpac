@@ -17,14 +17,14 @@ function hunter.player_update(self, ghosts)
       local ghost_dist = utils.dist(self, ghost)
       if ghost_dist < dist then dist = ghost_dist end
    end
+   -- print("Distance[" .. tostring(i) .. "] : " .. tostring(dist) .. " vol: " .. tostring(1.25 - dist / hunter.ghost_detect_dist))
    if dist < self.max_sound_dist then
       -- print("Distance[" .. tostring(i) .. "] : " .. tostring(dist))
       if not self.play_audio then
-         audio.LoopMusic(audio.sounds.fantome_approche, 1 - dist / 350)
+         audio.LoopMusic(audio.sounds.fantome_approche)
          self.play_audio = true
-      else
-         audio.sounds.fantome_approche:setVolume(1 - dist / 350)
       end
+      audio.sounds.fantome_approche.source:setVolume(1.2 - dist / hunter.ghost_detect_dist)
    else
       if self.play_audio then
          love.audio.stop(audio.sounds.fantome_approche)
@@ -56,11 +56,9 @@ function hunter.init_entity(self,cfg)
    if cfg.move_force then
       self.setMoveForce(cfg.move_force)
    end
-   if self == game.player then
-      self.player_update = hunter.player_update
-      self.max_sound_dist = cfg.ghost_detect_dist or 250
-      self.play_audio = false
-   end
+   self.player_update = hunter.player_update
+   self.max_sound_dist = 1500 -- cfg.ghost_detect_dist or 250
+   self.play_audio = false
    self.shoot_dist = cfg.shoot_dist or 100
    self.shoot_angle = cfg.shoot_angle or math.pi/4.0
    self.shoot = function(self)

@@ -57,18 +57,57 @@ function gui.main_menu.Load()
 	host_button:SetPos(buttons_x_origin, buttons_y_origin + button_spacing)
 	host_button:SetText("Host a game")
 	host_button.OnClick = gui.main_menu.HostGame
+   host_button.OnMouseEnter = function(object)
+       love.audio.play(audio.sounds.menu_click.source)
+   end
 	
 	local join_button = loveframes.Create("button", gui.main_menu.panel)
 	join_button:SetSize(200, 30)
 	join_button:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 2)
 	join_button:SetText("Join a game")
 	join_button.OnClick = gui.main_menu.JoinGame
-	
+   join_button.OnMouseEnter = function(object)
+       love.audio.play(audio.sounds.menu_click.source)
+   end
+
+   local text = loveframes.Create("text", gui.main_menu.panel)
+   text:SetPos(660, 510)
+   text:SetText("Music Volume")
+   text:SetShadowColor(200, 200, 200, 255)
+
+   local slider = loveframes.Create("slider")
+   slider:SetPos(630, 530)
+   slider:SetWidth(150)
+   slider:SetMinMax(0, 100)
+   slider:SetButtonSize(20, 10)
+   slider:SetValue(audio.music_volume * 100)
+   slider.OnValueChanged = function(object)
+      audio.SetMusicVolume(object:GetValue() / 100)
+   end
+
+   local text = loveframes.Create("text", gui.main_menu.panel)
+   text:SetPos(660, 550)
+   text:SetText("SFX Volume")
+   text:SetShadowColor(200, 200, 200, 255)
+
+   slider = loveframes.Create("slider")
+   slider:SetPos(630, 570)
+   slider:SetWidth(150)
+   slider:SetMinMax(0, 100)
+   slider:SetButtonSize(20, 10)
+   slider:SetValue(audio.sfx_volume * 100)
+   slider.OnValueChanged = function(object)
+      audio.SetSfxVolume(object:GetValue() / 100)
+   end
+
 	local quick_button = loveframes.Create("button", gui.main_menu.panel)
 	quick_button:SetSize(200, 30)
 	quick_button:SetPos(buttons_x_origin, buttons_y_origin + button_spacing * 3)
 	quick_button:SetText("Quick Start")
 	quick_button.OnClick = gui.main_menu.QuickStart
+   quick_button.OnMouseEnter = function(object)
+       love.audio.play(audio.sounds.menu_click.source)
+   end
 
 	local text_shortcuts = loveframes.Create("text", gui.main_menu.panel)
 	text_shortcuts:SetSize(640, 30)
@@ -95,20 +134,20 @@ function gui.main_menu.Load()
 end
 
 function gui.main_menu.HostGame()
-   love.audio.play(audio.sounds.menu_click)
+   love.audio.play(audio.sounds.menu_click.source)
 	gui.players[1].host = true
 	gui.main_menu.panel:Remove()
 	gui.game_lobby.Load()
 end
 
 function gui.main_menu.JoinGame()
-   love.audio.play(audio.sounds.menu_click)
+   love.audio.play(audio.sounds.menu_click.source)
 	gui.main_menu.panel:Remove()
 	gui.join_menu.Load()
 end
 
 function gui.main_menu.QuickStart()
-   love.audio.play(audio.sounds.menu_click)
+   love.audio.play(audio.sounds.menu_click.source)
 	gui.main_menu.panel:Remove()
 	gui.quick_start.Load()
 end

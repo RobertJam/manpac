@@ -28,6 +28,10 @@ return {
    -- global game config
    game = {
       -- game duration in seconds (nil uses map value)
-      timeout = nil
+      timeout = nil,
+      -- initial music volume
+      music_volume = 0.3,
+      -- initial sfx volume
+      sfx_volume = 1
    }
 }

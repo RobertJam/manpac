@@ -354,7 +354,7 @@ function state.update(dt)
    systems.ai_controller.update(systems.ai_controller:getEntities(),dt)
    systems.input_controller.update(systems.input_controller:getEntities())
    systems.character.update(systems.character:getEntities())
-   if game.player and game.player.player_update then
+   if game.player and game.player_cfg.role == "hunter" then
       game.player:player_update(systems.ghost:getEntities())
    end
    -- send locally controlled entities state to server

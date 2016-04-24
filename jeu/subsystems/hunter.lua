@@ -50,6 +50,7 @@ function hunter.exit_collision(self,other)
 end
 
 function hunter.init_entity(self,cfg)
+   game.nhunter = game.nhunter + 1
    self.destroy_barrier = hunter.destroy_barrier
    self.destroy_speed = cfg.destroy_speed or hunter.destroy_speed
    if cfg.move_force then
@@ -71,11 +72,17 @@ function hunter.init_entity(self,cfg)
             local angle = utils.angle(self.direction,
                                       utils.dir(ghost_list[i],self))
             if (math.abs(angle) <= self.shoot_angle) then
+               systems.network.sendData({action = "kill_ghost",
+                                         ghost_id = ghost_list[i].network_id})
                game.kill_entity(ghost_list[i])
             end
          end
       end
    end
+end
+
+function hunter.release_entity(self)
+   game.nhunter = game.nhunter - 1
 end
 
 function hunter.destroy_barrier(self)

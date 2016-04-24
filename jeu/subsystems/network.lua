@@ -1,7 +1,7 @@
 -- network subsystem
-
+local utils = require("jeu/utils")
 local network = {
-   entities = {},    -- network_id -> entity table for all network controlled entities
+   entities = {}, -- network_id -> entity table for all network controlled entities
 }
 
 function network.init_system()
@@ -115,6 +115,9 @@ function network.receiveData(msg)
    elseif msg.action == "player_disonnected" then
       local ent = network.entities[msg.network_id]
       game.kill_entity(ent)
+   elseif msg.action == "kill_ghost" then
+      local ent = network.entities[msg.ghost_id]
+      game.die(ent)
    elseif msg.action == "build_barrier" then
       print("Reveived barrier update",msg.state)
       local bar = systems.barrier.find(msg.x , msg.y)
@@ -130,10 +133,10 @@ function network.receiveData(msg)
          love.audio.play(audio.sounds.fantome_recupere_barriere)
       end
    elseif msg.action == "game_over" then
-      if game.player:hasSystem(msg.win_team) then
-         gs.switch("jeu/game_over",true)
+      if game.player_cfg.role == msg.win_team then
+         gs.switch("jeu/game_over","victory")
       else
-         gs.switch("jeu/game_over",false)
+         gs.switch("jeu/game_over","defeat")
       end
    else
       print("Unhandled network message received:",msg.action)

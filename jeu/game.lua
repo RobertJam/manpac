@@ -143,14 +143,14 @@ function game.die(ent)
 end
 
 function game.next_player()
-   local ghosts = systems.ghost:getEntities()
-   local hunters = systems.hunter:getEntities()
-   local index = utils.rand_range(1,#ghosts+#hunters)
-   if index < #ghosts then
-      game.followed_player = ghosts[index]
+   local entities = {}
+   if game.player_cfg.role == "hunter" then
+      entities = systems.hunter:getEntities()
    else
-      game.followed_player = hunters[index - #ghosts]
+      entities = systems.ghost:getEntities()
    end
+   local index = math.random(#entities-1)
+   return entities[index+1]
 end
 
 function game.create_prefab(prefab)
@@ -336,9 +336,6 @@ function state.update(dt)
    if love.keyboard.isDown("q") then scrollX = 10 end
    if love.keyboard.isDown("s") then scrollY = -10 end
    if love.keyboard.isDown("z") then scrollY = 10 end
-   if not game.player and love.keyboard.isDown("n") then
-      game.followed_player = game.next_player()
-   end
    if scrollX ~= 0 or scrollY ~= 0 then
       game.world:scroll(scrollX,scrollY)
    elseif game.followed_player then
@@ -417,6 +414,9 @@ function state.mousereleased(x, y, button)
 end
 
 function state.keypressed(key, isrepeat)
+   if not isrepeat and key == "n" then
+      game.followed_player = game.next_player()
+   end
 end
 
 function state.keyreleased(key)

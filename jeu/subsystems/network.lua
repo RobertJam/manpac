@@ -119,7 +119,7 @@ function network.receiveData(msg)
       print("Reveived barrier update",msg.state)
       local bar = systems.barrier.find(msg.x , msg.y)
       if bar then
-         bar:set_state(msg.state)
+         bar:build(msg.state, true)
       end
    elseif msg.action == "create_barrier" then
       systems.barrier.create(self, msg.x , msg.y)

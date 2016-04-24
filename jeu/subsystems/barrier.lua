@@ -28,8 +28,12 @@ function barrier.create(owner,x,y)
    return self
 end
 
-function barrier.build(self,amount)
-   self.build_state = self.build_state + amount
+function barrier.build(self, amount, is_absolute_amount)
+   if is_absolute_amount then
+      self.build_state = amount
+   else
+      self.build_state = self.build_state + amount
+   end
    
    -- Calculate step from 1 to 14
    step = math.ceil(self.build_state * 14)
@@ -43,14 +47,6 @@ function barrier.build(self,amount)
       return true
    else
       return false
-   end
-end
-
-function barrier.set_state(self, amount)
-   self.build_state = amount
-
-   if self.build_state == 1.0 then
-      love.audio.play(audio.sounds.fantom_construit_barriere)
    end
 end
 

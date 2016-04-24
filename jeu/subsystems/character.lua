@@ -27,15 +27,35 @@ function character.init_entity(self,cfg)
       self.direction = {x = 0, y = -1}
       self:setAnimation("walk_down")
    end
-   self.dont_move = function(self)
+   self.isMoving = function(self)
+      return (self.move_x ~= 0 or self.move_y ~= 0)
+   end
+   self.setDirection = function(self,direction,moving)
+      self.direction = direction
       if self.direction.x == 1 and self.direction.y == 0 then
-         self:setAnimation("idle_right")
+         if moving then
+            self:setAnimation("walk_right")
+         else
+            self:setAnimation("idle_right")
+         end
       elseif self.direction.x == -1 and self.direction.y == 0 then
-         self:setAnimation("idle_left")
+         if moving then
+            self:setAnimation("walk_left")
+         else
+            self:setAnimation("idle_left")
+         end
       elseif self.direction.y == -1 and self.direction.x == 0 then
-         self:setAnimation("idle_down")
+         if moving then
+            self:setAnimation("walk_down")
+         else
+            self:setAnimation("idle_down")
+         end
       elseif self.direction.y == 1 and self.direction.x == 0 then
-         self:setAnimation("idle_up")
+         if moving then
+            self:setAnimation("walk_up")
+         else
+            self:setAnimation("idle_up")
+         end
       end
    end
 end

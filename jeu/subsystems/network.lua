@@ -112,6 +112,7 @@ function network.receiveData(msg)
       end
       -- print("Received position of",ent.name,ent.network_id,msg.x,msg.y)
       ent:setPosition(msg.x,msg.y)
+      ent:setDirection(msg.direction,msg.moving)
    elseif msg.action == "player_disonnected" then
       local ent = network.entities[msg.network_id]
       game.kill_entity(ent)
@@ -148,6 +149,8 @@ function network.send_state(entities)
       -- send entity state update to others
       local entData = {action = "entity_position",
                        network_id = ent.network_id,
+                       direction = ent.direction,
+                       moving = ent:isMoving(),
                        x = ent.x,
                        y = ent.y,}
       -- print("Sending position of",ent.name,ent.x,ent.y)

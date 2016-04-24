@@ -16,8 +16,8 @@ function input.update(entities)
             entity[action](entity)
          end
       end
-      if entity.move_x == 0 and entity.move_y == 0 then
-         entity["dont_move"](entity)
+      if not entity:isMoving() then
+         entity:setDirection(entity.direction)
       end
    end
 end

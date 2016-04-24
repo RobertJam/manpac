@@ -42,6 +42,8 @@ function world.create(map_name)
    world.map = sti.new(map_name,{"box2d"})
    world.map:box2d_init(systems.physics.world)
    world.game_time = world.map.properties["game_time"] or 60
+   world.map.layers["spawns_hunter"].visible = false
+   world.map.layers["spawns_ghost"].visible = false
    return world
 end
 
@@ -74,12 +76,11 @@ end
 function world.createSpawns(self)
    local registerSpawns = function(layer_name,team_name)
       local spawnLayer = self.map.layers[layer_name]
-      spawnLayer.visible = false
       for i=1,#spawnLayer.objects do
          local mapSpawn = spawnLayer.objects[i]
          local spawn = game.create_entity()
-         spawn:addSystem("spawn",{x = mapSpawn.x,
-                                  y = mapSpawn.y,
+         spawn:addSystem("spawn",{x = mapSpawn.x+mapSpawn.width/2.0,
+                                  y = mapSpawn.y+mapSpawn.height/2.0,
                                   team = team_name})
       end
    end

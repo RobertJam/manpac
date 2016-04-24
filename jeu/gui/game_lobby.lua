@@ -78,8 +78,12 @@ function gui.game_lobby.Load()
                   end
                end
            end
-           multichoice:SetChoice("sewers")
-           gui.game_lobby.current_map = "sewers"
+           if not gui.game_lobby.current_map then
+              multichoice:SetChoice("sewers")
+              gui.game_lobby.current_map = "sewers"
+           else
+              multichoice:SetChoice(gui.game_lobby.current_map)
+           end
         else
            gui.game_lobby.map_label:SetSize(200, 15)
         end

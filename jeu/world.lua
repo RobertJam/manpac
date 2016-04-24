@@ -78,8 +78,8 @@ function world.createSpawns(self)
       for i=1,#spawnLayer.objects do
          local mapSpawn = spawnLayer.objects[i]
          local spawn = game.create_entity()
-         spawn:addSystem("spawn",{x = mapSpawn.x,
-                                  y = mapSpawn.y,
+         spawn:addSystem("spawn",{x = mapSpawn.x+mapSpawn.width/2.0,
+                                  y = mapSpawn.y+mapSpawn.height/2.0,
                                   team = team_name})
       end
    end

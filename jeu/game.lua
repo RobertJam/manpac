@@ -195,7 +195,7 @@ function game.create_entities(player,opponents,host_cfg)
    game.player = create_entity[player.role](player.name,
                                             gameplay_cfg[player.role])
    game.followed_player = game.player
-   game.player_cfg = player.name
+   game.player_cfg = player
    -- FIXME: allow to specify keymap
    game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity

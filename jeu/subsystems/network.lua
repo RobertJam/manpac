@@ -134,9 +134,9 @@ function network.receiveData(msg)
       end
    elseif msg.action == "game_over" then
       if game.player_cfg.role == msg.win_team then
-         gs.switch("jeu/game_over",true)
+         gs.switch("jeu/game_over","victory")
       else
-         gs.switch("jeu/game_over",false)
+         gs.switch("jeu/game_over","defeat")
       end
    else
       print("Unhandled network message received:",msg.action)

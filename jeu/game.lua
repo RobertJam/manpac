@@ -150,7 +150,7 @@ function game.next_player()
       entities = systems.ghost:getEntities()
    end
    game.followed_index = game.followed_index + 1
-   if game.followed_index >= #entities then
+   if game.followed_index > #entities then
       game.followed_index = 1
    end
    return entities[game.followed_index]

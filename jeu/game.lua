@@ -149,8 +149,11 @@ function game.next_player()
    else
       entities = systems.ghost:getEntities()
    end
-   local index = math.random(#entities-1)
-   return entities[index+1]
+   game.followed_index = game.followed_index + 1
+   if game.followed_index >= #entities then
+      game.followed_index = 1
+   end
+   return entities[game.followed_index]
 end
 
 function game.create_prefab(prefab)
@@ -195,6 +198,7 @@ function game.create_entities(player,opponents,host_cfg)
    game.player = create_entity[player.role](player.name,
                                             gameplay_cfg[player.role])
    game.followed_player = game.player
+   game.followed_index = 1
    game.player_cfg = player
    -- FIXME: allow to specify keymap
    game.player:addSystem("input_controller", systems[player.role])

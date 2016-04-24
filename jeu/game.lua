@@ -131,6 +131,28 @@ function game.hunter_exit(value)
    end
 end
 
+function game.die(ent)
+   if not ent then
+      ent = game.player
+      game.player = nil
+   end
+   if game.followed_player == ent then
+      game.followed_player = nil
+   end
+   game.kill_entity(ent)
+end
+
+function game.next_player()
+   local ghosts = systems.ghost:getEntities()
+   local hunters = systems.hunter:getEntities()
+   local index = utils.rand_range(1,#ghosts+#hunters)
+   if index < #ghosts then
+      game.followed_player = ghosts[index]
+   else
+      game.followed_player = hunters[index - #ghosts]
+   end
+end
+
 function game.create_prefab(prefab)
    local ent = game.create_entity(prefab.name)
 end
@@ -172,7 +194,8 @@ function game.create_entities(player,opponents,host_cfg)
    -- create player controlled entity
    game.player = create_entity[player.role](player.name,
                                             gameplay_cfg[player.role])
-   if player.role == "hunter" then game.nhunter = game.nhunter + 1 end
+   game.followed_player = game.player
+   game.player_cfg = player.name
    -- FIXME: allow to specify keymap
    game.player:addSystem("input_controller", systems[player.role])
    -- FIXME: we need to make it a proper network entity
@@ -185,7 +208,6 @@ function game.create_entities(player,opponents,host_cfg)
       else
          entity:addSystem("network",data.network)
       end
-      if data.role == "hunter" then game.nhunter = game.nhunter + 1 end
       if player.role == "hunter" and data.role == "ghost" then
          entity:setColor({1.0,1.0,1.0,0.0})
       end
@@ -222,6 +244,7 @@ function state.enter(map_name,player,opponents,host_cfg)
    -- initialize game world
    game.world = game_world.create(map_name)
    game.nhunter = 0
+   game.nghost = 0
    game.nhunter_exit = 0
    game.timer = 0
    if gameplay_cfg.ghost.shared_barriers then
@@ -275,21 +298,29 @@ function state.update(dt)
    game.dt = dt
    game.timer = game.timer + dt
    if reseau.host then
-      if game.nhunter_exit == game.nhunter then
+      if game.nghost == 0 then
          print("Hunter victory !!!")
          systems.network.sendData({action = "game_over",
                                    win_team = "hunter"})
-         if game.player:hasSystem("hunter") then
+         if game.player_cfg.role == "hunter" then
             gs.switch("jeu/game_over", "victory")
          else
             gs.switch("jeu/game_over", "defeat")
          end
-      end
-      if game.timer >= game.timeout then
+      elseif game.nhunter_exit == game.nhunter then
+         print("Hunter victory !!!")
+         systems.network.sendData({action = "game_over",
+                                   win_team = "hunter"})
+         if game.player_cfg.role == "hunter" then
+            gs.switch("jeu/game_over", "victory")
+         else
+            gs.switch("jeu/game_over", "defeat")
+         end
+      elseif game.timer >= game.timeout then
          print("Ghost victory !!!")
          systems.network.sendData({action = "game_over",
                                    win_team = "ghost"})
-         if game.player:hasSystem("ghost") then
+         if game.player_cfg.role == "ghost" then
             gs.switch("jeu/game_over", "victory")
          else
             gs.switch("jeu/game_over", "defeat")
@@ -302,10 +333,14 @@ function state.update(dt)
    if love.keyboard.isDown("q") then scrollX = 10 end
    if love.keyboard.isDown("s") then scrollY = -10 end
    if love.keyboard.isDown("z") then scrollY = 10 end
+   if not game.player and love.keyboard.isDown("n") then
+      game.followed_player = game.next_player()
+   end
    if scrollX ~= 0 or scrollY ~= 0 then
       game.world:scroll(scrollX,scrollY)
-   else
-      game.world:setCenter(game.player.x,game.player.y)
+   elseif game.followed_player then
+      game.world:setCenter(game.followed_player.x,
+                           game.followed_player.y)
    end
    -- update gfx
    systems.gfx.update(systems.gfx:getEntities(),dt)
@@ -315,12 +350,12 @@ function state.update(dt)
    systems.ai_controller.update(systems.ai_controller:getEntities(),dt)
    systems.input_controller.update(systems.input_controller:getEntities())
    systems.character.update(systems.character:getEntities())
-   if game.player.player_update then
+   if game.player and game.player.player_update then
       game.player:player_update(systems.ghost:getEntities())
    end
    -- send locally controlled entities state to server
    -- FIXME: if block for quickstart to work
-   if game.player.network_id then
+   if game.player and game.player.network_id then
       systems.network.send_state(systems.input_controller:getEntities())
       systems.network.send_state(systems.ai_controller:getEntities())
    end
@@ -345,10 +380,10 @@ function state.draw()
    love.graphics.print(string.format("Remaining time: %.2f",
                                      game.timeout-game.timer),
                        10,10)
-   if game.player:hasSystem("ghost") then
-   love.graphics.print(string.format("Remaining barriers: %d",
-                                     game.player:nBarriers()),
-                       10,20)
+   if game.player and game.player_cfg.role == "ghost" then
+      love.graphics.print(string.format("Remaining barriers: %d",
+                                        game.player:nBarriers()),
+                          10,20)
     -- Draw polygon to show barriers number
    gui_x = 300
    gui_y = 10

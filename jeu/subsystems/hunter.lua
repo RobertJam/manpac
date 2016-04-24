@@ -50,6 +50,7 @@ function hunter.exit_collision(self,other)
 end
 
 function hunter.init_entity(self,cfg)
+   game.nhunter = game.nhunter + 1
    self.destroy_barrier = hunter.destroy_barrier
    self.destroy_speed = cfg.destroy_speed or hunter.destroy_speed
    if cfg.move_force then
@@ -78,6 +79,10 @@ function hunter.init_entity(self,cfg)
          end
       end
    end
+end
+
+function hunter.release_entity(self)
+   game.nhunter = game.nhunter - 1
 end
 
 function hunter.destroy_barrier(self)

@@ -13,6 +13,7 @@ ghost.destroy_speed = 0.8
 ghost.nbarriers = nil
 
 function ghost.init_entity(self,cfg)
+   game.nghost = game.nghost + 1
    self.nbarriers = cfg.max_barriers or 3
    self.build_speed = cfg.build_speed or ghost.build_speed
    self.destroy_speed = cfg.destroy_speed or ghost.destroy_speed
@@ -43,6 +44,10 @@ function ghost.init_entity(self,cfg)
    self.nBarriers = function(self)
       return ghost.nbarriers or self.nbarriers
    end
+end
+
+function ghost.release_entity(self)
+   game.nghost = game.nghost - 1
 end
 
 function ghost.init_system()

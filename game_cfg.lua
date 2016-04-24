@@ -17,7 +17,7 @@ return {
    hunter = {
       can_shoot = true,
       shoot_dist = 100,
-      shoot_angle = 1.0,
+      shoot_angle = 1.5,
       -- barrier destroy speed
       destroy_speed = 0.5,
       -- force to apply when moving

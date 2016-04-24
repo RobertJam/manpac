@@ -45,16 +45,16 @@ function state.BackToLobby()
    gui.players = {}
 
    gui.players[1] = {
-		name = game.player.name,
+		name = game.player_cfg.name,
 		role = "Hunter",
-		userid = game.player.network_id,
+		userid = game.player_cfg.network_id,
 		controller = "network",
 		ready = false,
 		ping = 0,
 		host = false
 	}
    
-   if game.player.role == "hunter" then
+   if game.player_cfg.role == "hunter" then
       gui.players[1].role = "Hunter"
    else
       gui.players[1].role = "Ghost"
